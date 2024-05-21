@@ -1,10 +1,15 @@
 import React from 'react';
+import Header from './module/Header';
+import Main from './module/Main';
+import Footer from './module/Footer';
 
 const Root = () => {
     return (
-       <>
-       <h4>root component</h4>
-       </>
+        <>
+            <Header />
+            <Main />
+            <Footer/>
+        </>
     );
 };
 
