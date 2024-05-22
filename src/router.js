@@ -1,17 +1,17 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Root from './components/Root';
-import Main from './components/module/Main';
 import WriteBoard from './components/WriteBoard';
 import Like from './components/Like';
+import Login from './components/user/Login';
 const router = createBrowserRouter(
     [
         {
             path: '/',
-            element: <Root />,
+            element: <Root/>,
             children: [
                 {
                     path: "",
-                    element: <Main/>
+                    element: <Login/>
                 }
             ],
         },
