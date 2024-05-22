@@ -1,8 +1,8 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Root from './components/Root';
 import Main from './components/module/Main';
-import Board from './components/Board';
 import WriteBoard from './components/WriteBoard';
+import Like from './components/Like';
 const router = createBrowserRouter(
     [
         {
@@ -58,7 +58,15 @@ const router = createBrowserRouter(
                     ),
                 },
             ],
+            
         },
+        {
+            path: '/like',
+            element: <Like />,
+            children:[
+
+            ]
+        }
     ],
     {
         basename: '/DayMusic',
