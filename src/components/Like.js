@@ -6,6 +6,14 @@ import { BiLike, BiChat, BiShare } from 'react-icons/bi';
 import Footer from './module/Footer';
 
 const Like = () => {
+
+    const test = () =>{
+      const id = "admin";
+      const board_code = 2;
+      const command ="like";
+      window.location.href = `${process.env.REACT_APP_SERVER_URL}/like?command=${command}&board_code=${board_code}&id=${id}`;
+    }
+
     return (
         <>
         <Header />
@@ -50,7 +58,7 @@ const Like = () => {
       },
     }}
   >
-    <Button flex='1' variant='ghost' leftIcon={<BiLike />}>
+    <Button flex='1' variant='ghost' leftIcon={<BiLike />} onClick={test}>
       Like
     </Button>
     <Button flex='1' variant='ghost' leftIcon={<BiChat />}>
