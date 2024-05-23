@@ -1,10 +1,8 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Root from './components/Root';
-<<<<<<< HEAD
 import WriteBoard from './components/WriteBoard';
 import Like from './components/Like';
 import Login from './components/user/Login';
-=======
 import Main from './components/module/Main';
 import Follow from './components/Follow';
 
@@ -16,7 +14,6 @@ POST /follow 팔로우 추가
 DELETE /follow 팔로우 취소
 */
 
->>>>>>> feature/follow
 const router = createBrowserRouter(
     [
         {
@@ -44,7 +41,6 @@ const router = createBrowserRouter(
             ],
         },
         {
-<<<<<<< HEAD
             path: '/board',
             element: <WriteBoard />,
             children: [
@@ -78,14 +74,12 @@ const router = createBrowserRouter(
         {
             path: '/like',
             element: <Like />,
-            children:[
-=======
+            children:[]
+        },
+        {
             path: '/follow',
             element: <Follow />,
-            children: [
->>>>>>> feature/follow
-
-            ]
+            children: []
         }
     ],
     {
