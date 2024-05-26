@@ -17,6 +17,7 @@ DELETE /follow 팔로우 취소
 import MyPage from './components/user/MyPage';
 import Join from './components/user/Join';
 import JoinSuccess from './components/user/JoinSuccess';
+import UpdateBoard from './components/UpdateBoard';
 const router = createBrowserRouter(
     [
         {
@@ -64,20 +65,12 @@ const router = createBrowserRouter(
             element: <WriteBoard />,
             children: [
                 {
-                    path: '',
-                    element: (
-                        <>
-                            
-                        </>
-                    ),
+                    path: 'delete',
+                    element: <></>,
                 },
                 {
-                    path: '',
-                    element: (
-                        <>
-                            
-                        </>
-                    ),
+                    path: 'update',
+                    element: <UpdateBoard />,
                 },
                 {
                     path: '',
