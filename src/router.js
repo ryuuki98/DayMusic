@@ -3,7 +3,7 @@ import Root from './components/Root';
 import WriteBoard from './components/WriteBoard';
 import Like from './components/Like';
 import Login from './components/user/Login';
-import Main from './components/module/Main';
+
 import Follow from './components/Follow';
 
 // 라우터 설계
@@ -14,6 +14,9 @@ POST /follow 팔로우 추가
 DELETE /follow 팔로우 취소
 */
 
+import MyPage from './components/user/MyPage';
+import Join from './components/user/Join';
+import JoinSuccess from './components/user/JoinSuccess';
 const router = createBrowserRouter(
     [
         {
@@ -31,10 +34,26 @@ const router = createBrowserRouter(
             element: <Root />,
             children: [
                 {
-                    path: '',
+                    path: 'myPage',
                     element: (
                         <>
-                            <h4>ㅇㅇ</h4>
+                        <MyPage/>
+                        </>
+                    ),
+                },
+                {
+                    path: 'join',
+                    element: (
+                        <>
+                        <Join/>
+                        </>
+                    ),
+                },
+                {
+                    path: 'joinSuccess',
+                    element: (
+                        <>
+                        <JoinSuccess/>
                         </>
                     ),
                 },
