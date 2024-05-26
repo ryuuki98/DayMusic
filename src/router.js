@@ -3,6 +3,7 @@ import Root from './components/Root';
 import Main from './components/module/Main';
 import Board from './components/Board';
 import WriteBoard from './components/WriteBoard';
+import UpdateBoard from './components/UpdateBoard';
 const router = createBrowserRouter(
     [
         {
@@ -34,20 +35,12 @@ const router = createBrowserRouter(
             element: <WriteBoard />,
             children: [
                 {
-                    path: '',
-                    element: (
-                        <>
-                            
-                        </>
-                    ),
+                    path: 'delete',
+                    element: <></>,
                 },
                 {
-                    path: '',
-                    element: (
-                        <>
-                            
-                        </>
-                    ),
+                    path: 'update',
+                    element: <UpdateBoard />,
                 },
                 {
                     path: '',

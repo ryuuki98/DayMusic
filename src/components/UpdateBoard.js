@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
     Box,
     Button,
@@ -15,54 +16,52 @@ import {
 } from '@chakra-ui/react';
 import { EditIcon } from '@chakra-ui/icons';
 
-const CreateBoardPost = () => {
-    const command = "write";
+const EditBoardPost = ({ boardCode }) => {
     const [contents, setContents] = useState('');
     const [isPublic, setIsPublic] = useState(true);
     const [file, setFile] = useState(null);
     const [responseMessage, setResponseMessage] = useState('');
 
-    const myHeaders = new Headers();
-    myHeaders.append('Content-Type', 'application/json;charset=utf-8');
-    
+    useEffect(() => {
+        const fetchPost = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/board/${boardCode}`, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': 'ADMIN your_KEY',
+                    },
+                });
+                const post = response.data;
+                setContents(post.contents);
+                setIsPublic(post.is_public);
+            } catch (error) {
+                console.error('There was an error fetching the post!', error);
+            }
+        };
 
-    const handleSubmit = async (e) => {
+        fetchPost();
+    }, [boardCode]);
+
+    const handleUpdate = async (e) => {
         e.preventDefault();
 
-        // const formData = new FormData();
-        // formData.append('method', 'POST');
-        // formData.append('command', command);
-        // formData.append('contents', contents);
-        // formData.append('is_public', isPublic);
-        // if (file) {
-        //     formData.append('file', file);
-        // }
+        const formData = new FormData();
+        if (contents) formData.append('contents', contents);
+        formData.append('is_public', isPublic);
+        if (file) formData.append('file', file);
 
         try {
-            const requestOptions = {
-                method: 'POST',
-                headers: myHeaders,
-                body: JSON.stringify({
-                    command: command,
-                    contents: contents,
-                    isPublic: isPublic,
-                }),
-                credentials: 'include',
-            };
-
-
-
-            fetch(`${process.env.REACT_APP_SERVER_URL}/board/service`, requestOptions, {
-                // headers: {
-                //     'Content-Type': '',
-                //     'Accept': 'application/json',
-                //     // 'Authorization': 'ADMIN your_KEY', // Ensure this is uncommented if needed
-                // },
+            const response = await axios.put(`${process.env.REACT_APP_SERVER_URL}/board/${boardCode}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Accept': 'application/json',
+                    'Authorization': 'ADMIN your_KEY',
+                },
             });
-            setResponseMessage('Post created successfully!');
+            setResponseMessage('Post updated successfully!');
         } catch (error) {
-            setResponseMessage('Failed to create post.');
-            console.error('There was an error!', error.response ? error.response.data : error.message);
+            setResponseMessage('Failed to update post.');
+            console.error('There was an error!', error);
         }
     };
 
@@ -76,7 +75,7 @@ const CreateBoardPost = () => {
             boxShadow="lg"
             bg="white"
         >
-            <VStack spacing={4} as="form" onSubmit={handleSubmit}>
+            <VStack spacing={4} as="form" onSubmit={handleUpdate}>
                 <FormControl id="file">
                     <FormLabel>Upload Photo</FormLabel>
                     <Input
@@ -85,10 +84,9 @@ const CreateBoardPost = () => {
                         onChange={(e) => setFile(e.target.files[0])}
                     />
                 </FormControl>
-                <Heading textColor="black">내용</Heading>
+                <Heading>내용</Heading>
                 <FormControl id="contents" isRequired>
                     <Textarea
-                        textColor="black"
                         placeholder="Placeholder"
                         value={contents}
                         onChange={(e) => setContents(e.target.value)}
@@ -105,8 +103,9 @@ const CreateBoardPost = () => {
                         aria-label="Edit"
                     />
                 </HStack>
+ 
                 <FormControl display="flex" alignItems="center">
-                    <FormLabel htmlFor="isPublic" mb="0" textColor="purple">
+                    <FormLabel htmlFor="isPublic" mb="0">
                         공개 여부
                     </FormLabel>
                     <Switch
@@ -116,12 +115,12 @@ const CreateBoardPost = () => {
                     />
                 </FormControl>
                 <Button type="submit" colorScheme="blue" width="full">
-                    Create Post
+                    Update Post
                 </Button>
-                {responseMessage && <Text textColor="red" >{responseMessage}</Text>}
+                {responseMessage && <Text>{responseMessage}</Text>}
             </VStack>
         </Box>
     );
 };
 
-export default CreateBoardPost;
+export default EditBoardPost;
