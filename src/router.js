@@ -1,9 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Root from './components/Root';
 import Main from './components/module/Main';
-import Board from './components/Board';
-import WriteBoard from './components/WriteBoard';
-import UpdateBoard from './components/UpdateBoard';
+import Board from './components/Board/Board';
+import WriteBoard from './components/Board/WriteBoard';
+import UpdateBoard from './components/Board/UpdateBoard';
 const router = createBrowserRouter(
     [
         {
