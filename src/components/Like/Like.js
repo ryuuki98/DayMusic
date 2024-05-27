@@ -6,10 +6,40 @@ import Header from '../module/Header';
 import Footer from '../module/Footer';
 
 const Like = () => {
-    const test = (e) => {
-        const board_code = e.target.value;
-        const command = "like";
-        window.location.href = `${process.env.REACT_APP_SERVER_URL}/like?command=${command}&board_code=${board_code}`;
+    let [likeCount, setLikeCount] = useState(0);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const board_code = 2;
+        const command = "likeAdd";
+        const id = "user5";
+        const myHeaders = new Headers();
+        myHeaders.append('Content-Type', 'application/json;charset=utf-8');
+
+        const requestOptions = {
+            method : 'PUT',
+            headers : myHeaders,
+            body : JSON.stringify({
+                command : command,
+                id : id,
+                board_code : board_code,
+            })
+        };
+
+        fetch(`${process.env.REACT_APP_SERVER_URL}/like`,requestOptions)
+        .then((response) => {
+            return response.text().then((result) =>{
+                if(response.ok){
+                    console.log('좋아요처리  성공:',result);
+                    setLikeCount(prevCount => prevCount + 1);
+                }else{
+                    console.log('왜인지 실패');
+                }
+            });
+        }).catch((error) =>{
+            console.log('실패처리');
+        })
+        console.log(board_code, command, id);
     }
 
     return (
@@ -52,8 +82,8 @@ const Like = () => {
                         },
                     }}
                 >
-                    <Button flex='1' variant='ghost' leftIcon={<BiLike />} onClick={test} value={2}>
-                        Like
+                    <Button type='button' flex='1' variant='ghost' leftIcon={<BiLike />} onClick={handleSubmit} value={2}>
+                    <Text>{likeCount}</Text>Like
                     </Button>
                     <Button flex='1' variant='ghost' leftIcon={<BiChat />}>
                         Comment
