@@ -9,7 +9,7 @@ root.render(
     <React.StrictMode>
         <ChakraProvider>
             <AuthProvider>
-             <App />
+                <App />
             </AuthProvider>
         </ChakraProvider>
     </React.StrictMode>

@@ -1,37 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, FormControl, FormLabel, Input } from '@chakra-ui/react';
 import InputField from '../item/InputField';
+import AuthContext from '../../context/AuthContext';
 
 const UpdateNickname = () => {
     const navigate = useNavigate();
     const [nickname, setNickname] = useState('');
-    const [currentNickname, setCurrentNickname] = useState('');
-    const [userId, setUserId] = useState(''); // 추가된 부분: userId를 저장할 상태
     const [error, setError] = useState('');
     const [isValidNickname, setIsValidNickname] = useState(false); // 수정된 부분: useState로 변경
+    const {currentUser} = useContext(AuthContext); // AuthContext에서 사용자 정보 가져오기
 
-    useEffect(() => {
-        fetch(`${process.env.REACT_APP_SERVER_URL}/user/session`, {
-            method: 'GET',
-            credentials: 'include',
-        })
-            .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('User not logged in');
-                }
-            })
-            .then((data) => {
-                setCurrentNickname(data.nickname);
-                setUserId(data.userId); 
-            })
-            .catch((error) => {
-                setError('사용자 정보를 가져올 수 없습니다.');
-                console.error('Error fetching user info:', error);
-            });
-    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -43,7 +22,7 @@ const UpdateNickname = () => {
 
         const formData = {
             nickname: nickname,
-            id: userId, 
+            id: currentUser.id, 
             command: 'updateNickname'
         };
 
@@ -63,6 +42,7 @@ const UpdateNickname = () => {
             const data = await response.json();
             console.log('닉네임 변경 성공:', data);
             alert('닉네임이 변경 되었습니다.');
+            currentUser.nickname = nickname;
             navigate('/user/myPage'); // 회원가입이 아닌 닉네임 변경 성공 페이지로 이동
         } catch (error) {
             console.error('닉네임 변경 실패:', error.message);
@@ -70,7 +50,7 @@ const UpdateNickname = () => {
     };
 
     const validateNickname = async (value) => {
-        if (currentNickname === value) {
+        if (currentUser.nickname === value) {
             setIsValidNickname(true);
             return '현재 닉네임과 동일한 닉네임 입니다.';
         }
@@ -107,7 +87,7 @@ const UpdateNickname = () => {
             <form onSubmit={handleSubmit}>
                 <FormControl mb={6}>
                     <FormLabel>현재 닉네임</FormLabel>
-                    <Input value={currentNickname} isReadOnly />
+                    <Input value={currentUser.nickname} isReadOnly />
                 </FormControl>
                 <InputField
                     id="nickname"
