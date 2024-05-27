@@ -1,7 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Root from './components/Root';
-import WriteBoard from './components/WriteBoard';
-import Like from './components/Like';
+import Like from './components/Like/Like';
 import Login from './components/user/Login';
 
 import Follow from './components/Follow';
@@ -17,8 +16,9 @@ DELETE /follow 팔로우 취소
 import MyPage from './components/user/MyPage';
 import Join from './components/user/Join';
 import JoinSuccess from './components/user/JoinSuccess';
-import UpdateBoard from './components/UpdateBoard';import Board from './components/Board/Board';
+import Board from './components/Board/Board';
 import UpdateBoard from './components/Board/UpdateBoard';
+import WriteBoard from './components/Board/WriteBoard';
 const router = createBrowserRouter(
     [
         {

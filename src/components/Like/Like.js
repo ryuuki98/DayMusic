@@ -6,7 +6,11 @@ import Header from '../module/Header';
 import Footer from '../module/Footer';
 
 const Like = () => {
-
+    const test = (e) => {
+        const board_code = e.target.value;
+        const command = "like";
+        window.location.href = `${process.env.REACT_APP_SERVER_URL}/like?command=${command}&board_code=${board_code}`;
+    }
 
     return (
         <>
