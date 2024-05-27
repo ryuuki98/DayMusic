@@ -3,6 +3,7 @@ import InputPassword from '../item/InputPassword';
 import InputId from '../item/InputId';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@chakra-ui/react';
+import AuthProvider from '../../context/AuthProvider';
 
 const Login = () => {
     const [error, setError] = useState('');
@@ -32,6 +33,8 @@ const Login = () => {
                 }),
                 credentials: 'include',
             };
+
+            Auto
 
             fetch(`${process.env.REACT_APP_SERVER_URL}/user/service`, requestOptions)
                 .then((response) => {

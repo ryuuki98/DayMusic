@@ -3,7 +3,6 @@ import AuthContext from './AuthContext';
 
 const AuthProvider = ({children}) => {
 
-    console.log('children : ' + children);
     const [currentUser, setCurrentUser ]= useState(null);
 
     const login = () => {
