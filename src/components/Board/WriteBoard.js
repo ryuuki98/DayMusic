@@ -14,13 +14,19 @@ import {
     IconButton,
 } from '@chakra-ui/react';
 import { EditIcon } from '@chakra-ui/icons';
+import SpotifySearch from './SpotifySearch';
+import { getSpotifyToken } from '../../utils/spotifyAuth';
+
 
 const CreateBoardPost = () => {
+    
     const command = "write";
     const [contents, setContents] = useState('');
     const [isPublic, setIsPublic] = useState(true);
     const [file, setFile] = useState(null);
     const [responseMessage, setResponseMessage] = useState('');
+    const [selectedTrack, setSelectedTrack] = useState(null);
+    const [showSpotifySearch, setShowSpotifySearch] = useState(false);
 
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json;charset=utf-8');
@@ -46,6 +52,7 @@ const CreateBoardPost = () => {
                     command: command,
                     contents: contents,
                     isPublic: isPublic,
+                    track: selectedTrack ? selectedTrack.id : null
                 }),
                 credentials: 'include',
             };
@@ -95,7 +102,7 @@ const CreateBoardPost = () => {
                     />
                 </FormControl>
                 <HStack width="full" justifyContent="space-between">
-                    <Button colorScheme="purple" variant="solid">
+                <Button colorScheme="purple" textColor="black" variant="solid" onClick={() => setShowSpotifySearch(!showSpotifySearch)}>
                         + Music
                     </Button>
                     <IconButton
@@ -105,6 +112,12 @@ const CreateBoardPost = () => {
                         aria-label="Edit"
                     />
                 </HStack>
+                {showSpotifySearch && <SpotifySearch onSelectTrack={setSelectedTrack} />}
+                {selectedTrack && (
+                    <Text textColor="black">
+                        Selected Track: {selectedTrack.name} by {selectedTrack.artists[0].name}
+                    </Text>
+                )}
                 <FormControl display="flex" alignItems="center">
                     <FormLabel htmlFor="isPublic" mb="0" textColor="purple">
                         공개 여부
