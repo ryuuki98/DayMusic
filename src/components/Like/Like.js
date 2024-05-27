@@ -11,35 +11,38 @@ const Like = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const board_code = 2;
-        const command = "likeAdd";
-        const id = "user5";
+        const command = 'likeAdd';
+        const id = 'user5';
         const myHeaders = new Headers();
         myHeaders.append('Content-Type', 'application/json;charset=utf-8');
 
         const requestOptions = {
-            method : 'PUT',
+            method : 'POST',
             headers : myHeaders,
             body : JSON.stringify({
-                command : command,
-                id : id,
-                board_code : board_code,
-            })
+                command: command,
+                id: id,
+                board_code: board_code,
+            }),
         };
-
-        fetch(`${process.env.REACT_APP_SERVER_URL}/like`,requestOptions)
+        
+        console.log("요청 보낼 내용:", requestOptions);
+        
+        fetch(`${process.env.REACT_APP_SERVER_URL}/like`, requestOptions)
         .then((response) => {
-            return response.text().then((result) =>{
+            return response.json().then((data) =>{
+                const count = data.count;
                 if(response.ok){
-                    console.log('좋아요처리  성공:',result);
-                    setLikeCount(prevCount => prevCount + 1);
+                    console.log('좋아요처리  성공:',count);
+                    setLikeCount(count);
                 }else{
                     console.log('왜인지 실패');
                 }
             });
         }).catch((error) =>{
             console.log('실패처리');
-        })
-        console.log(board_code, command, id);
+        });
+        
     }
 
     return (
