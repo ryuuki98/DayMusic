@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 
 const PublicBoardPosts = () => {
+    const command = "search";
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -23,6 +24,9 @@ const PublicBoardPosts = () => {
             try {
                 const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/board/service`, {
                     method: 'GET',
+                    body: JSON.stringify({
+                        command: command,
+                    }),
                     credentials: 'include',
                 });
                 console.log("response : " + response);
