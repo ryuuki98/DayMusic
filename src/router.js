@@ -17,7 +17,8 @@ DELETE /follow 팔로우 취소
 import MyPage from './components/user/MyPage';
 import Join from './components/user/Join';
 import JoinSuccess from './components/user/JoinSuccess';
-import UpdateBoard from './components/UpdateBoard';
+import UpdateBoard from './components/UpdateBoard';import Board from './components/Board/Board';
+import UpdateBoard from './components/Board/UpdateBoard';
 const router = createBrowserRouter(
     [
         {
