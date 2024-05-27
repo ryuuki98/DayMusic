@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Root from './components/Root';
 import Main from './components/module/Main';
-import Like from './components/Like';
+import Like from './components/Like/Like';
 const router = createBrowserRouter(
     [
         {
@@ -32,7 +32,6 @@ const router = createBrowserRouter(
             path: '/like',
             element: <Like />,
             children:[
-
             ]
         },
     ],
