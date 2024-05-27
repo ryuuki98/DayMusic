@@ -19,6 +19,7 @@ import JoinSuccess from './components/user/JoinSuccess';
 import Board from './components/Board/Board';
 import UpdateBoard from './components/Board/UpdateBoard';
 import WriteBoard from './components/Board/WriteBoard';
+import SearchBoard from './components/Board/SearchBoard';
 const router = createBrowserRouter(
     [
         {
@@ -63,7 +64,7 @@ const router = createBrowserRouter(
         },
         {
             path: '/board',
-            element: <WriteBoard />,
+            element: <Root />,
             children: [
                 {
                     path: 'delete',
@@ -71,15 +72,30 @@ const router = createBrowserRouter(
                 },
                 {
                     path: 'update',
-                    element: <UpdateBoard />,
-                },
-                {
-                    path: '',
                     element: (
                         <>
-                            
+                        <UpdateBoard />
                         </>
-                    ),
+                    
+                ),
+                },
+                {
+                    path: 'search',
+                    element: (
+                        <>
+                        <SearchBoard />
+                        </>
+                    
+                ),
+                },
+                {
+                    path: 'write',
+                    element: (
+                        <>
+                        <WriteBoard />
+                        </>
+                    
+                ),
                 },
             ],
             
