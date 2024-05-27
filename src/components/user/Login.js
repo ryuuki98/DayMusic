@@ -34,8 +34,6 @@ const Login = () => {
                 credentials: 'include',
             };
 
-            Auto
-
             fetch(`${process.env.REACT_APP_SERVER_URL}/user/service`, requestOptions)
                 .then((response) => {
                     return response.text().then((result) => {
