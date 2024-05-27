@@ -3,7 +3,7 @@ import Root from './components/Root';
 import Like from './components/Like/Like';
 import Login from './components/user/Login';
 
-import Follow from './components/Follow';
+import Follow from './components/Follow/Follow';
 
 // 라우터 설계
 /*
