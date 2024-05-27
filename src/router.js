@@ -3,7 +3,7 @@ import Root from './components/Root';
 import Like from './components/Like/Like';
 import Login from './components/user/Login';
 
-import Follow from './components/Follow';
+import Follow from './components/Follow/Follow';
 
 // 라우터 설계
 /*
@@ -19,17 +19,20 @@ import JoinSuccess from './components/user/JoinSuccess';
 import Board from './components/Board/Board';
 import UpdateBoard from './components/Board/UpdateBoard';
 import WriteBoard from './components/Board/WriteBoard';
+import UpdatePassword from './components/user/UpdatePassword';
+import UpdateNickname from './components/user/UpdateNickname';
+import UpdateUserInfo from './components/user/UpdateUserInfo';
 import SearchBoard from './components/Board/SearchBoard';
 const router = createBrowserRouter(
     [
         {
             path: '/',
-            element: <Root/>,
+            element: <Root />,
             children: [
                 {
-                    path: "",
-                    element: <Login/>
-                }
+                    path: '',
+                    element: <Login />,
+                },
             ],
         },
         {
@@ -40,7 +43,7 @@ const router = createBrowserRouter(
                     path: 'myPage',
                     element: (
                         <>
-                        <MyPage/>
+                            <MyPage />
                         </>
                     ),
                 },
@@ -48,7 +51,7 @@ const router = createBrowserRouter(
                     path: 'join',
                     element: (
                         <>
-                        <Join/>
+                            <Join />
                         </>
                     ),
                 },
@@ -56,7 +59,31 @@ const router = createBrowserRouter(
                     path: 'joinSuccess',
                     element: (
                         <>
-                        <JoinSuccess/>
+                            <JoinSuccess />
+                        </>
+                    ),
+                },
+                {
+                    path: 'updatePassword',
+                    element: (
+                        <>
+                            <UpdatePassword />
+                        </>
+                    ),
+                },
+                {
+                    path: 'updateNickname',
+                    element: (
+                        <>
+                            <UpdateNickname />
+                        </>
+                    ),
+                },
+                {
+                    path: 'updateUserInfo',
+                    element: (
+                        <>
+                            <UpdateUserInfo />
                         </>
                     ),
                 },
@@ -98,18 +125,17 @@ const router = createBrowserRouter(
                 ),
                 },
             ],
-            
         },
         {
             path: '/like',
             element: <Like />,
-            children:[]
+            children: [],
         },
         {
             path: '/follow',
             element: <Follow />,
-            children: []
-        }
+            children: [],
+        },
     ],
     {
         basename: '/DayMusic',
