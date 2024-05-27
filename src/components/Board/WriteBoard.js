@@ -15,11 +15,9 @@ import {
 } from '@chakra-ui/react';
 import { EditIcon } from '@chakra-ui/icons';
 import SpotifySearch from './SpotifySearch';
-import { getSpotifyToken } from '../../utils/spotifyAuth';
-
+import { useNavigate } from 'react-router-dom';
 
 const CreateBoardPost = () => {
-    
     const command = "write";
     const [contents, setContents] = useState('');
     const [isPublic, setIsPublic] = useState(true);
@@ -28,21 +26,12 @@ const CreateBoardPost = () => {
     const [selectedTrack, setSelectedTrack] = useState(null);
     const [showSpotifySearch, setShowSpotifySearch] = useState(false);
 
+    const navigate = useNavigate();
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json;charset=utf-8');
     
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // const formData = new FormData();
-        // formData.append('method', 'POST');
-        // formData.append('command', command);
-        // formData.append('contents', contents);
-        // formData.append('is_public', isPublic);
-        // if (file) {
-        //     formData.append('file', file);
-        // }
 
         try {
             const requestOptions = {
@@ -57,19 +46,22 @@ const CreateBoardPost = () => {
                 credentials: 'include',
             };
 
-
-
-            fetch(`${process.env.REACT_APP_SERVER_URL}/board/service`, requestOptions, {
-                // headers: {
-                //     'Content-Type': '',
-                //     'Accept': 'application/json',
-                //     // 'Authorization': 'ADMIN your_KEY', // Ensure this is uncommented if needed
-                // },
-            });
-            setResponseMessage('Post created successfully!');
+            fetch(`${process.env.REACT_APP_SERVER_URL}/board/service`, requestOptions)
+                .then((response) => {
+                    if (response.ok) {
+                        setResponseMessage('Post created successfully!');
+                        navigate('/board/search');
+                    } else {
+                        throw new Error('Failed to create post');
+                    }
+                })
+                .catch((error) => {
+                    setResponseMessage('Failed to create post.');
+                    console.error('There was an error!', error);
+                });
         } catch (error) {
             setResponseMessage('Failed to create post.');
-            console.error('There was an error!', error.response ? error.response.data : error.message);
+            console.error('There was an error!', error);
         }
     };
 
@@ -102,7 +94,7 @@ const CreateBoardPost = () => {
                     />
                 </FormControl>
                 <HStack width="full" justifyContent="space-between">
-                <Button colorScheme="purple" textColor="black" variant="solid" onClick={() => setShowSpotifySearch(!showSpotifySearch)}>
+                    <Button colorScheme="purple" textColor="black" variant="solid" onClick={() => setShowSpotifySearch(!showSpotifySearch)}>
                         + Music
                     </Button>
                     <IconButton
