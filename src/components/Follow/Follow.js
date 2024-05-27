@@ -41,22 +41,31 @@ const Follow = () => {
     const { isOpen: isFollowListOpen, onOpen: onFollowListOpen, onClose: onFollowListClose } = useDisclosure();
     const { isOpen: isFollowerListOpen, onOpen: onFollowerListOpen, onClose: onFollowerListClose } = useDisclosure();
 
+    // const id = 
+
+    // API 호출로 데이터 가져오기
+    const fetchFollowData = async () => {
+        const url = `${process.env.REACT_APP_SERVER_URL}/follow/follow_list?id=user1`;
+        const response = await fetch(
+            url,
+            {
+                method: "GET",
+            }
+        )
+        
+        const data = await response.json();
+        console.log(data);
+
+        setFollowList(data.result[0]);
+        setFollowerList(data.result[1]);
+
+    };
+
+
     // 더미 데이터 설정
-    // useEffect(() => {
-    //     // API 호출로 데이터 가져오기
-    //     const fetchFollowData = async () => {
-    //         const followResponse = await fetch('/follow/followed_list');
-    //         const followerResponse = await fetch('/follow/follower_list');
-
-    //         const followData = await followResponse.json();
-    //         const followerData = await followerResponse.json();
-
-    //         setFollowList(followData);
-    //         setFollowerList(followerData);
-    //     };
-
-    //     fetchFollowData();
-    // }, []);
+    useEffect(() => {
+        fetchFollowData();
+    }, []);
 
     // 버튼 클릭 시 호출되는 핸들러 함수
     const handleFollowClick = () => {
@@ -108,10 +117,10 @@ const Follow = () => {
                     {isFollowing ? '팔로우 취소' : '팔로우'}
                 </Button>
                 <Button flex='1' variant='ghost' onClick={onFollowListOpen}>
-                    팔로우 리스트
+                    팔로잉
                 </Button>
                 <Button flex='1' variant='ghost' onClick={onFollowerListOpen}>
-                    팔로워 리스트
+                    팔로워
                 </Button>
             </CardFooter>
 
@@ -119,14 +128,14 @@ const Follow = () => {
             <Modal isOpen={isFollowListOpen} onClose={onFollowListClose}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>팔로우 리스트</ModalHeader>
+                    <ModalHeader>팔로잉</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                         <List spacing={3}>
                             {followList && followList.map((user, index) => (
                                 <ListItem key={index}>
                                     <ListIcon as={MdPerson} color="green.500" />
-                                    {user}
+                                    {user.nickname}
                                 </ListItem>
                             ))}
                         </List>
@@ -141,14 +150,14 @@ const Follow = () => {
             <Modal isOpen={isFollowerListOpen} onClose={onFollowerListClose}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>팔로워 리스트</ModalHeader>
+                    <ModalHeader>팔로워</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                         <List spacing={3}>
                             {followerList && followerList.map((user, index) => (
                                 <ListItem key={index}>
                                     <ListIcon as={MdPerson} color="blue.500" />
-                                    {user}
+                                    {user.nickname}
                                 </ListItem>
                             ))}
                         </List>
