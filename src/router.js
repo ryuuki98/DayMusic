@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Root from './components/Root';
-import Like from './components/Like';
+import Like from './components/Like/Like';
 import Login from './components/user/Login';
 
 import Follow from './components/Follow';

@@ -6,10 +6,11 @@ const Main = () => {
         <Box>
 
             <h4>Main!!</h4>
-            <form method='POST'
+            <form method='GET'
             action={`${process.env.REACT_APP_SERVER_URL}/user/service`}
             >
-                <input type='hidden' id='command' name='command' value="like" />
+                
+                <input type='hidden' id='command' name='command' value="login" />
                 <input type='submit' />
             </form>
         </Box>
