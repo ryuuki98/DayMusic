@@ -7,10 +7,24 @@ import AuthContext from '../../context/AuthContext';
 const UpdateNickname = () => {
     const navigate = useNavigate();
     const [nickname, setNickname] = useState('');
-    const [error, setError] = useState('');
     const [isValidNickname, setIsValidNickname] = useState(false); // 수정된 부분: useState로 변경
     const {currentUser} = useContext(AuthContext); // AuthContext에서 사용자 정보 가져오기
 
+
+
+    useEffect(() => {
+        if (currentUser === null) {
+            console.log("비로그인 상태");
+            alert("로그인을 해야합니다.");
+            navigate('/');
+        } else {
+            console.log("로그인 상태");
+        }
+    }, [currentUser]); // currentUser 또는 navigate가 변경될 때마다 실행
+
+    if (currentUser === null) {
+        return null; // currentUser가 null인 경우 렌더링하지 않음
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -43,7 +57,7 @@ const UpdateNickname = () => {
             console.log('닉네임 변경 성공:', data);
             alert('닉네임이 변경 되었습니다.');
             currentUser.nickname = nickname;
-            navigate('/user/myPage'); // 회원가입이 아닌 닉네임 변경 성공 페이지로 이동
+            navigate('/user/myPage'); 
         } catch (error) {
             console.error('닉네임 변경 실패:', error.message);
         }
@@ -51,7 +65,6 @@ const UpdateNickname = () => {
 
     const validateNickname = async (value) => {
         if (currentUser.nickname === value) {
-            setIsValidNickname(true);
             return '현재 닉네임과 동일한 닉네임 입니다.';
         }
 

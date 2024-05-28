@@ -15,6 +15,11 @@ const Join = () => {
     const [nickname, setNickname] = useState('');
     const [profileImg, setProfileImg] = useState(null); // State for profile image
     const [previewImg, setPreviewImg] = useState(null); // State for preview image
+    const [isValidId, setIsValidId] = useState(true); // State for preview image
+    const [isValidNickname, setIsValidNickname] = useState(true); // State for preview image
+    const [isValidEmail, setIsValidEmail] = useState(true); // State for preview image
+    const [isValidPhone, setIsValidPhone] = useState(true); // State for preview image
+
 
     const validateId = async (value) => {
         const myHeaders = new Headers();
@@ -36,7 +41,12 @@ const Join = () => {
         }
         const result = await response.json().catch(() => ({}));
 
-        console.log(result);
+        if(result.exists === 'true'){
+            setIsValidId(false);
+        }else{
+            setIsValidId(true);
+        }
+
         return result.exists === 'true' ? 'ID가 이미 존재합니다.' : '';
     };
 
@@ -59,6 +69,12 @@ const Join = () => {
             return '서버 오류로 이메일 검증에 실패했습니다.';
         }
         const result = await response.json().catch(() => ({}));
+
+        if(result.exists === 'true'){
+            setIsValidEmail(false);
+        }else{
+            setIsValidEmail(true);
+        }
         return result.exists === 'true' ? '이메일이 이미 존재합니다.' : '';
     };
 
@@ -81,6 +97,13 @@ const Join = () => {
             return '서버 오류로 전화번호 검증에 실패했습니다.';
         }
         const result = await response.json().catch(() => ({}));
+
+        if(result.exists === 'true'){
+            setIsValidPhone(false);
+        }else{
+            setIsValidPhone(true);
+        }
+
         return result.exists === 'true' ? '전화번호가 이미 존재합니다.' : '';
     };
 
@@ -103,6 +126,13 @@ const Join = () => {
             return '서버 오류로 닉네임 검증에 실패했습니다.';
         }
         const result = await response.json().catch(() => ({}));
+
+        if(result.exists === 'true'){
+            setIsValidNickname(false);
+        }else{
+            setIsValidNickname(true);
+        }
+
         return result.exists === 'true' ? '닉네임이 이미 존재합니다.' : '';
     };
 
@@ -120,6 +150,10 @@ const Join = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (!isValidId || !isValidNickname || !isValidEmail || !isValidPhone) {
+            alert("유효하지 않은 가입입니다.");
+            return;
+        }
         const formData = new FormData();
         formData.append('id', id);
         formData.append('password', password);

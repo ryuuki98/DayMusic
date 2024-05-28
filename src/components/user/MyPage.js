@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Heading, Text, Stack, Alert, AlertIcon } from '@chakra-ui/react';
 import AuthContext from '../../context/AuthContext';
@@ -6,6 +6,20 @@ import AuthContext from '../../context/AuthContext';
 const MyPage = () => {
     const {currentUser} = useContext(AuthContext); // AuthContext에서 사용자 정보 가져오기
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (currentUser === null) {
+            console.log("비로그인 상태");
+            alert("로그인을 해야합니다.");
+            navigate('/');
+        } else {
+            console.log("로그인 상태");
+        }
+    }, [currentUser]); // currentUser 또는 navigate가 변경될 때마다 실행
+
+    if (currentUser === null) {
+        return null; // currentUser가 null인 경우 렌더링하지 않음
+    }
 
     return (
         <Box maxW="md" mx="auto" mt={8} p={4} borderWidth="1px" borderRadius="md" boxShadow="lg">
