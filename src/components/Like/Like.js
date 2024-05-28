@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Box, Button, Card, CardBody, CardFooter, CardHeader, Flex, Heading, IconButton, Image, Text } from '@chakra-ui/react';
+import { Avatar, Box, Button, Card, CardBody, CardFooter, CardHeader, Flex, Heading, IconButton, Image, Table, TableContainer, Tbody, Td, Text, Th } from '@chakra-ui/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { BiLike, BiChat, BiShare } from 'react-icons/bi';
 import Header from '../module/Header';
 import Footer from '../module/Footer';
-
+import { Thead, Tr } from '@chakra-ui/react';
 const Like = () => {
     let [likeCount, setLikeCount] = useState(0);
-
+    let [likeList, setLikeList] = useState([]);
     const handleSubmit = (e) => {
         e.preventDefault();
         const board_code = 2;
@@ -44,6 +44,28 @@ const Like = () => {
         });
         
     }
+    const listSubmit = (e) => {
+        e.preventDefault();
+        const board_code = 2;
+        const command = 'like';
+        
+        fetch(`${process.env.REACT_APP_SERVER_URL}/like?command=${command}&board_code=${board_code}`, {
+            method: 'GET',
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            setLikeList(data);
+        })
+        .catch(error => {
+            console.log('요청 실패:', error);
+        });
+    };
+    
+    
+    
 
     return (
         <>
@@ -88,6 +110,9 @@ const Like = () => {
                     <Button type='button' flex='1' variant='ghost' leftIcon={<BiLike />} onClick={handleSubmit} value={2}>
                     <Text>{likeCount}</Text>Like
                     </Button>
+                    <Button flex='1' variant='ghost' leftIcon={<BiChat />} onClick={listSubmit} value={2}>
+                        좋아요 누른 유저
+                    </Button>
                     <Button flex='1' variant='ghost' leftIcon={<BiChat />}>
                         Comment
                     </Button>
@@ -96,6 +121,37 @@ const Like = () => {
                     </Button>
                 </CardFooter>
             </Card>
+            <Box>
+                <TableContainer>
+                <Table variant={"striped"} colorScheme="blackAlpha">
+                    <Thead>
+                        <Tr>
+                            <Th>
+                                프로필
+                            </Th>
+                            <Th>
+                                닉네임
+                            </Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        {likeList.map((list,index) =>(
+                            <>
+                                <Tr>
+                                    <Td>
+                                        {list.profileImgUrl}
+                                    </Td>
+                                    <Td>
+                                        {list.nickname}
+                                    </Td>
+                                </Tr>
+                            </>
+                        ))}
+
+                    </Tbody>
+                    </Table>
+                </TableContainer>
+            </Box>
 
             
             <Footer />
