@@ -23,6 +23,7 @@ import UpdatePassword from './components/user/UpdatePassword';
 import UpdateNickname from './components/user/UpdateNickname';
 import UpdateUserInfo from './components/user/UpdateUserInfo';
 import SearchBoard from './components/Board/SearchBoard';
+import Image from './components/Image/UploadImage';
 const router = createBrowserRouter(
     [
         {
@@ -136,6 +137,11 @@ const router = createBrowserRouter(
             element: <Follow />,
             children: [],
         },
+        {
+            path: '/image',
+            element:<Image />,
+            children: [],
+        }
     ],
     {
         basename: '/DayMusic',
