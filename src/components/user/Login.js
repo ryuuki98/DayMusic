@@ -5,6 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@chakra-ui/react';
 import AuthContext from '../../context/AuthContext';
 
+
+//test
+
 const Login = () => {
     const [error, setError] = useState('');
     const { login } = useContext(AuthContext); // AuthContext에서 login 함수 가져오기
