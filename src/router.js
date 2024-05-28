@@ -19,6 +19,7 @@ import JoinSuccess from './components/user/JoinSuccess';
 import Board from './components/Board/Board';
 import UpdateBoard from './components/Board/UpdateBoard';
 import WriteBoard from './components/Board/WriteBoard';
+import DetailBoard from './components/Board/DetailBoard';
 import UpdatePassword from './components/user/UpdatePassword';
 import UpdateNickname from './components/user/UpdateNickname';
 import UpdateUserInfo from './components/user/UpdateUserInfo';
@@ -102,7 +103,7 @@ const router = createBrowserRouter(
                     path: 'update',
                     element: (
                         <>
-                        <UpdateBoard />
+                        
                         </>
                     
                 ),
@@ -112,6 +113,15 @@ const router = createBrowserRouter(
                     element: (
                         <>
                         <SearchBoard />
+                        </>
+                    
+                ),
+                },
+                {
+                    path: 'detail',
+                    element: (
+                        <>
+                        <DetailBoard />
                         </>
                     
                 ),
