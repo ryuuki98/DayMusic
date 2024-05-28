@@ -3,7 +3,7 @@ import Root from './components/Root';
 import Like from './components/Like/Like';
 import Login from './components/user/Login';
 
-import Follow from './components/Follow';
+import Follow from './components/Follow/Follow';
 
 // 라우터 설계
 /*
@@ -22,6 +22,7 @@ import WriteBoard from './components/Board/WriteBoard';
 import UpdatePassword from './components/user/UpdatePassword';
 import UpdateNickname from './components/user/UpdateNickname';
 import UpdateUserInfo from './components/user/UpdateUserInfo';
+import SearchBoard from './components/Board/SearchBoard';
 const router = createBrowserRouter(
     [
         {
@@ -90,7 +91,7 @@ const router = createBrowserRouter(
         },
         {
             path: '/board',
-            element: <WriteBoard />,
+            element: <Root />,
             children: [
                 {
                     path: 'delete',
@@ -98,11 +99,30 @@ const router = createBrowserRouter(
                 },
                 {
                     path: 'update',
-                    element: <UpdateBoard />,
+                    element: (
+                        <>
+                        <UpdateBoard />
+                        </>
+                    
+                ),
                 },
                 {
-                    path: '',
-                    element: <></>,
+                    path: 'search',
+                    element: (
+                        <>
+                        <SearchBoard />
+                        </>
+                    
+                ),
+                },
+                {
+                    path: 'write',
+                    element: (
+                        <>
+                        <WriteBoard />
+                        </>
+                    
+                ),
                 },
             ],
         },

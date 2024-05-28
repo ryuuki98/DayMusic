@@ -1,22 +1,20 @@
 import React, { useState } from 'react';
 import AuthContext from './AuthContext';
+const AuthProvider = ({ children }) => {
+    const [currentUser, setCurrentUser] = useState(null);
 
-const AuthProvider = ({children}) => {
-
-    console.log('children : ' + children);
-    const [currentUser, setCurrentUser ]= useState(null);
-
-    const login = () => {
-
+    const login = (userData) => {
+      console.log(userData)
+        setCurrentUser(userData);
     }
 
     const logout = () => {
-
+        setCurrentUser(null);
     }
 
     return (
-        <AuthContext.Provider value={currentUser}>
-          {children}  
+        <AuthContext.Provider value={{ currentUser, login, logout }}>
+            {children}  
         </AuthContext.Provider>
     );
 };
