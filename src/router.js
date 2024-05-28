@@ -20,6 +20,7 @@ import Board from './components/Board/Board';
 import UpdateBoard from './components/Board/UpdateBoard';
 import WriteBoard from './components/Board/WriteBoard';
 import DetailBoard from './components/Board/DetailBoard';
+import MyBoardList from './components/Board/MyBoardList';
 import UpdatePassword from './components/user/UpdatePassword';
 import UpdateNickname from './components/user/UpdateNickname';
 import UpdateUserInfo from './components/user/UpdateUserInfo';
@@ -113,6 +114,15 @@ const router = createBrowserRouter(
                     element: (
                         <>
                         <SearchBoard />
+                        </>
+                    
+                ),
+                },
+                {
+                    path: 'myBoard',
+                    element: (
+                        <>
+                        <MyBoardList />
                         </>
                     
                 ),

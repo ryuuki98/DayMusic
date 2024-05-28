@@ -45,7 +45,7 @@ const Login = () => {
                             const { id, nickname } = data; // 응답 데이터에서 id와 nickname 추출
                             login({ id, nickname }); // AuthContext의 login 함수 호출
 
-                            navigate('/user/myPage');
+                            navigate('/board/search');
                         } else {
                             setError('로그인 실패. ID와 비밀번호를 확인해주세요.');
                             console.error('로그인 실패:', data);
