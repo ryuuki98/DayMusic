@@ -10,6 +10,7 @@ import {
     AlertIcon,
 } from '@chakra-ui/react';
 
+
 const BoardDetail = () => {
     const location = useLocation();
     const command = "detail";
