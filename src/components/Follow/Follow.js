@@ -59,17 +59,20 @@ const Follow = () => {
 
         setFollowList(data.result[0]);
         setFollowerList(data.result[1]);
+        setFollowedCount(data.result[0].length);
+        setFollowerCount(data.result[1].length);
+        // 여기에서 초기 팔로우 상태를 설정합니다
+        setIsFollowing(data.result[0].some(follow => follow.id === currentUser.id));
     };
 
     useEffect(() => {
-        fetchFollowData();
+        fetchFollowData(); 
     }, []);
     
     // 버튼 클릭 시 호출되는 핸들러 함수
     const handleFollowClick = () => {
         setIsFollowing(!isFollowing);
         setFollowedCount(isFollowing ? followedCount - 1 : followedCount + 1);
-        setFollowerCount(isFollowing ? followerCount - 1 : followerCount + 1);
     };
 
     // 팔로우 추가,취소 처리
@@ -77,7 +80,7 @@ const Follow = () => {
         e.preventDefault();
         const command = isFollowing ? "delete" : "add";
         const id = currentUser.id;
-        const youId = "user4";
+        const youId = "user4";  // 여기는 임의 아이디이니께 나중에 바꿔야대!
         const myHeaders = new Headers();
         myHeaders.append('Content-Type', 'application/json;charset=utf-8');
 
@@ -97,7 +100,7 @@ const Follow = () => {
             return response.text().then((result) =>{
                 if(response.ok){
                     console.log('팔로우처리 성공:',result);
-                    handleFollowClick(result);
+                    handleFollowClick();
                 }else{
                     console.log('실패');
                 }
