@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
     Box,
     Button,
@@ -16,8 +16,11 @@ import {
 import { EditIcon } from '@chakra-ui/icons';
 import SpotifySearch from './SpotifySearch';
 import { useNavigate } from 'react-router-dom';
+import AuthContext from '../../context/AuthContext';
+
 
 const CreateBoardPost = () => {
+    const {currentUser} = useContext(AuthContext);
     const command = "write";
     const [contents, setContents] = useState('');
     const [isPublic, setIsPublic] = useState(true);
@@ -38,6 +41,7 @@ const CreateBoardPost = () => {
                 method: 'POST',
                 headers: myHeaders,
                 body: JSON.stringify({
+                    id : currentUser.id,
                     command: command,
                     contents: contents,
                     isPublic: isPublic,
