@@ -42,10 +42,11 @@ const CreateBoardPost = () => {
                 headers: myHeaders,
                 body: JSON.stringify({
                     id : currentUser.id,
+                    nickname : currentUser.nickname,
                     command: command,
                     contents: contents,
                     isPublic: isPublic,
-                    track: selectedTrack ? selectedTrack.id : null
+                    // track: selectedTrack ? selectedTrack.id : null
                 }),
                 credentials: 'include',
             };
