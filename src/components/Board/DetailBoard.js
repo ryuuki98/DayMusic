@@ -35,7 +35,6 @@ const BoardDetail = () => {
     const { currentUser } = useContext(AuthContext); //로그인 정보 확인
     const { boardCode } = location.state || {};
     const [post, setPost] = useState(null);
-    const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     let [likeCount, setLikeCount] = useState(0); //좋아요수 카운트
     let [likeList, setLikeList] = useState([]); //좋아요 리스트
@@ -110,7 +109,6 @@ const BoardDetail = () => {
         }
 
         const fetchPost = async () => {
-            setLoading(true);
             try {
                 const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/board/service`, {
                     method: 'POST',
@@ -131,9 +129,7 @@ const BoardDetail = () => {
                 setPost(data);
             } catch (error) {
                 setError(error.message);
-            } finally {
-                setLoading(false);
-            }
+            } 
         };
 
         fetchPost();
@@ -148,9 +144,7 @@ const BoardDetail = () => {
                     {error}
                 </Alert>
             )}
-            {loading ? (
-                <Spinner size="xl" />
-            ) : (
+            {(
                 post && (
                     <>
                         <Card maxW="md">

@@ -16,7 +16,6 @@ DELETE /follow 팔로우 취소
 import MyPage from './components/user/MyPage';
 import Join from './components/user/Join';
 import JoinSuccess from './components/user/JoinSuccess';
-import Board from './components/Board/Board';
 import UpdateBoard from './components/Board/UpdateBoard';
 import WriteBoard from './components/Board/WriteBoard';
 import DetailBoard from './components/Board/DetailBoard';
@@ -100,7 +99,7 @@ const router = createBrowserRouter(
                     path: 'update',
                     element: (
                         <>
-                        
+                        <UpdateBoard />
                         </>
                     
                 ),
