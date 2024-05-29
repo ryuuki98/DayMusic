@@ -9,21 +9,16 @@ import {
     Image,
     Alert,
     AlertIcon,
-    Card,
-    CardHeader,
     Flex,
     Avatar,
     IconButton,
-    CardBody,
-    CardFooter,
     Button,
 } from '@chakra-ui/react';
 import { BiChat, BiLike, BiShare } from 'react-icons/bi';
 import AuthContext from '../../context/AuthContext';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-// import AuthContext from '../../context/AuthContext';
 
-const PublicBoardPosts = () => {
+const Home = () => {
     const navigate = useNavigate();
     const command = "search";
     const [posts, setPosts] = useState([]);
@@ -31,7 +26,7 @@ const PublicBoardPosts = () => {
     const { currentUser } = useContext(AuthContext); //로그인 정보 확인
     let [likeCount, setLikeCount] = useState(0); //좋아요수 카운트
     const myHeaders = new Headers();
-    myHeaders.append('Content-Type','application/json;charset=utf-8');
+    myHeaders.append('Content-Type', 'application/json;charset=utf-8');
 
     const handleSubmit = (e) => {
         // 좋아요 추가제거 이벤트
@@ -84,16 +79,10 @@ const PublicBoardPosts = () => {
                     credentials: 'include',
                 });
                 const responseText = await response.text();
-                // console.log("Response Text: ", responseText);
                 if (!response.ok) {
                     throw new Error('Failed to fetch posts');
                 }
                 const data = JSON.parse(responseText);
-                // const data = await response.json();
-                // if (data.status !== 200) {
-                //     throw new Error('Failed to fetch posts');
-                // }
-
                 setPosts(data.boardList);
             } catch (error) {
                 setError(error.message);
@@ -112,59 +101,52 @@ const PublicBoardPosts = () => {
             maxW="800px"
             mx="auto"
             p={4}
-            borderWidth={1}
-            borderRadius="lg"
-            boxShadow="lg"
             bg="white"
             overflowY="auto"
-            height="80vh"
+            height="100vh"
         >
-            <Heading mb={4} textColor="black">Public Posts</Heading>
+            <Heading mb={4} textColor="black">Home</Heading>
             {error && (
                 <Alert status="error" mb={4}>
                     <AlertIcon />
                     {error}
                 </Alert>
             )}
-            {(
-                <VStack spacing={4}>
-                    {posts.map((post) => (
-                        <>
-                        <Card maxW="md">
-                        <CardHeader>
-                            <Flex spacing="4">
-                                <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-                                    <Avatar name="Segun Adebayo" src="https://bit.ly/sage-adebayo" />
-                                    <Box>
-                                        <Heading size="sm">{post.nickname}</Heading>
-                                    </Box>
-                                </Flex>
-                                <IconButton
-                                    variant="ghost"
-                                    colorScheme="gray"
-                                    aria-label="See menu"
-                                    icon={<BsThreeDotsVertical />}
-                                />
-                            </Flex>
-                        </CardHeader>
-                        <CardBody>
-                            <Text>{post.contents}</Text>
-                        </CardBody>
-                        <Image
-                            objectFit="cover"
-                            src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-                            alt="Chakra UI"
-                        />
-                        <Text>Music code : {post.music_code}</Text>
-                        <CardFooter
-                            justify="space-between"
-                            flexWrap="wrap"
-                            sx={{
-                                '& > button': {
-                                    minW: '136px',
-                                },
-                            }}
-                        >
+            <VStack spacing={4}>
+                {posts.map((post) => (
+                    <Box
+                        key={post.board_code}
+                        w="full"
+                        p={4}
+                        bg="white"
+                    >
+                        <Flex alignItems="center" mb={4}>
+                            <Avatar size="md" name={post.nickname} src="https://bit.ly/sage-adebayo" />
+                            <Box ml={3}>
+                                <Text fontWeight="bold">{post.nickname}</Text>
+                                <Text fontSize="sm" color="gray.500">{new Date(post.createdAt).toLocaleString()}</Text>
+                            </Box>
+                            <IconButton
+                                ml="auto"
+                                variant="ghost"
+                                colorScheme="gray"
+                                aria-label="See menu"
+                                icon={<BsThreeDotsVertical />}
+                            />
+                        </Flex>
+                        <Text mb={4}>{post.contents}</Text>
+                        {post.image_url && (
+                            <Image
+                                borderRadius="md"
+                                src={post.image_url}
+                                alt="Post image"
+                                mb={4}
+                                boxSize="300px" // 정사각형으로 만들기 위해 크기 고정
+                                objectFit="cover"
+                            />
+                        )}
+                        <Text mb={4}>Music code: {post.music_code}</Text>
+                        <HStack spacing={4}>
                             <Button
                                 flex="1"
                                 variant="ghost"
@@ -182,14 +164,12 @@ const PublicBoardPosts = () => {
                             <Button flex="1" variant="ghost" leftIcon={<BiShare />}>
                                 Share
                             </Button>
-                        </CardFooter>
-                    </Card>
-                    </>
-                    ))}
-                </VStack>
-            )}
+                        </HStack>
+                    </Box>
+                ))}
+            </VStack>
         </Box>
     );
 };
 
-export default PublicBoardPosts;
+export default Home;
