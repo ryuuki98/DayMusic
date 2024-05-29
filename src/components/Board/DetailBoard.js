@@ -72,6 +72,9 @@ const BoardDetail = () => {
                 post && (
                     <VStack spacing={4}>
                         <Heading textColor="black">Post Details</Heading>
+                        <Text fontSize="lg" fontWeight="bold" textColor="black">
+                                작성자: {post.nickname}
+                            </Text>
                         <Text fontWeight="bold" textColor="black">
                             {post.contents}
                         </Text>
