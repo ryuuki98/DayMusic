@@ -1,16 +1,12 @@
+// Login.js
 import React, { useState, useContext } from 'react';
-import InputPassword from '../item/InputPassword';
-import InputId from '../item/InputId';
+import { Box, Button, Flex, FormControl, FormLabel, Input, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@chakra-ui/react';
 import AuthContext from '../../context/AuthContext';
-
-
-//test
 
 const Login = () => {
     const [error, setError] = useState('');
-    const { login } = useContext(AuthContext); // AuthContext에서 login 함수 가져오기
+    const { login } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
@@ -42,13 +38,12 @@ const Login = () => {
             fetch(`${process.env.REACT_APP_SERVER_URL}/user/service`, requestOptions)
                 .then((response) => {
                     return response.json().then((data) => {
-                        // JSON으로 파싱
                         if (response.ok) {
                             console.log('로그인 성공:', data);
-                            const { id, nickname } = data; // 응답 데이터에서 id와 nickname 추출
-                            login({ id, nickname }); // AuthContext의 login 함수 호출
+                            const { id, nickname } = data;
+                            login({ id, nickname });
 
-                            navigate('/user/myPage');
+                            navigate('/board/search');
                         } else {
                             setError('로그인 실패. ID와 비밀번호를 확인해주세요.');
                             console.error('로그인 실패:', data);
@@ -63,21 +58,45 @@ const Login = () => {
     };
 
     const handleSignup = () => {
-        navigate('/user/join'); // 회원가입 페이지로 이동
+        navigate('/user/join');
     };
 
     return (
-        <>
-            <form onSubmit={handleSubmit}>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-                <InputId />
-                <InputPassword />
-                <input type="submit" value="로그인" style={{ marginRight: '8px' }} />
-            </form>
-            <Button colorScheme="teal" onClick={handleSignup} size="sm">
-                회원가입
-            </Button>
-        </>
+        <Box>
+            <Flex align="center" justify="center" height="80vh">
+                <Box w="md" p={8} borderWidth={1} borderRadius="lg" boxShadow="lg">
+                    <Text fontSize="3xl" mb={4} textAlign="center">Daymusic</Text>
+                    <Text fontSize="md" mb={6} textAlign="center" color="gray.500">
+                        And a subheading describing your site, too
+                    </Text>
+                    <form onSubmit={handleSubmit}>
+                        {error && <Text color="red.500" mb={4}>{error}</Text>}
+                        <VStack spacing={4}>
+                            <FormControl id="id-input" isRequired>
+                                <FormLabel>아이디</FormLabel>
+                                <Input type="text" />
+                            </FormControl>
+                            <FormControl id="password-input" isRequired>
+                                <FormLabel>비밀번호</FormLabel>
+                                <Input type="password" />
+                            </FormControl>
+                            <Button type="submit" colorScheme="blue" width="full">로그인</Button>
+                        </VStack>
+                    </form>
+                    <Flex justify="space-between" mt={4}>
+                        <Button variant="link" colorScheme="blue" onClick={() => navigate('/user/find-id')}>
+                            아이디찾기
+                        </Button>
+                        <Button variant="link" colorScheme="blue" onClick={() => navigate('/user/find-password')}>
+                            비밀번호찾기
+                        </Button>
+                    </Flex>
+                    <Button colorScheme="teal" onClick={handleSignup} size="sm" mt={4} width="full">
+                        회원가입
+                    </Button>
+                </Box>
+            </Flex>
+        </Box>
     );
 };
 
