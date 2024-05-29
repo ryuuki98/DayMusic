@@ -4,7 +4,6 @@ const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
 
     const login = (userData) => {
-      console.log(userData)
         setCurrentUser(userData);
     }
 

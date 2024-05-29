@@ -19,7 +19,7 @@ const UpdatePassword = () => {
         } else {
             console.log("로그인 상태");
         }
-    }, [currentUser, navigate]); // currentUser 또는 navigate가 변경될 때마다 실행
+    }, []); // currentUser 또는 navigate가 변경될 때마다 실행
 
     if (currentUser === null) {
         return null; // currentUser가 null인 경우 렌더링하지 않음
