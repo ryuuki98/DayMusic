@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Button, Radio, RadioGroup, Select, FormControl, Stack, FormLabel } from '@chakra-ui/react';
 import InputField from '../item/InputField';
-import {  useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Join = () => {
     const navigate = useNavigate();
@@ -19,7 +19,6 @@ const Join = () => {
     const [isValidNickname, setIsValidNickname] = useState(true); // State for preview image
     const [isValidEmail, setIsValidEmail] = useState(true); // State for preview image
     const [isValidPhone, setIsValidPhone] = useState(true); // State for preview image
-
 
     const validateId = async (value) => {
         const myHeaders = new Headers();
@@ -41,9 +40,9 @@ const Join = () => {
         }
         const result = await response.json().catch(() => ({}));
 
-        if(result.exists === 'true'){
+        if (result.exists === 'true') {
             setIsValidId(false);
-        }else{
+        } else {
             setIsValidId(true);
         }
 
@@ -70,9 +69,9 @@ const Join = () => {
         }
         const result = await response.json().catch(() => ({}));
 
-        if(result.exists === 'true'){
+        if (result.exists === 'true') {
             setIsValidEmail(false);
-        }else{
+        } else {
             setIsValidEmail(true);
         }
         return result.exists === 'true' ? '이메일이 이미 존재합니다.' : '';
@@ -98,9 +97,9 @@ const Join = () => {
         }
         const result = await response.json().catch(() => ({}));
 
-        if(result.exists === 'true'){
+        if (result.exists === 'true') {
             setIsValidPhone(false);
-        }else{
+        } else {
             setIsValidPhone(true);
         }
 
@@ -127,9 +126,9 @@ const Join = () => {
         }
         const result = await response.json().catch(() => ({}));
 
-        if(result.exists === 'true'){
+        if (result.exists === 'true') {
             setIsValidNickname(false);
-        }else{
+        } else {
             setIsValidNickname(true);
         }
 
@@ -151,7 +150,7 @@ const Join = () => {
         e.preventDefault();
 
         if (!isValidId || !isValidNickname || !isValidEmail || !isValidPhone) {
-            alert("유효하지 않은 가입입니다.");
+            alert('유효하지 않은 가입입니다.');
             return;
         }
         const formData = new FormData();
@@ -189,7 +188,8 @@ const Join = () => {
 
             const data = await response.json();
             console.log('가입 성공:', data);
-            navigate('/user/joinSuccess');
+            alert('가입이 완료되었습니다.');
+            navigate('/');
         } catch (error) {
             console.error('가입 실패:', error.message);
         }

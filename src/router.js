@@ -90,14 +90,6 @@ const router = createBrowserRouter(
                         </>
                     ),
                 },
-                {
-                    path: 'deleteUser',
-                    element: (
-                        <>
-                            <DeleteUser />
-                        </>
-                    ),
-                }
             ],
         },
         {
