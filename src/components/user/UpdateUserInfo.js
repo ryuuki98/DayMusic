@@ -28,7 +28,7 @@ const UpdateUserInfo = () => {
             console.log("로그인 상태");
             fetchUserInfo(currentUser.id);
         }
-    }, [currentUser, navigate]);
+    }, []);
 
     const fetchUserInfo = async (userId) => {
         try {
@@ -113,7 +113,8 @@ const UpdateUserInfo = () => {
             method: 'POST',
             headers: myHeaders,
             body: JSON.stringify({
-                command: 'duplicateEmail',
+                command: 'duplicateEmailForUpdate',
+                id : currentUser.id,
                 email: value,
             }),
             credentials: 'include',
@@ -143,6 +144,7 @@ const UpdateUserInfo = () => {
             headers: myHeaders,
             body: JSON.stringify({
                 command: 'duplicatePhone',
+                id : currentUser.id,
                 phone: value,
             }),
             credentials: 'include',

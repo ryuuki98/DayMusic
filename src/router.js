@@ -26,6 +26,7 @@ import UpdateNickname from './components/user/UpdateNickname';
 import UpdateUserInfo from './components/user/UpdateUserInfo';
 import SearchBoard from './components/Board/SearchBoard';
 import Image from './components/Image/UploadImage';
+import DeleteUser from './components/user/DeleteUser';
 const router = createBrowserRouter(
     [
         {
