@@ -5,7 +5,6 @@ import {
     Text,
     VStack,
     Heading,
-    Spinner,
     Alert,
     AlertIcon,
 } from '@chakra-ui/react';
@@ -16,7 +15,6 @@ const BoardDetail = () => {
     const command = "detail";
     const { boardCode } = location.state || {};
     const [post, setPost] = useState(null);
-    const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const myHeaders = new Headers();
     myHeaders.append('Content-Type','application/json;charset=utf-8');
@@ -28,7 +26,6 @@ const BoardDetail = () => {
         }
 
         const fetchPost = async () => {
-            setLoading(true);
             try {
                 const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/board/service`, {
                     method: 'POST',
@@ -49,9 +46,7 @@ const BoardDetail = () => {
                 setPost(data);
             } catch (error) {
                 setError(error.message);
-            } finally {
-                setLoading(false);
-            }
+            } 
         };
 
         fetchPost();
@@ -73,9 +68,7 @@ const BoardDetail = () => {
                     {error}
                 </Alert>
             )}
-            {loading ? (
-                <Spinner size="xl" />
-            ) : (
+            {(
                 post && (
                     <VStack spacing={4}>
                         <Heading textColor="black">Post Details</Heading>
