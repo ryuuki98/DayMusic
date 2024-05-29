@@ -29,7 +29,7 @@ import AuthContext from '../../context/AuthContext';
 
 const Follow = () => {
     // 로그인 한 유저의 아이디,닉네임 사용가능
-    const {currentUser} = useContext(AuthContext);  
+    const { currentUser } = useContext(AuthContext);
 
     // 팔로우 상태와 팔로워 수를 관리하는 useState 훅
     const [isFollowing, setIsFollowing] = useState(false);
@@ -53,7 +53,7 @@ const Follow = () => {
                 method: "GET",
             }
         )
-        
+
         const data = await response.json();
         console.log(data);
 
@@ -66,13 +66,14 @@ const Follow = () => {
     };
 
     useEffect(() => {
-        fetchFollowData(); 
+        fetchFollowData();
     }, []);
-    
+
     // 버튼 클릭 시 호출되는 핸들러 함수
     const handleFollowClick = () => {
         setIsFollowing(!isFollowing);
         setFollowedCount(isFollowing ? followedCount - 1 : followedCount + 1);
+        // fetchFollowData();  // 팔로우 상태 변경 후 데이터를 다시 가져옴
     };
 
     // 팔로우 추가,취소 처리
@@ -85,9 +86,9 @@ const Follow = () => {
         myHeaders.append('Content-Type', 'application/json;charset=utf-8');
 
         const requestOptions = {
-            method : 'POST',
-            headers : myHeaders,
-            body : JSON.stringify({
+            method: 'POST',
+            headers: myHeaders,
+            body: JSON.stringify({
                 command: command,
                 followedId: id,
                 followerId: youId,
@@ -95,19 +96,19 @@ const Follow = () => {
         };
         console.log("보낸내용:", requestOptions);
 
-        fetch(`${process.env.REACT_APP_SERVER_URL}/follow`,requestOptions)
-        .then((response) => {
-            return response.text().then((result) =>{
-                if(response.ok){
-                    console.log('팔로우처리 성공:',result);
-                    handleFollowClick();
-                }else{
-                    console.log('실패');
-                }
+        fetch(`${process.env.REACT_APP_SERVER_URL}/follow`, requestOptions)
+            .then((response) => {
+                return response.json().then((result) => {
+                    if (response.ok) {
+                        console.log('팔로우처리 성공:', result);
+                        handleFollowClick();
+                    } else {
+                        console.log('실패');
+                    }
+                });
+            }).catch((error) => {
+                console.log('실패처리');
             });
-        }).catch((error) =>{
-            console.log('실패처리');
-        });
         console.log(command, id);
     }
 
