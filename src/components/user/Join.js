@@ -1,5 +1,6 @@
+// Join.js
 import React, { useState } from 'react';
-import { Box, Button, Radio, RadioGroup, Select, FormControl, Stack, FormLabel } from '@chakra-ui/react';
+import { Box, Button, Radio, RadioGroup, Select, FormControl, Stack, FormLabel, Text, VStack } from '@chakra-ui/react';
 import InputField from '../item/InputField';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,12 +14,12 @@ const Join = () => {
     const [phone, setPhone] = useState('');
     const [telecom, setTelecom] = useState('');
     const [nickname, setNickname] = useState('');
-    const [profileImg, setProfileImg] = useState(null); // State for profile image
-    const [previewImg, setPreviewImg] = useState(null); // State for preview image
-    const [isValidId, setIsValidId] = useState(true); // State for preview image
-    const [isValidNickname, setIsValidNickname] = useState(true); // State for preview image
-    const [isValidEmail, setIsValidEmail] = useState(true); // State for preview image
-    const [isValidPhone, setIsValidPhone] = useState(true); // State for preview image
+    const [profileImg, setProfileImg] = useState(null); 
+    const [previewImg, setPreviewImg] = useState(null); 
+    const [isValidId, setIsValidId] = useState(true);
+    const [isValidNickname, setIsValidNickname] = useState(true);
+    const [isValidEmail, setIsValidEmail] = useState(true);
+    const [isValidPhone, setIsValidPhone] = useState(true);
 
     const validateId = async (value) => {
         const myHeaders = new Headers();
@@ -136,8 +137,8 @@ const Join = () => {
     };
 
     const handleProfileImgChange = (e) => {
-        const file = e.target.files[0]; // Get the first selected file
-        setProfileImg(file); // Update profile image state
+        const file = e.target.files[0];
+        setProfileImg(file);
 
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -167,7 +168,6 @@ const Join = () => {
             formData.append('profile_img_url', profileImg);
         }
 
-        // FormData를 JSON으로 변환
         const jsonFormData = {};
         for (const [key, value] of formData.entries()) {
             jsonFormData[key] = value;
@@ -196,7 +196,8 @@ const Join = () => {
     };
 
     return (
-        <Box maxW="md" mx="auto" mt={8} p={4} borderWidth="1px" borderRadius="md">
+        <Box bg="white" color="black" p={8} maxW="md" mx="auto" mt={8} borderRadius="lg">
+            <Text fontSize="3xl" mb={4} textAlign="center">회원가입</Text>
             <form onSubmit={handleSubmit}>
                 <FormControl id="profileImg" mt={4}>
                     <FormLabel>프로필 사진 업로드</FormLabel>
@@ -286,7 +287,7 @@ const Join = () => {
                     validate={validateNickname}
                 />
 
-                <Button type="submit" colorScheme="teal" mt={4} w="100%">
+                <Button type="submit" bg="black" color="white" mt={4} w="100%">
                     회원가입
                 </Button>
             </form>

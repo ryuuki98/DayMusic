@@ -3,9 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import {
     Box,
     Button,
-    Heading,
     Text,
     Stack,
+    Image,
+    Tabs,
+    TabList,
+    TabPanels,
+    Tab,
+    TabPanel,
     AlertDialog,
     AlertDialogBody,
     AlertDialogFooter,
@@ -13,29 +18,31 @@ import {
     AlertDialogContent,
     AlertDialogOverlay,
     useDisclosure,
+    Input,
 } from '@chakra-ui/react';
-
 import AuthContext from '../../context/AuthContext';
+import UpdatePassword from './UpdatePassword';
+import UpdateNickname from './UpdateNickname';
+import UpdateUserInfo from './UpdateUserInfo';
 
 const MyPage = () => {
-    const { currentUser } = useContext(AuthContext); // AuthContext에서 사용자 정보 가져오기
+    const { currentUser } = useContext(AuthContext); 
     const navigate = useNavigate();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = useRef();
     const [isDeleting, setIsDeleting] = useState(false);
+    const [profileImg, setProfileImg] = useState('https://via.placeholder.com/150');
+    const inputFileRef = useRef(null);
 
     useEffect(() => {
         if (currentUser === null) {
-            console.log('비로그인 상태');
             alert('로그인을 해야합니다.');
             navigate('/');
-        } else {
-            console.log('로그인 상태');
         }
     }, [currentUser, navigate]);
 
     if (currentUser === null) {
-        return null; // currentUser가 null인 경우 렌더링하지 않음
+        return null; 
     }
 
     const handleDelete = () => {
@@ -57,7 +64,6 @@ const MyPage = () => {
         fetch(`${process.env.REACT_APP_SERVER_URL}/user/service`, requestOptions)
             .then((response) => {
                 return response.json().then((data) => {
-                    // JSON으로 파싱
                     if (response.ok) {
                         console.log('탈퇴가 완료 되었습니다:', data);
                     } else {
@@ -69,43 +75,76 @@ const MyPage = () => {
                 console.error('로그인 오류:', error);
             });
 
-        console.log('회원 탈퇴 진행 중...');
         setTimeout(() => {
-            // 탈퇴 완료 후 처리
             setIsDeleting(false);
             onClose();
-            console.log('회원 탈퇴 완료');
             alert('탈퇴가 완료 되었습니다');
             navigate('/');
         }, 2000);
     };
 
+    const handleImageClick = () => {
+        inputFileRef.current.click();
+    };
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                setProfileImg(event.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     return (
-        <Box maxW="md" mx="auto" mt={8} p={4} borderWidth="1px" borderRadius="md" boxShadow="lg">
-            <Heading as="h1" size="lg" mb={6}>
-                My Page
-            </Heading>
-            <Text fontSize="lg" mb={2}>
-                <strong>ID:</strong> {currentUser.id}
+        <Box display="flex" flexDirection="column" alignItems="center" mt={8} p={4}>
+            <Box position="relative" onClick={handleImageClick} cursor="pointer">
+                <Image
+                    borderRadius="full"
+                    boxSize="150px"
+                    src={profileImg}
+                    alt="Profile Image"
+                />
+                <Input
+                    type="file"
+                    ref={inputFileRef}
+                    display="none"
+                    onChange={handleImageChange}
+                />
+            </Box>
+            <Text fontSize="2xl" fontWeight="bold" mt={4} color="black">
+                {currentUser.nickname}
             </Text>
-            <Text fontSize="lg" mb={4}>
-                <strong>Nickname:</strong> {currentUser.nickname}
+            <Text fontSize="md" color="gray.600" mb={4}>
+                ID: {currentUser.id}
             </Text>
 
-            <Stack spacing={4}>
-                <Button colorScheme="teal" onClick={() => navigate('/user/updateNickname')}>
-                    닉네임 변경
-                </Button>
-                <Button colorScheme="teal" onClick={() => navigate('/user/updatePassword')}>
-                    비밀번호 변경
-                </Button>
-                <Button colorScheme="teal" onClick={() => navigate('/user/updateUserInfo')}>
-                    개인정보 수정
-                </Button>
-                <Button colorScheme="teal" onClick={onOpen}>
-                    회원 탈퇴
-                </Button>
-            </Stack>
+            <Tabs variant="soft-rounded" colorScheme="gray" mt={8} w="full" maxW="md">
+                <TabList>
+                    <Tab>비밀번호 재설정</Tab>
+                    <Tab>닉네임 변경</Tab>
+                    <Tab>개인정보 변경</Tab>
+                    <Tab>회원탈퇴</Tab>
+                </TabList>
+                <TabPanels>
+                    <TabPanel>
+                        <UpdatePassword/>
+                    </TabPanel>
+                    <TabPanel>
+                        <UpdateNickname/>
+                    </TabPanel>
+                    <TabPanel>
+                        <UpdateUserInfo/>
+                    </TabPanel>
+                    <TabPanel>
+                        <Button w="full" bg="red.700" color="white" onClick={onOpen}>
+                            회원 탈퇴
+                        </Button>
+                    </TabPanel>
+                </TabPanels>
+            </Tabs>
 
             <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
                 <AlertDialogOverlay>
