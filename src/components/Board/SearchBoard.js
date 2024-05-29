@@ -18,7 +18,7 @@ import { BiChat, BiLike, BiShare } from 'react-icons/bi';
 import AuthContext from '../../context/AuthContext';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 
-const Home = () => {
+const SearchBoard = () => {
     const navigate = useNavigate();
     const command = "search";
     const [posts, setPosts] = useState([]);
@@ -172,4 +172,4 @@ const Home = () => {
     );
 };
 
-export default Home;
+export default SearchBoard;
