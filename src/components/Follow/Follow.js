@@ -44,7 +44,7 @@ const Follow = () => {
     const { isOpen: isFollowListOpen, onOpen: onFollowListOpen, onClose: onFollowListClose } = useDisclosure();
     const { isOpen: isFollowerListOpen, onOpen: onFollowerListOpen, onClose: onFollowerListClose } = useDisclosure();
 
-    // 로그인 한 유저의 팔로잉, 팔로우 리스트 출력
+    // 로그인 한 유저의 팔로잉, 팔로우 리스트 초기 상태 확인해서 출력
     const fetchFollowData = async () => {
         const url = `${process.env.REACT_APP_SERVER_URL}/follow/follow_list?id=${currentUser.id}`;
         const response = await fetch(
@@ -64,12 +64,32 @@ const Follow = () => {
         setIsFollowing(data.result[0].some(follow => follow.id === currentUser.id));  // 여기에서 초기 팔로우 상태를 설정
     };
 
+    // 로그인 한 유저의 팔로잉, 팔로우 리스트 출력
+    const fetchFollowList = async () => {
+        const url = `${process.env.REACT_APP_SERVER_URL}/follow/follow_list?id=${currentUser.id}`;
+        const response = await fetch(
+            url,
+            {
+                method: "GET",
+            }
+        )
+
+        const data = await response.json();
+        console.log(data);
+
+        setFollowList(data.result[0]);
+        setFollowerList(data.result[1]);
+        setFollowedCount(data.result[0].length);
+        setFollowerCount(data.result[1].length);
+    };
+
     useEffect(() => {
         fetchFollowData();
+        fetchFollowList();
     }, []);
 
     // 팔로우 추가,취소 처리
-    const handleSubmit = (e) => {
+    const handleFollowCheck = (e) => {
         e.preventDefault();
         const command = isFollowing ? "delete" : "add";
         const id = currentUser.id;
@@ -94,7 +114,7 @@ const Follow = () => {
                     if (response.ok) {
                         console.log('팔로우처리 성공:', result);
                         setIsFollowing(!isFollowing);
-                        fetchFollowData();
+                        fetchFollowList();
                     } else {
                         console.log('실패');
                     }
@@ -141,7 +161,7 @@ const Follow = () => {
                     },
                 }}
             >
-                <Button flex='1' variant='ghost' onClick={handleSubmit}>
+                <Button flex='1' variant='ghost' onClick={handleFollowCheck}>
                     {isFollowing ? '팔로우 취소' : '팔로우'}
                 </Button>
                 <Button flex='1' variant='ghost' onClick={onFollowListOpen}>
