@@ -10,6 +10,7 @@ import {
     Alert,
     AlertIcon,
 } from '@chakra-ui/react';
+// import AuthContext from '../../context/AuthContext';
 
 const PublicBoardPosts = () => {
     const navigate = useNavigate();
@@ -88,6 +89,9 @@ const PublicBoardPosts = () => {
                             cursor="pointer"
                             onClick={() => handleBoxClick(post.board_code)}
                         >
+                            <Text fontSize="lg" fontWeight="bold" textColor="black">
+                                작성자: {post.nickname}
+                            </Text>
                             <Text fontWeight="bold" textColor="black">
                                 {post.contents}
                             </Text>
