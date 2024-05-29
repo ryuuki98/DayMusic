@@ -81,6 +81,9 @@ const CreateBoardPost = () => {
             bg="white"
         >
             <VStack spacing={4} as="form" onSubmit={handleSubmit}>
+            <Text fontSize="lg" fontWeight="bold" textColor="black">
+                    작성자: {currentUser.nickname}
+                </Text>
                 <FormControl id="file">
                     <FormLabel>Upload Photo</FormLabel>
                     <Input

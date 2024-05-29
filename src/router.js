@@ -98,10 +98,6 @@ const router = createBrowserRouter(
             element: <Root />,
             children: [
                 {
-                    path: 'delete',
-                    element: <></>,
-                },
-                {
                     path: 'update',
                     element: (
                         <>

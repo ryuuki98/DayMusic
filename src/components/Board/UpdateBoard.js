@@ -25,7 +25,7 @@ const EditBoardPost = ({ boardCode }) => {
     useEffect(() => {
         const fetchPost = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/board/${boardCode}`, {
+                const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/board/service`, {
                     headers: {
                         'Accept': 'application/json',
                         'Authorization': 'ADMIN your_KEY',

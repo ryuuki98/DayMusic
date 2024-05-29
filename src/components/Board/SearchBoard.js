@@ -7,24 +7,22 @@ import {
     Heading,
     HStack,
     Image,
-    Button,
-    Spinner,
     Alert,
     AlertIcon,
 } from '@chakra-ui/react';
+// import AuthContext from '../../context/AuthContext';
 
 const PublicBoardPosts = () => {
     const navigate = useNavigate();
     const command = "search";
     const [posts, setPosts] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const myHeaders = new Headers();
     myHeaders.append('Content-Type','application/json;charset=utf-8');
 
     useEffect(() => {
         const fetchPosts = async () => {
-            setLoading(true);
+        
             try {
                 const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/board/service`, {
                     method: 'POST',
@@ -48,9 +46,7 @@ const PublicBoardPosts = () => {
                 setPosts(data.boardList);
             } catch (error) {
                 setError(error.message);
-            } finally {
-                setLoading(false);
-            }
+            } 
         };
 
         fetchPosts();
@@ -79,9 +75,7 @@ const PublicBoardPosts = () => {
                     {error}
                 </Alert>
             )}
-            {loading ? (
-                <Spinner size="xl" />
-            ) : (
+            {(
                 <VStack spacing={4}>
                     {posts.map((post) => (
                         <Box
@@ -95,6 +89,9 @@ const PublicBoardPosts = () => {
                             cursor="pointer"
                             onClick={() => handleBoxClick(post.board_code)}
                         >
+                            <Text fontSize="lg" fontWeight="bold" textColor="black">
+                                작성자: {post.nickname}
+                            </Text>
                             <Text fontWeight="bold" textColor="black">
                                 {post.contents}
                             </Text>
