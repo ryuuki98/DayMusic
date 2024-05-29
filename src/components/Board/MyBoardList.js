@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import AuthContext from '../../context/AuthContext';
 
-const PublicBoardPosts = () => {
+const MyBoardPosts = () => {
     const { currentUser } = useContext(AuthContext);
     const navigate = useNavigate();
     const command = "myBoard";
@@ -45,10 +45,14 @@ const PublicBoardPosts = () => {
         };
 
         fetchPosts();
-    },  []);
+    }, [currentUser.id, command]);
 
     const handleBoxClick = (boardCode) => {
         navigate('/board/detail', { state: { boardCode } });
+    };
+
+    const handleEdit = (boardCode) => {
+        navigate('/board/update', { state: { boardCode } });
     };
 
     const handleDelete = async (boardCode) => {
@@ -120,6 +124,7 @@ const PublicBoardPosts = () => {
                         )}
                         <HStack justifyContent="space-between">
                             <Button colorScheme="red" onClick={() => handleDelete(post.board_code)}>Delete</Button>
+                            <Button colorScheme="blue" onClick={() => handleEdit(post.board_code)}>Edit</Button>
                         </HStack>
                     </Box>
                 ))}
@@ -128,4 +133,4 @@ const PublicBoardPosts = () => {
     );
 };
 
-export default PublicBoardPosts;
+export default MyBoardPosts;
