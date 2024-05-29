@@ -130,7 +130,7 @@ const PublicBoardPosts = () => {
                 <VStack spacing={4}>
                     {posts.map((post) => (
                         <>
-                        <Card maxW="md">
+                        <Card key={post.board_code} maxW="md" onClick={() => handleBoxClick(post.board_code)} cursor="pointer">
                         <CardHeader>
                             <Flex spacing="4">
                                 <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
