@@ -9,7 +9,14 @@ import {
     Alert,
     AlertIcon,
     Button,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    IconButton,
+    Flex,
 } from '@chakra-ui/react';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 import AuthContext from '../../context/AuthContext';
 
 const MyBoardPosts = () => {
@@ -18,6 +25,7 @@ const MyBoardPosts = () => {
     const command = "myBoard";
     const [posts, setPosts] = useState([]);
     const [error, setError] = useState('');
+    const [postCount, setPostCount] = useState(0); // 게시글 수 상태 추가
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json;charset=utf-8');
 
@@ -39,6 +47,7 @@ const MyBoardPosts = () => {
                 }
                 const data = JSON.parse(responseText);
                 setPosts(data.boardList);
+                setPostCount(data.boardList.length); // 게시글 수 설정
             } catch (error) {
                 setError(error.message);
             }
@@ -74,6 +83,7 @@ const MyBoardPosts = () => {
 
             // Remove the deleted post from the list
             setPosts(posts.filter(post => post.board_code !== boardCode));
+            setPostCount(posts.filter(post => post.board_code !== boardCode).length); // 게시글 수 업데이트
         } catch (error) {
             setError(error.message);
         }
@@ -91,7 +101,7 @@ const MyBoardPosts = () => {
             overflowY="auto"
             height="80vh"
         >
-            <Heading mb={4} textColor="black">My Posts</Heading>
+            <Heading mb={4} textColor="black">My Posts {postCount}</Heading>
             {error && (
                 <Alert status="error" mb={4}>
                     <AlertIcon />
@@ -109,23 +119,35 @@ const MyBoardPosts = () => {
                         w="full"
                         bg="gray.50"
                     >
-                        <Text
-                            fontWeight="bold"
-                            textColor="black"
-                            cursor="pointer"
-                            onClick={() => handleBoxClick(post.board_code)}
-                        >
-                            {post.contents}
-                        </Text>
+                        <Flex justifyContent="space-between" alignItems="center">
+                            <Text
+                                fontWeight="bold"
+                                textColor="black"
+                                cursor="pointer"
+                                onClick={() => handleBoxClick(post.board_code)}
+                                flex="1"
+                            >
+                                {post.contents}
+                            </Text>
+                            <Menu>
+                                <MenuButton
+                                    as={IconButton}
+                                    aria-label="Options"
+                                    icon={<BsThreeDotsVertical />}
+                                    variant="ghost"
+                                    ml="auto"
+                                />
+                                <MenuList>
+                                    <MenuItem onClick={() => handleEdit(post.board_code)}>Edit</MenuItem>
+                                    <MenuItem onClick={() => handleDelete(post.board_code)}>Delete</MenuItem>
+                                </MenuList>
+                            </Menu>
+                        </Flex>
                         {post.music_code && (
                             <Text textColor="black">
                                 Music Code: {post.music_code}
                             </Text>
                         )}
-                        <HStack justifyContent="space-between">
-                            <Button colorScheme="red" onClick={() => handleDelete(post.board_code)}>Delete</Button>
-                            <Button colorScheme="blue" onClick={() => handleEdit(post.board_code)}>Edit</Button>
-                        </HStack>
                     </Box>
                 ))}
             </VStack>
