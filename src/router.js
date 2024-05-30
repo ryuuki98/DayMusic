@@ -150,14 +150,16 @@ const router = createBrowserRouter(
         {
             path: '/follow',
             element: <Root />,
-            children: [{
+            children: [
+                {
                 path: '/follow',
                 element: (
                     <>
                         <Follow />
                     </>
                 ),
-            },],
+                },
+            ],
         },
         {
             path: '/image',
