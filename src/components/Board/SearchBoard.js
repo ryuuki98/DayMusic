@@ -21,7 +21,6 @@ import {
 import { BiChat, BiLike, BiShare } from 'react-icons/bi';
 import AuthContext from '../../context/AuthContext';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import CommentList from '../Comment/CommentList.js';  // 올바른 경로로 CommentList 임포트
 
 const SearchBoard = () => {
     const navigate = useNavigate();
@@ -207,7 +206,6 @@ const SearchBoard = () => {
                                 Share
                             </Button>
                         </HStack>
-                        <CommentList boardCode={post.board_code} />  {/* CommentList 컴포넌트 추가 */}
                     </Box>
                 ))}
             </VStack>
