@@ -1,15 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
-    Card,
-    CardHeader,
-    CardBody,
-    CardFooter,
+    Box,
     Flex,
     Avatar,
-    Box,
-    Heading,
     Text,
-    IconButton,
     Button,
     Modal,
     ModalOverlay,
@@ -21,38 +15,47 @@ import {
     useDisclosure,
     List,
     ListItem,
-    ListIcon
+    ListIcon,
+    VStack,
+    Divider,
+    IconButton,
+    Heading,
+    HStack,
+    Spacer
 } from '@chakra-ui/react';
-import { BsThreeDotsVertical } from 'react-icons/bs';
 import { MdPerson } from 'react-icons/md';
 import AuthContext from '../../context/AuthContext';
+import { IoMdMusicalNotes } from "react-icons/io";
+import { BiBorderAll } from 'react-icons/bi';
+import MyBoardList from '../Board/MyBoardList';
 
 const Follow = () => {
     // 로그인 한 유저의 아이디,닉네임 사용가능
     const { currentUser } = useContext(AuthContext);
-
-    // 팔로우 상태와 팔로워 수를 관리하는 useState 훅
+    
+    // 내 게시글 불러오기
+    const [showMyBoardPosts, setShowMyBoardPosts] = useState(false);
+    
+    // 게시글 수 상태 추가
+    const [postCount, setPostCount] = useState(0); 
+    
+    // 팔로우 상태와 팔로워 수를 관리
     const [isFollowing, setIsFollowing] = useState(false);
     const [followedCount, setFollowedCount] = useState(0);
     const [followerCount, setFollowerCount] = useState(0);
-
-    // 팔로우 및 팔로워 리스트 관리하는 useState 훅
+    
+    // 팔로우 및 팔로워 리스트 관리
     const [followList, setFollowList] = useState();
     const [followerList, setFollowerList] = useState();
-
-    // 모달 관리를 위한 useDisclosure 훅
+    
+    // 팔로우 및 팔로워 모달 관리
     const { isOpen: isFollowListOpen, onOpen: onFollowListOpen, onClose: onFollowListClose } = useDisclosure();
     const { isOpen: isFollowerListOpen, onOpen: onFollowerListOpen, onClose: onFollowerListClose } = useDisclosure();
-
+    
     // 로그인 한 유저의 팔로잉, 팔로우 리스트 출력
     const fetchFollowData = async () => {
         const url = `${process.env.REACT_APP_SERVER_URL}/follow/follow_list?id=${currentUser.id}`;
-        const response = await fetch(
-            url,
-            {
-                method: "GET",
-            }
-        )
+        const response = await fetch(url, { method: "GET" });
 
         const data = await response.json();
         console.log(data);
@@ -61,19 +64,33 @@ const Follow = () => {
         setFollowerList(data.result[1]);
         setFollowedCount(data.result[0].length);
         setFollowerCount(data.result[1].length);
-        setIsFollowing(data.result[0].some(follow => follow.id === currentUser.id));  // 여기에서 초기 팔로우 상태를 설정
+        setIsFollowing(data.result[0].some(follow => follow.id === currentUser.id)); // 여기에서 초기 팔로우 상태를 설정
+    };
+
+    const fetchFollowList = async () => {
+        const url = `${process.env.REACT_APP_SERVER_URL}/follow/follow_list?id=${currentUser.id}`;
+        const response = await fetch(url, { method: "GET" });
+
+        const data = await response.json();
+        console.log(data);
+
+        setFollowList(data.result[0]);
+        setFollowerList(data.result[1]);
+        setFollowedCount(data.result[0].length);
+        setFollowerCount(data.result[1].length);
     };
 
     useEffect(() => {
         fetchFollowData();
+        fetchFollowList();
     }, []);
 
-    // 팔로우 추가,취소 처리
-    const handleSubmit = (e) => {
+     // 팔로우 추가,취소 처리
+    const handleFollowCheck = (e) => {
         e.preventDefault();
         const command = isFollowing ? "delete" : "add";
         const id = currentUser.id;
-        const youId = "user4";  // 여기는 임의 아이디이니께 나중에 바꿔야대!
+        const youId = "user4"; // 여기는 임의 아이디이니께 나중에 바꿔야대!
         const myHeaders = new Headers();
         myHeaders.append('Content-Type', 'application/json;charset=utf-8');
 
@@ -94,7 +111,7 @@ const Follow = () => {
                     if (response.ok) {
                         console.log('팔로우처리 성공:', result);
                         setIsFollowing(!isFollowing);
-                        fetchFollowData();
+                        fetchFollowList();
                     } else {
                         console.log('실패');
                     }
@@ -103,54 +120,54 @@ const Follow = () => {
                 console.log('실패처리');
             });
         console.log(command, id);
-    }
+    };
+
+    const toggleMyBoardPosts  = () => {
+        setShowMyBoardPosts(!showMyBoardPosts);
+    };
+
+    const handlePostCountChange = (count) => {
+        setPostCount(count);
+    };
 
     return (
-        <Card maxW='md'>
-            <CardHeader>
-                <Flex spacing='4'>
-                    <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
-                        <Avatar name='currentUser' />
-                        <Box>
-                            <Heading size='sm'>{currentUser.nickname}</Heading>
-                            <Text>Creator, Chakra UI</Text>
-                        </Box>
-                    </Flex>
-                    <IconButton
-                        variant='ghost'
-                        colorScheme='gray'
-                        aria-label='See menu'
-                        icon={<BsThreeDotsVertical />}
-                    />
-                </Flex>
-            </CardHeader>
-            <CardBody>
-                <Text mt={4}>
-                    Followed: {followedCount}명
-                </Text>
-                <Text mt={4}>
-                    Follower: {followerCount}명
-                </Text>
-            </CardBody>
-            <CardFooter
-                justify='space-between'
-                flexWrap='wrap'
-                sx={{
-                    '& > button': {
-                        minW: '136px',
-                    },
-                }}
-            >
-                <Button flex='1' variant='ghost' onClick={handleSubmit}>
-                    {isFollowing ? '팔로우 취소' : '팔로우'}
-                </Button>
-                <Button flex='1' variant='ghost' onClick={onFollowListOpen}>
-                    팔로잉
-                </Button>
-                <Button flex='1' variant='ghost' onClick={onFollowerListOpen}>
-                    팔로워
-                </Button>
-            </CardFooter>
+        <Box maxW="700px" mx="auto" mt="5">
+            <Flex align="center" mb="4">
+                <Avatar size="2xl" name={currentUser.nickname} src={currentUser.avatarUrl} />
+                <VStack ml="200px">
+                    <Text fontSize="20px">{postCount}</Text> 
+                    <Button colorScheme='gray' variant='ghost' width="50%">게시물</Button>  
+                </VStack>
+                <VStack>
+                    <Text fontSize="20px">{followerCount}</Text>
+                    <Button colorScheme='gray' variant='ghost' width="50%" onClick={onFollowerListOpen}>팔로워</Button>
+                </VStack>
+                <VStack>
+                    <Text fontSize="20px">{followedCount}</Text>
+                    <Button colorScheme='gray' variant='ghost' width="50%" onClick={onFollowListOpen}>팔로잉</Button>
+                </VStack>
+            </Flex>
+            <Flex align="center" justify="space-between" mb="4">
+                <Heading size="md" ml="25px">{currentUser.nickname}</Heading>
+                {currentUser.id !== 'your_current_user_id' && (
+                    <Button colorScheme='gray' onClick={handleFollowCheck}>
+                        {isFollowing ? '팔로우 취소' : '팔로우'}
+                    </Button>
+                )}
+            </Flex>
+            <Divider my="4" />
+            <HStack justify="space-between" mb="4" px="20%">
+                <IconButton icon={<BiBorderAll />} boxSize="2rem" size="lg" variant="ghost" onClick={toggleMyBoardPosts}/>
+                <Spacer />
+                <IconButton icon={<IoMdMusicalNotes />} boxSize="2rem" size="lg" variant="ghost" />
+            </HStack>
+            <Divider my="4" />
+            
+            {/* MyBoardPosts 컴포넌트를 조건부로 렌더링 */}
+            {showMyBoardPosts && <MyBoardList onPostCountChange={handlePostCountChange} />}
+
+            <Flex justify="space-between" mt="4" px="4" py="2" borderTopWidth="1px">
+            </Flex>
 
             {/* 팔로우 리스트 모달 */}
             <Modal isOpen={isFollowListOpen} onClose={onFollowListClose}>
@@ -160,10 +177,10 @@ const Follow = () => {
                     <ModalCloseButton />
                     <ModalBody>
                         <List spacing={3}>
-                            {followList && followList.map((currentUser, index) => (
+                            {followList && followList.map((user, index) => (
                                 <ListItem key={index}>
                                     <ListIcon as={MdPerson} color="green.500" />
-                                    {currentUser.nickname}
+                                    {user.nickname}
                                 </ListItem>
                             ))}
                         </List>
@@ -182,10 +199,10 @@ const Follow = () => {
                     <ModalCloseButton />
                     <ModalBody>
                         <List spacing={3}>
-                            {followerList && followerList.map((currentUser, index) => (
+                            {followerList && followerList.map((user, index) => (
                                 <ListItem key={index}>
                                     <ListIcon as={MdPerson} color="blue.500" />
-                                    {currentUser.nickname}
+                                    {user.nickname}
                                 </ListItem>
                             ))}
                         </List>
@@ -195,9 +212,7 @@ const Follow = () => {
                     </ModalFooter>
                 </ModalContent>
             </Modal>
-        </Card>
-
-
+        </Box>
     );
 };
 

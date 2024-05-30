@@ -6,6 +6,10 @@ import { useNavigate } from 'react-router-dom';
 const Header = () => {
     const navigate = useNavigate();
 
+    const test = (e) =>{
+        navigate('/board/write');
+    };
+
     return (
         <Box as="header" bg="white" py={4}>
             <Flex align="center" justify="space-between" maxW="1200px" mx="auto" px={4}>
@@ -22,8 +26,8 @@ const Header = () => {
                     <Button variant="link" mr={4} color="black">
                         Page
                     </Button>
-                    <Button colorScheme="blackAlpha" bg="black" color="white">
-                        Button
+                    <Button colorScheme="blackAlpha" bg="black" color="white" onClick={test}>
+                        write
                     </Button>
                 </Flex>
             </Flex>
