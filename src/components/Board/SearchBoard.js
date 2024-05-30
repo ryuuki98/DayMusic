@@ -13,23 +13,29 @@ import {
     Avatar,
     IconButton,
     Button,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
 } from '@chakra-ui/react';
 import { BiChat, BiLike, BiShare } from 'react-icons/bi';
 import AuthContext from '../../context/AuthContext';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+import CommentList from '../Comment/CommentList.js';  // 올바른 경로로 CommentList 임포트
 
 const SearchBoard = () => {
     const navigate = useNavigate();
     const command = "search";
     const [posts, setPosts] = useState([]);
     const [error, setError] = useState('');
-    const { currentUser } = useContext(AuthContext); //로그인 정보 확인
-    let [likeCount, setLikeCount] = useState(0); //좋아요수 카운트
+    const { currentUser } = useContext(AuthContext); // 로그인 정보 확인
+    let [likeCount, setLikeCount] = useState(0); // 좋아요수 카운트
+    const [showComments, setShowComments] = useState({});
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json;charset=utf-8');
 
     const handleSubmit = (e) => {
-        // 좋아요 추가제거 이벤트
+        // 좋아요 추가/제거 이벤트
         e.preventDefault();
         const board_code = e.target.value;
         const command = 'likeAdd';
@@ -54,7 +60,7 @@ const SearchBoard = () => {
                 return response.json().then((data) => {
                     const count = data.count;
                     if (response.ok) {
-                        console.log('좋아요처리  성공:', count);
+                        console.log('좋아요처리 성공:', count);
                         setLikeCount(count);
                     } else {
                         console.log('왜인지 실패');
@@ -66,9 +72,43 @@ const SearchBoard = () => {
             });
     };
 
+    const handleEdit = (boardCode) => {
+        navigate(`/board/update/`, { state: { boardCode } });
+    };
+
+    const handleDelete = async (boardCode) => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/board/service`, {
+                method: 'POST',
+                headers: myHeaders,
+                body: JSON.stringify({
+                    command: 'delete',
+                    id: currentUser.id,
+                    board_code: boardCode,
+                }),
+                credentials: 'include',
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete post');
+            }
+
+            // Remove the deleted post from the list
+            setPosts(posts.filter(post => post.board_code !== boardCode));
+        } catch (error) {
+            setError(error.message);
+        }
+    };
+
+    const toggleComments = (boardCode) => {
+        setShowComments(prevState => ({
+            ...prevState,
+            [boardCode]: !prevState[boardCode],
+        }));
+    };
+
     useEffect(() => {
         const fetchPosts = async () => {
-        
             try {
                 const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/board/service`, {
                     method: 'POST',
@@ -86,15 +126,11 @@ const SearchBoard = () => {
                 setPosts(data.boardList);
             } catch (error) {
                 setError(error.message);
-            } 
+            }
         };
 
         fetchPosts();
     }, []);
-
-    const handleBoxClick = (boardCode) => {
-        navigate('/board/detail', { state: { boardCode } });
-    };
 
     return (
         <Box
@@ -126,13 +162,19 @@ const SearchBoard = () => {
                                 <Text fontWeight="bold">{post.nickname}</Text>
                                 <Text fontSize="sm" color="gray.500">{new Date(post.createdAt).toLocaleString()}</Text>
                             </Box>
-                            <IconButton
-                                ml="auto"
-                                variant="ghost"
-                                colorScheme="gray"
-                                aria-label="See menu"
-                                icon={<BsThreeDotsVertical />}
-                            />
+                            <Menu>
+                                <MenuButton
+                                    as={IconButton}
+                                    aria-label="Options"
+                                    icon={<BsThreeDotsVertical />}
+                                    variant="ghost"
+                                    ml="auto"
+                                />
+                                <MenuList>
+                                    <MenuItem onClick={() => handleEdit(post.board_code)}>Edit</MenuItem>
+                                    <MenuItem onClick={() => handleDelete(post.board_code)}>Delete</MenuItem>
+                                </MenuList>
+                            </Menu>
                         </Flex>
                         <Text mb={4}>{post.contents}</Text>
                         {post.image_url && (
@@ -158,13 +200,14 @@ const SearchBoard = () => {
                                 <Box as="span" mx="2"></Box>
                                 Like
                             </Button>
-                            <Button flex="1" variant="ghost" leftIcon={<BiChat />}>
+                            <Button flex="1" variant="ghost" leftIcon={<BiChat />} onClick={() => toggleComments(post.board_code)}>
                                 Comment
                             </Button>
                             <Button flex="1" variant="ghost" leftIcon={<BiShare />}>
                                 Share
                             </Button>
                         </HStack>
+                        <CommentList boardCode={post.board_code} />  {/* CommentList 컴포넌트 추가 */}
                     </Box>
                 ))}
             </VStack>
