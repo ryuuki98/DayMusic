@@ -10,6 +10,8 @@ const SpotifySearch = ({ onSelectTrack }) => {
     const [token, setToken] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
+    
+
     const searchTracks = async () => {
         if (!token) {
             const newToken = await getSpotifyToken();
@@ -24,7 +26,7 @@ const SpotifySearch = ({ onSelectTrack }) => {
             });
 
             const data = await response.json();
-
+            console.log(data);
             if (data.tracks) {
                 setTracks(data.tracks.items);
                 setErrorMessage('');

@@ -18,7 +18,9 @@ const UpdatePost = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [responseMessage, setResponseMessage] = useState('');
-
+    const [music_tarck, setMusicTarck] = useState(null);
+    const [music_artist, setMusicArtist] = useState(null);
+    const [music_album, setMusicAlbum] = useState(null);
     useEffect(() => {
         if (!currentUser) {
             console.log("비로그인 상태");
@@ -59,13 +61,17 @@ const UpdatePost = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        setMusicTarck(selectedTrack.name);
+        setMusicArtist(selectedTrack.artists.name);
+        setMusicAlbum(selectedTrack.album.name);
         const updateData = {
             id: currentUser.id,
             nickname: currentUser.nickname,
             contents: contents,
             board_code: boardCode,
-            // selectedTrack: selectedTrack,
+            music_tarck: music_tarck,
+            music_artist: music_artist,
+            music_album: music_album,
             isPublic: isPublic,
             command: 'update'
         };
