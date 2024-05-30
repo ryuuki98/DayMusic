@@ -30,19 +30,21 @@ import { BiBorderAll } from 'react-icons/bi';
 import MyBoardList from '../Board/MyBoardList';
 
 const Follow = () => {
+    // 로그인 한 유저의 아이디,닉네임 사용가능
     const { currentUser } = useContext(AuthContext);
+    // 내 게시글 불러오기
     const [showMyBoardPosts, setShowMyBoardPosts] = useState(false);
-    
+    // 팔로우 상태와 팔로워 수를 관리
     const [isFollowing, setIsFollowing] = useState(false);
     const [followedCount, setFollowedCount] = useState(0);
     const [followerCount, setFollowerCount] = useState(0);
-    
+    // 팔로우 및 팔로워 리스트 관리
     const [followList, setFollowList] = useState();
     const [followerList, setFollowerList] = useState();
-    
+    // 팔로우 및 팔로워 모달 관리
     const { isOpen: isFollowListOpen, onOpen: onFollowListOpen, onClose: onFollowListClose } = useDisclosure();
     const { isOpen: isFollowerListOpen, onOpen: onFollowerListOpen, onClose: onFollowerListClose } = useDisclosure();
-    
+    // 로그인 한 유저의 팔로잉, 팔로우 리스트 출력
     const fetchFollowData = async () => {
         const url = `${process.env.REACT_APP_SERVER_URL}/follow/follow_list?id=${currentUser.id}`;
         const response = await fetch(url, { method: "GET" });
@@ -54,7 +56,7 @@ const Follow = () => {
         setFollowerList(data.result[1]);
         setFollowedCount(data.result[0].length);
         setFollowerCount(data.result[1].length);
-        setIsFollowing(data.result[0].some(follow => follow.id === currentUser.id));
+        setIsFollowing(data.result[0].some(follow => follow.id === currentUser.id)); // 여기에서 초기 팔로우 상태를 설정
     };
 
     const fetchFollowList = async () => {
@@ -74,12 +76,12 @@ const Follow = () => {
         fetchFollowData();
         fetchFollowList();
     }, []);
-
+     // 팔로우 추가,취소 처리
     const handleFollowCheck = (e) => {
         e.preventDefault();
         const command = isFollowing ? "delete" : "add";
         const id = currentUser.id;
-        const youId = "user4";
+        const youId = "user4"; // 여기는 임의 아이디이니께 나중에 바꿔야대!
         const myHeaders = new Headers();
         myHeaders.append('Content-Type', 'application/json;charset=utf-8');
 
