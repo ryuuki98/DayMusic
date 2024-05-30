@@ -27,12 +27,11 @@ import { MdPerson } from 'react-icons/md';
 import AuthContext from '../../context/AuthContext';
 import { IoMdMusicalNotes } from "react-icons/io";
 import { BiBorderAll } from 'react-icons/bi';
-import { useNavigate } from 'react-router-dom';
-import MyBoardPosts from '../Board/MyBoardList';
+import MyBoardList from '../Board/MyBoardList';
 
 const Follow = () => {
     const { currentUser } = useContext(AuthContext);
-    const navigate = useNavigate();
+    const [showMyBoardPosts, setShowMyBoardPosts] = useState(false);
     
     const [isFollowing, setIsFollowing] = useState(false);
     const [followedCount, setFollowedCount] = useState(0);
@@ -112,8 +111,8 @@ const Follow = () => {
         console.log(command, id);
     };
 
-    const navigateMyBoard = () => {
-        navigate('/board/myBoard');
+    const toggleMyBoardPosts  = () => {
+        setShowMyBoardPosts(!showMyBoardPosts);
     };
 
     return (
@@ -143,30 +142,15 @@ const Follow = () => {
             </Flex>
             <Divider my="4" />
             <HStack justify="space-between" mb="4" px="20%">
-                <IconButton icon={<BiBorderAll />} boxSize="2rem" size="lg" variant="ghost" onClick={navigateMyBoard}/>
+                <IconButton icon={<BiBorderAll />} boxSize="2rem" size="lg" variant="ghost" onClick={toggleMyBoardPosts}/>
                 <Spacer />
                 <IconButton icon={<IoMdMusicalNotes />} boxSize="2rem" size="lg" variant="ghost" />
             </HStack>
             <Divider my="4" />
+            
+            {/* MyBoardPosts 컴포넌트를 조건부로 렌더링 */}
+            {showMyBoardPosts && <MyBoardList />}
 
-            <VStack spacing="4">
-                {[1, 2, 3].map((_, idx) => (
-                    <Box key={idx} w="100%" p="4" borderWidth="1px" borderRadius="lg">
-                        <Flex align="center">
-                            <Avatar name="Charles" size="sm" />
-                            <Box ml="3">
-                                <Text fontWeight="bold">Charles</Text>
-                                <Text fontSize="sm" color="gray.500">2 hrs ago</Text>
-                            </Box>
-                        </Flex>
-                        <Text mt="2">Body text for a post. Since it's a social app, sometimes it's a hot take, and sometimes it's a question.</Text>
-                        <Flex mt="2" align="center">
-                            <Text fontSize="sm">6 likes</Text>
-                            <Text fontSize="sm" ml="4">18 comments</Text>
-                        </Flex>
-                    </Box>
-                ))}
-            </VStack>
             <Flex justify="space-between" mt="4" px="4" py="2" borderTopWidth="1px">
             </Flex>
 
