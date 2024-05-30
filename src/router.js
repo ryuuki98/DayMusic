@@ -25,6 +25,7 @@ import UpdateNickname from './components/user/UpdateNickname';
 import UpdateUserInfo from './components/user/UpdateUserInfo';
 import SearchBoard from './components/Board/SearchBoard';
 import Image from './components/Image/UploadImage';
+import Rank  from './components/Rank/Rank';
 const router = createBrowserRouter(
     [
         {
@@ -164,6 +165,11 @@ const router = createBrowserRouter(
         {
             path: '/image',
             element:<Image />,
+            children: [],
+        },
+        {
+            path: '/rank',
+            element:<Rank />,
             children: [],
         }
     ],

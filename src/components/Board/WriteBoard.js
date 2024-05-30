@@ -12,6 +12,7 @@ import {
     Text,
     HStack,
     IconButton,
+    Image,
 } from '@chakra-ui/react';
 import { EditIcon } from '@chakra-ui/icons';
 import SpotifySearch from './SpotifySearch';
@@ -28,14 +29,18 @@ const CreateBoardPost = () => {
     const [responseMessage, setResponseMessage] = useState('');
     const [selectedTrack, setSelectedTrack] = useState(null);
     const [showSpotifySearch, setShowSpotifySearch] = useState(false);
-
+    const [music_tarck, setMusicTarck] = useState(null);
+    const [music_artist, setMusicArtist] = useState(null);
+    const [music_album, setMusicAlbum] = useState(null);
     const navigate = useNavigate();
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json;charset=utf-8');
     
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        setMusicTarck(selectedTrack.name);
+        setMusicArtist(selectedTrack.artists.name);
+        setMusicAlbum(selectedTrack.album.name);
         try {
             const requestOptions = {
                 method: 'POST',
@@ -46,6 +51,9 @@ const CreateBoardPost = () => {
                     command: command,
                     contents: contents,
                     isPublic: isPublic,
+                    music_tarck: music_tarck,
+                    music_artist: music_artist,
+                    music_album: music_album,
                     // track: selectedTrack ? selectedTrack.id : null
                 }),
                 credentials: 'include',
@@ -112,11 +120,17 @@ const CreateBoardPost = () => {
                         aria-label="Edit"
                     />
                 </HStack>
-                {showSpotifySearch && <SpotifySearch onSelectTrack={setSelectedTrack} />}
+                {showSpotifySearch && <SpotifySearch onSelectTrack={setSelectedTrack}
+                />}
                 {selectedTrack && (
+                    <>
                     <Text textColor="black">
-                        Selected Track: {selectedTrack.name} by {selectedTrack.artists[0].name}
+                        선택 노래: {selectedTrack.name} by {selectedTrack.artists[0].name}
+                        <Image src={selectedTrack.album.images[2]?.url}></Image>
+                        
                     </Text>
+                        <audio controls src={selectedTrack.preview_url}></audio>
+                    </>
                 )}
                 <FormControl display="flex" alignItems="center">
                     <FormLabel htmlFor="isPublic" mb="0" textColor="purple">
