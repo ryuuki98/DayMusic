@@ -42,7 +42,7 @@ const Login = () => {
                             console.log('로그인 성공:', data);
                             const { id, nickname } = data;
                             login({ id, nickname });
-                            navigate('/follow');
+                            navigate('/board/search');
                         } else {
                             setError('로그인 실패. ID와 비밀번호를 확인해주세요.');
                             console.error('로그인 실패:', data);
