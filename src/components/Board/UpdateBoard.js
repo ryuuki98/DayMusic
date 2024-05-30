@@ -2,19 +2,15 @@ import React, { useContext, useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Box, Button, FormControl, FormLabel, Textarea, Switch, Text, VStack, HStack, IconButton, Alert, AlertIcon, Heading } from '@chakra-ui/react';
 import AuthContext from '../../context/AuthContext';
-// import SpotifySearch from '../spotify/SpotifySearch';
 import { EditIcon } from '@chakra-ui/icons';
 
 const UpdatePost = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const { postId } = useParams();
     const { boardCode } = location.state || {};
     const { currentUser } = useContext(AuthContext);
     const [contents, setContents] = useState('');
-    const [selectedTrack, setSelectedTrack] = useState(null);
     const [isPublic, setIsPublic] = useState(false);
-    const [showSpotifySearch, setShowSpotifySearch] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [responseMessage, setResponseMessage] = useState('');
@@ -24,13 +20,13 @@ const UpdatePost = () => {
             console.log("비로그인 상태");
             alert("로그인을 해야합니다.");
             navigate('/');
-        } else {
-            console.log("로그인 상태");
-            fetchPostInfo(postId);
+            return;
         }
-    }, [currentUser, navigate, postId]);
+        console.log("로그인 상태");
+        fetchPostInfo(boardCode);
+    }, [currentUser, navigate, boardCode]);
 
-    const fetchPostInfo = async (postId) => {
+    const fetchPostInfo = async (boardCode) => {
         try {
             const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/board/service`, {
                 method: 'POST',
@@ -49,7 +45,6 @@ const UpdatePost = () => {
 
             const data = await response.json();
             setContents(data.contents);
-            setSelectedTrack(data.selectedTrack);
             setIsPublic(data.isPublic);
         } catch (error) {
             console.error('게시글 정보 가져오기 실패:', error.message);
@@ -60,12 +55,16 @@ const UpdatePost = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (!currentUser) {
+            setError('로그인이 필요합니다.');
+            return;
+        }
+
         const updateData = {
             id: currentUser.id,
             nickname: currentUser.nickname,
             contents: contents,
             board_code: boardCode,
-            // selectedTrack: selectedTrack,
             isPublic: isPublic,
             command: 'update'
         };
@@ -117,9 +116,11 @@ const UpdatePost = () => {
                         {success}
                     </Alert>
                 )}
-                <Text fontSize="lg" fontWeight="bold" textColor="black">
-                    작성자: {currentUser.nickname}
-                </Text>
+                {currentUser && (
+                    <Text fontSize="lg" fontWeight="bold" textColor="black">
+                        작성자: {currentUser.nickname}
+                    </Text>
+                )}
                 <Heading textColor="black">내용</Heading>
                 <FormControl id="contents" isRequired>
                     <Textarea
@@ -129,23 +130,6 @@ const UpdatePost = () => {
                         onChange={(e) => setContents(e.target.value)}
                     />
                 </FormControl>
-                <HStack width="full" justifyContent="space-between">
-                    <Button colorScheme="purple" textColor="black" variant="solid" onClick={() => setShowSpotifySearch(!showSpotifySearch)}>
-                        + Music
-                    </Button>
-                    <IconButton
-                        icon={<EditIcon />}
-                        colorScheme="purple"
-                        variant="outline"
-                        aria-label="Edit"
-                    />
-                </HStack>
-                {/* {showSpotifySearch && <SpotifySearch onSelectTrack={setSelectedTrack} />} */}
-                {/* {selectedTrack && (
-                    <Text textColor="black">
-                        Selected Track: {selectedTrack.name} by {selectedTrack.artists[0].name}
-                    </Text>
-                )} */}
                 <FormControl display="flex" alignItems="center">
                     <FormLabel htmlFor="isPublic" mb="0" textColor="purple">
                         공개 여부

@@ -25,6 +25,7 @@ import UpdateNickname from './components/user/UpdateNickname';
 import UpdateUserInfo from './components/user/UpdateUserInfo';
 import SearchBoard from './components/Board/SearchBoard';
 import Image from './components/Image/UploadImage';
+import CommentList from './components/Comment/CommentList.js';
 const router = createBrowserRouter(
     [
         {
@@ -141,6 +142,11 @@ const router = createBrowserRouter(
                 ),
                 },
             ],
+        },
+        {
+            path: '/comment',
+            element: <CommentList />,
+            children: [],
         },
         {
             path: '/like',

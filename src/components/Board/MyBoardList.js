@@ -9,7 +9,14 @@ import {
     Alert,
     AlertIcon,
     Button,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    IconButton,
+    Flex,
 } from '@chakra-ui/react';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 import AuthContext from '../../context/AuthContext';
 
 const MyBoardPosts = () => {
@@ -109,23 +116,35 @@ const MyBoardPosts = () => {
                         w="full"
                         bg="gray.50"
                     >
-                        <Text
-                            fontWeight="bold"
-                            textColor="black"
-                            cursor="pointer"
-                            onClick={() => handleBoxClick(post.board_code)}
-                        >
-                            {post.contents}
-                        </Text>
+                        <Flex justifyContent="space-between" alignItems="center">
+                            <Text
+                                fontWeight="bold"
+                                textColor="black"
+                                cursor="pointer"
+                                onClick={() => handleBoxClick(post.board_code)}
+                                flex="1"
+                            >
+                                {post.contents}
+                            </Text>
+                            <Menu>
+                                <MenuButton
+                                    as={IconButton}
+                                    aria-label="Options"
+                                    icon={<BsThreeDotsVertical />}
+                                    variant="ghost"
+                                    ml="auto"
+                                />
+                                <MenuList>
+                                    <MenuItem onClick={() => handleEdit(post.board_code)}>Edit</MenuItem>
+                                    <MenuItem onClick={() => handleDelete(post.board_code)}>Delete</MenuItem>
+                                </MenuList>
+                            </Menu>
+                        </Flex>
                         {post.music_code && (
                             <Text textColor="black">
                                 Music Code: {post.music_code}
                             </Text>
                         )}
-                        <HStack justifyContent="space-between">
-                            <Button colorScheme="red" onClick={() => handleDelete(post.board_code)}>Delete</Button>
-                            <Button colorScheme="blue" onClick={() => handleEdit(post.board_code)}>Edit</Button>
-                        </HStack>
                     </Box>
                 ))}
             </VStack>
