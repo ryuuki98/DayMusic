@@ -34,7 +34,7 @@ const Rank = () => {
         }
     }, [query]);
 
-    const XxV?VXvx?zxhandleSearch = (event) => {
+    const handleSearch = (event) => {
         setQuery(event.target.value);
     };
 
