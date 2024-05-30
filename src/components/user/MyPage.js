@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     Box,
-    Button,
     Text,
     Stack,
     Image,
@@ -19,7 +18,11 @@ import {
     AlertDialogOverlay,
     useDisclosure,
     Input,
+    useToast,
+    Icon,
+    Button,
 } from '@chakra-ui/react';
+import { FaCamera } from 'react-icons/fa';
 import AuthContext from '../../context/AuthContext';
 import UpdatePassword from './UpdatePassword';
 import UpdateNickname from './UpdateNickname';
@@ -32,7 +35,9 @@ const MyPage = () => {
     const cancelRef = useRef();
     const [isDeleting, setIsDeleting] = useState(false);
     const [profileImg, setProfileImg] = useState('https://via.placeholder.com/150');
+    const [file, setFile] = useState(null);
     const inputFileRef = useRef(null);
+    const toast = useToast();
 
     useEffect(() => {
         if (currentUser === null) {
@@ -87,26 +92,71 @@ const MyPage = () => {
         inputFileRef.current.click();
     };
 
-    const handleImageChange = (e) => {
+    const handleImageChange = async (e) => {
         const file = e.target.files[0];
         if (file) {
+            setFile(file);
             const reader = new FileReader();
             reader.onload = (event) => {
                 setProfileImg(event.target.result);
             };
             reader.readAsDataURL(file);
+
+            const formData = new FormData();
+            formData.append('profileImage', file);
+            formData.append('userId', currentUser.id);
+
+
+            try {
+                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/image/service`, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    const data = await response.text();
+                    toast({
+                        title: 'Profile image uploaded successfully',
+                        description: data,
+                        status: 'success',
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                } else {
+                    throw new Error('Upload failed');
+                }
+            } catch (error) {
+                toast({
+                    title: 'Error uploading profile image',
+                    description: error.message,
+                    status: 'error',
+                    duration: 3000,
+                    isClosable: true,
+                });
+            }
         }
     };
 
     return (
         <Box display="flex" flexDirection="column" alignItems="center" mt={8} p={4}>
-            <Box position="relative" onClick={handleImageClick} cursor="pointer">
+            <Box position="relative" cursor="pointer" onClick={handleImageClick}>
                 <Image
                     borderRadius="full"
                     boxSize="150px"
                     src={profileImg}
                     alt="Profile Image"
                 />
+                <Box
+                    position="absolute"
+                    bottom="0"
+                    right="0"
+                    bg="white"
+                    borderRadius="full"
+                    p={2}
+                    cursor="pointer"
+                >
+                    <Icon as={FaCamera} w={6} h={6} color="gray.500" />
+                </Box>
                 <Input
                     type="file"
                     ref={inputFileRef}
@@ -130,13 +180,13 @@ const MyPage = () => {
                 </TabList>
                 <TabPanels>
                     <TabPanel>
-                        <UpdatePassword/>
+                        <UpdatePassword />
                     </TabPanel>
                     <TabPanel>
-                        <UpdateNickname/>
+                        <UpdateNickname />
                     </TabPanel>
                     <TabPanel>
-                        <UpdateUserInfo/>
+                        <UpdateUserInfo />
                     </TabPanel>
                     <TabPanel>
                         <Button w="full" bg="red.700" color="white" onClick={onOpen}>
