@@ -32,18 +32,26 @@ import MyBoardList from '../Board/MyBoardList';
 const Follow = () => {
     // 로그인 한 유저의 아이디,닉네임 사용가능
     const { currentUser } = useContext(AuthContext);
+    
     // 내 게시글 불러오기
     const [showMyBoardPosts, setShowMyBoardPosts] = useState(false);
+    
+    // 게시글 수 상태 추가
+    const [postCount, setPostCount] = useState(0); 
+    
     // 팔로우 상태와 팔로워 수를 관리
     const [isFollowing, setIsFollowing] = useState(false);
     const [followedCount, setFollowedCount] = useState(0);
     const [followerCount, setFollowerCount] = useState(0);
+    
     // 팔로우 및 팔로워 리스트 관리
     const [followList, setFollowList] = useState();
     const [followerList, setFollowerList] = useState();
+    
     // 팔로우 및 팔로워 모달 관리
     const { isOpen: isFollowListOpen, onOpen: onFollowListOpen, onClose: onFollowListClose } = useDisclosure();
     const { isOpen: isFollowerListOpen, onOpen: onFollowerListOpen, onClose: onFollowerListClose } = useDisclosure();
+    
     // 로그인 한 유저의 팔로잉, 팔로우 리스트 출력
     const fetchFollowData = async () => {
         const url = `${process.env.REACT_APP_SERVER_URL}/follow/follow_list?id=${currentUser.id}`;
@@ -76,6 +84,7 @@ const Follow = () => {
         fetchFollowData();
         fetchFollowList();
     }, []);
+
      // 팔로우 추가,취소 처리
     const handleFollowCheck = (e) => {
         e.preventDefault();
@@ -117,12 +126,16 @@ const Follow = () => {
         setShowMyBoardPosts(!showMyBoardPosts);
     };
 
+    const handlePostCountChange = (count) => {
+        setPostCount(count);
+    };
+
     return (
         <Box maxW="700px" mx="auto" mt="5">
             <Flex align="center" mb="4">
                 <Avatar size="2xl" name={currentUser.nickname} src={currentUser.avatarUrl} />
                 <VStack ml="200px">
-                    <Text fontSize="20px">1</Text> 
+                    <Text fontSize="20px">{postCount}</Text> 
                     <Button colorScheme='gray' variant='ghost' width="50%">게시물</Button>  
                 </VStack>
                 <VStack>
@@ -151,7 +164,7 @@ const Follow = () => {
             <Divider my="4" />
             
             {/* MyBoardPosts 컴포넌트를 조건부로 렌더링 */}
-            {showMyBoardPosts && <MyBoardList />}
+            {showMyBoardPosts && <MyBoardList onPostCountChange={handlePostCountChange} />}
 
             <Flex justify="space-between" mt="4" px="4" py="2" borderTopWidth="1px">
             </Flex>
