@@ -39,11 +39,13 @@ const CreateBoardPost = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const musicTrack = selectedTrack ? selectedTrack.name : "";
-        const musicArtist = selectedTrack ? selectedTrack.artists.name : "";
-        const musicAlbum = selectedTrack ? selectedTrack.album.name : "";
+        const musicArtist = selectedTrack ? selectedTrack.artists[0].name : "";
+        const musicPreviewUrl = selectedTrack ? selectedTrack.preview_url : "";
+        const musicThumbnail = selectedTrack ? selectedTrack.album.images[2]?.url : "";
         console.log(musicTrack);
         console.log(musicArtist);
-        console.log(musicAlbum);
+        console.log(musicThumbnail);
+        console.log(musicPreviewUrl);
         try {
             const requestOptions = {
                 
@@ -59,8 +61,8 @@ const CreateBoardPost = () => {
 
                     musicTrack: musicTrack,
                     musicArtist: musicArtist,
-                    musicAlbum: musicAlbum,
-                    // track: selectedTrack ? selectedTrack.id : null
+                    musicPreviewUrl: musicPreviewUrl,
+                    musicThumbnail: musicThumbnail,
                 }),
                 credentials: 'include',
             };
