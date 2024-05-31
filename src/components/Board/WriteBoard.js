@@ -54,7 +54,7 @@ const CreateBoardPost = () => {
                     music_tarck: music_tarck,
                     music_artist: music_artist,
                     music_album: music_album,
-                    // track: selectedTrack ? selectedTrack.id : null
+                    track: selectedTrack ? selectedTrack.id : null
                 }),
                 credentials: 'include',
             };
