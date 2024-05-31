@@ -7,6 +7,7 @@ import { EditIcon } from '@chakra-ui/icons';
 const UpdatePost = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    const [selectedTrack, setSelectedTrack] = useState(null);
     const { boardCode } = location.state || {};
     const { currentUser } = useContext(AuthContext);
     const [contents, setContents] = useState('');
