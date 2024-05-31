@@ -28,8 +28,13 @@ import AuthContext from '../../context/AuthContext';
 import { IoMdMusicalNotes } from "react-icons/io";
 import { BiBorderAll } from 'react-icons/bi';
 import MyBoardList from '../Board/MyBoardList';
+import { useLocation } from 'react-router-dom';
 
-const Follow = () => {
+const UserFollow = () => {
+    const location = useLocation();
+    const postId = location.state.postId;
+    const postNickname = location.state.postNickname;
+
     // 로그인 한 유저의 아이디,닉네임 사용가능
     const { currentUser } = useContext(AuthContext);
     
@@ -54,7 +59,7 @@ const Follow = () => {
     
     // 로그인 한 유저의 팔로잉, 팔로우 리스트 출력
     const fetchFollowData = async () => {
-        const url = `${process.env.REACT_APP_SERVER_URL}/follow/follow_list?id=${currentUser.id}`;
+        const url = `${process.env.REACT_APP_SERVER_URL}/follow/follow_list?id=${postId}`;
         const response = await fetch(url, { method: "GET" });
 
         const data = await response.json();
@@ -64,11 +69,11 @@ const Follow = () => {
         setFollowerList(data.result[1]);
         setFollowedCount(data.result[0].length);
         setFollowerCount(data.result[1].length);
-        setIsFollowing(data.result[0].some(follow => follow.id === currentUser.id)); // 여기에서 초기 팔로우 상태를 설정
+        setIsFollowing(data.result[0].some(follow => follow.id === postId)); // 여기에서 초기 팔로우 상태를 설정
     };
 
     const fetchFollowList = async () => {
-        const url = `${process.env.REACT_APP_SERVER_URL}/follow/follow_list?id=${currentUser.id}`;
+        const url = `${process.env.REACT_APP_SERVER_URL}/follow/follow_list?id=${postId}`;
         const response = await fetch(url, { method: "GET" });
 
         const data = await response.json();
@@ -90,7 +95,7 @@ const Follow = () => {
         e.preventDefault();
         const command = isFollowing ? "delete" : "add";
         const id = currentUser.id;
-        const youId = "user4"; // 여기는 임의 아이디이니께 나중에 바꿔야대!
+        const youId = postId; // 여기는 임의 아이디이니께 나중에 바꿔야대!
         const myHeaders = new Headers();
         myHeaders.append('Content-Type', 'application/json;charset=utf-8');
 
@@ -99,8 +104,8 @@ const Follow = () => {
             headers: myHeaders,
             body: JSON.stringify({
                 command: command,
-                followedId: youId,
-                followerId: id,
+                followedId: id,
+                followerId: youId,
             }),
         };
         console.log("보낸내용:", requestOptions);
@@ -129,7 +134,7 @@ const Follow = () => {
     return (
         <Box maxW="700px" mx="auto" mt="5">
             <Flex align="center" mb="4">
-                <Avatar size="2xl" name={currentUser.nickname} src={currentUser.avatarUrl} />
+                <Avatar size="2xl" name={postNickname} src={currentUser.avatarUrl} />
                 <VStack ml="200px">
                     <Text fontSize="20px">{postCount}</Text> 
                     <Button colorScheme='gray' variant='ghost' width="50%">게시물</Button>  
@@ -144,8 +149,8 @@ const Follow = () => {
                 </VStack>
             </Flex>
             <Flex align="center" justify="space-between" mb="4">
-                <Heading size="md" ml="25px">{currentUser.nickname}</Heading>
-                {currentUser.id === 'your_current_user_id' && (
+                <Heading size="md" ml="25px">{postNickname}</Heading>
+                {currentUser.id !== 'your_current_user_id' && (
                     <Button colorScheme='gray' onClick={handleFollowCheck}>
                         {isFollowing ? '팔로우 취소' : '팔로우'}
                     </Button>
@@ -212,4 +217,4 @@ const Follow = () => {
     );
 };
 
-export default Follow;
+export default UserFollow;

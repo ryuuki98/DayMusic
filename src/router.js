@@ -26,7 +26,7 @@ import UpdateUserInfo from './components/user/UpdateUserInfo';
 import SearchBoard from './components/Board/SearchBoard';
 import Image from './components/Image/UploadImage';
 import Rank  from './components/Rank/Rank';
-
+import UserFollow from './components/Follow/UserFollow';
 const router = createBrowserRouter(
     [
         {
@@ -157,25 +157,32 @@ const router = createBrowserRouter(
         {
             path: '/follow',
             element: <Root />,
-            children: [
-                {
+            children: [{
                 path: '/follow',
                 element: (
                     <>
                         <Follow />
                     </>
                 ),
-                },
+            },
+            ],
+        },
+        {
+            path: '/userFollow',
+            element: <Root />,
+            children: [{
+                path: '/userFollow',
+                element: (
+                    <>
+                        <UserFollow />
+                    </>
+                ),
+            },
             ],
         },
         {
             path: '/image',
             element:<Image />,
-            children: [],
-        },
-        {
-            path: '/rank',
-            element:<Rank />,
             children: [],
         }
     ],
