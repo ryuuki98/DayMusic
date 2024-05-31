@@ -146,7 +146,7 @@ const router = createBrowserRouter(
         },
         {
             path: '/comment',
-            element: <CommentList />,
+            element: <></>,
             children: [],
         },
         {
