@@ -33,8 +33,7 @@ import { useLocation } from 'react-router-dom';
 const UserFollow = () => {
     const location = useLocation();
     const postId = location.state.postId;
-    const postNickname = location.state.postNickname;
-
+    console.log("postId가 도대체 뭐야?", postId);
     // 로그인 한 유저의 아이디,닉네임 사용가능
     const { currentUser } = useContext(AuthContext);
     
@@ -85,17 +84,47 @@ const UserFollow = () => {
         setFollowerCount(data.result[1].length);
     };
 
+    // 사용자 게시글 수 가져오기
+    const fetchPostCount = async () => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/board/service`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify({
+                    id: postId,
+                    command: 'myBoard'
+                }),
+                credentials: 'include',
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                console.log("게시글 불러오기 성공")
+                setPostCount(data.boardList.length); // 게시글 수 업데이트
+            } else {
+                console.log("게시글 불러오기 실패");
+                throw new Error('Failed to fetch posts');
+            }
+        } catch (error) {
+            console.log("실패");
+            console.error('Error fetching posts:', error);
+        }
+    };
+
     useEffect(() => {
         fetchFollowData();
         fetchFollowList();
+        fetchPostCount();
     }, []);
 
      // 팔로우 추가,취소 처리
     const handleFollowCheck = (e) => {
         e.preventDefault();
         const command = isFollowing ? "delete" : "add";
-        const id = currentUser.id;
-        const youId = postId; // 여기는 임의 아이디이니께 나중에 바꿔야대!
+        const id = postId;
+        const youId = currentUser.id; // 여기는 임의 아이디이니께 나중에 바꿔야대!
         const myHeaders = new Headers();
         myHeaders.append('Content-Type', 'application/json;charset=utf-8');
 
@@ -134,7 +163,7 @@ const UserFollow = () => {
     return (
         <Box maxW="700px" mx="auto" mt="5">
             <Flex align="center" mb="4">
-                <Avatar size="2xl" name={postNickname} src={currentUser.avatarUrl} />
+                <Avatar size="2xl" name={postId} src={currentUser.avatarUrl} />
                 <VStack ml="200px">
                     <Text fontSize="20px">{postCount}</Text> 
                     <Button colorScheme='gray' variant='ghost' width="50%">게시물</Button>  
@@ -149,7 +178,7 @@ const UserFollow = () => {
                 </VStack>
             </Flex>
             <Flex align="center" justify="space-between" mb="4">
-                <Heading size="md" ml="25px">{postNickname}</Heading>
+                <Heading size="md" ml="25px">{postId}</Heading>
                 {currentUser.id !== 'your_current_user_id' && (
                     <Button colorScheme='gray' onClick={handleFollowCheck}>
                         {isFollowing ? '팔로우 취소' : '팔로우'}
