@@ -30,7 +30,7 @@ const SearchBoard = () => {
     const [error, setError] = useState('');
     const { currentUser } = useContext(AuthContext); // 로그인 정보 확인
     let [likeCount, setLikeCount] = useState(0); // 좋아요수 카운트
-    const [showComments, setShowComments] = useState({});
+    const [showComments, setShowComments] = useState( {});
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json;charset=utf-8');
     
@@ -196,7 +196,10 @@ const SearchBoard = () => {
                                 objectFit="cover"
                             />
                         )}
-                        <Text mb={4} on {test}>Music code: {post.music_code}</Text>
+                        <Text mb={4} >노래 제목: {post.music_track}</Text>
+                        <Text mb={4} >가수: {post.music_music_artist}</Text>
+                        <Image src={post.music_thumbnail} />
+                        <audio controls src={post.music_thumbnail} />
                         <HStack spacing={4}>
                             <Button
                                 flex="1"
