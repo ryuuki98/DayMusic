@@ -135,18 +135,7 @@ const Join = () => {
 
         return result.exists === 'true' ? '닉네임이 이미 존재합니다.' : '';
     };
-
-    const handleProfileImgChange = (e) => {
-        const file = e.target.files[0];
-        setProfileImg(file);
-
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setPreviewImg(reader.result);
-        };
-        reader.readAsDataURL(file);
-    };
-
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -164,9 +153,7 @@ const Join = () => {
         formData.append('telecom', telecom);
         formData.append('nickname', nickname);
         formData.append('command', 'join');
-        if (profileImg) {
-            formData.append('profile_img_url', profileImg);
-        }
+        formData.append('profile_img_url', profileImg);
 
         const jsonFormData = {};
         for (const [key, value] of formData.entries()) {
@@ -199,17 +186,6 @@ const Join = () => {
         <Box bg="white" color="black" p={8} maxW="md" mx="auto" mt={8} borderRadius="lg">
             <Text fontSize="3xl" mb={4} textAlign="center">회원가입</Text>
             <form onSubmit={handleSubmit}>
-                <FormControl id="profileImg" mt={4}>
-                    <FormLabel>프로필 사진 업로드</FormLabel>
-                    <input type="file" accept="image/*" onChange={handleProfileImgChange} />
-                    {previewImg && (
-                        <img
-                            src={previewImg}
-                            alt="프로필 사진 미리보기"
-                            style={{ marginTop: '10px', maxWidth: '200px' }}
-                        />
-                    )}
-                </FormControl>
                 <InputField
                     id="id"
                     label="아이디"
