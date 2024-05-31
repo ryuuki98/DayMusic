@@ -28,11 +28,15 @@ import AuthContext from '../../context/AuthContext';
 import { IoMdMusicalNotes } from "react-icons/io";
 import { BiBorderAll } from 'react-icons/bi';
 import MyBoardList from '../Board/MyBoardList';
+import { useLocation } from 'react-router-dom';
 
 const Follow = () => {
     // 로그인 한 유저의 아이디,닉네임 사용가능
     const { currentUser } = useContext(AuthContext);
-    
+
+    const location = useLocation();
+    const postId = location.state?.postId || currentUser.id;
+    console.log("postId가 도대체 뭐야?", postId);
     // 내 게시글 불러오기
     const [showMyBoardPosts, setShowMyBoardPosts] = useState(false);
     
@@ -60,11 +64,11 @@ const Follow = () => {
         const data = await response.json();
         console.log(data);
 
-        setFollowList(data.result[0]);
-        setFollowerList(data.result[1]);
-        setFollowedCount(data.result[0].length);
-        setFollowerCount(data.result[1].length);
-        setIsFollowing(data.result[0].some(follow => follow.id === currentUser.id)); // 여기에서 초기 팔로우 상태를 설정
+        setFollowList(data.result[1]);
+        setFollowerList(data.result[0]);
+        setFollowedCount(data.result[1].length);
+        setFollowerCount(data.result[0].length);
+        setIsFollowing(data.result[1].some(follow => follow.id === currentUser.id)); // 여기에서 초기 팔로우 상태를 설정
     };
 
     const fetchFollowList = async () => {
@@ -74,10 +78,10 @@ const Follow = () => {
         const data = await response.json();
         console.log(data);
 
-        setFollowList(data.result[0]);
-        setFollowerList(data.result[1]);
-        setFollowedCount(data.result[0].length);
-        setFollowerCount(data.result[1].length);
+        setFollowList(data.result[1]);
+        setFollowerList(data.result[0]);
+        setFollowedCount(data.result[1].length);
+        setFollowerCount(data.result[0].length);
     };
 
     // 사용자 게시글 수 가져오기
@@ -120,7 +124,7 @@ const Follow = () => {
         e.preventDefault();
         const command = isFollowing ? "delete" : "add";
         const id = currentUser.id;
-        const youId = "user4"; // 여기는 임의 아이디이니께 나중에 바꿔야대!
+        const youId = postId; // 여기는 임의 아이디이니께 나중에 바꿔야대!
         const myHeaders = new Headers();
         myHeaders.append('Content-Type', 'application/json;charset=utf-8');
 
@@ -175,7 +179,7 @@ const Follow = () => {
             </Flex>
             <Flex align="center" justify="space-between" mb="4">
                 <Heading size="md" ml="25px">{currentUser.nickname}</Heading>
-                {currentUser.id === 'your_current_user_id' && (
+                {currentUser.id !== postId && (
                     <Button colorScheme='gray' onClick={handleFollowCheck}>
                         {isFollowing ? '팔로우 취소' : '팔로우'}
                     </Button>
