@@ -52,8 +52,7 @@ const MyPage = () => {
                 .then((data) => {
                     if (data.profileImageUrl) {
                         setProfileImg(data.profileImageUrl);
-
-                        console.log(profileImg);
+                        console.log("Fetched profile image URL:", data.profileImageUrl);
                     }
                 })
                 .catch((error) => {
@@ -121,7 +120,6 @@ const MyPage = () => {
             const formData = new FormData();
             formData.append('profileImage', file);
             formData.append('userId', currentUser.id);
-
 
             try {
                 const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/image/service`, {

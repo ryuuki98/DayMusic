@@ -14,8 +14,6 @@ const Join = () => {
     const [phone, setPhone] = useState('');
     const [telecom, setTelecom] = useState('');
     const [nickname, setNickname] = useState('');
-    const [profileImg, setProfileImg] = useState(null); 
-    const [previewImg, setPreviewImg] = useState(null); 
     const [isValidId, setIsValidId] = useState(true);
     const [isValidNickname, setIsValidNickname] = useState(true);
     const [isValidEmail, setIsValidEmail] = useState(true);
@@ -153,7 +151,7 @@ const Join = () => {
         formData.append('telecom', telecom);
         formData.append('nickname', nickname);
         formData.append('command', 'join');
-        formData.append('profile_img_url', profileImg);
+        formData.append('profile_img_url', 'https://daymusic-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%80%E1%85%B5%E1%84%87%E1%85%A9%E1%86%AB%E1%84%8B%E1%85%B5%E1%84%86%E1%85%B5%E1%84%8C%E1%85%B5.png');
 
         const jsonFormData = {};
         for (const [key, value] of formData.entries()) {
