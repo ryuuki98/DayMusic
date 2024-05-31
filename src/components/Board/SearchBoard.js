@@ -21,7 +21,7 @@ import {
 import { BiChat, BiLike, BiShare } from 'react-icons/bi';
 import AuthContext from '../../context/AuthContext';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import CommentList from '../Comment/CommentList.js';  // 올바른 경로로 CommentList 임포트
+import CommentList from '../Comment/CommentList';  // 올바른 경로로 CommentList 임포트
 
 const SearchBoard = () => {
     const navigate = useNavigate();
@@ -30,15 +30,9 @@ const SearchBoard = () => {
     const [error, setError] = useState('');
     const { currentUser } = useContext(AuthContext); // 로그인 정보 확인
     let [likeCount, setLikeCount] = useState(0); // 좋아요수 카운트
-    const [showComments, setShowComments] = useState( {});
+    const [showComments, setShowComments] = useState({});
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json;charset=utf-8');
-    
-    const [music, setMusic] = useState(null);
-
-    const test = (e) => {
-        setMusic(posts);
-    }
 
     const handleSubmit = (e) => {
         // 좋아요 추가/제거 이벤트
@@ -116,6 +110,7 @@ const SearchBoard = () => {
     const handleNicknameClick = (id) => {
         navigate('/userFollow', { state: { postId: id } });
     };
+
     useEffect(() => {
         const fetchPosts = async () => {
             try {
@@ -137,6 +132,7 @@ const SearchBoard = () => {
                 setError(error.message);
             }
         };
+
         fetchPosts();
     }, []);
 
@@ -195,11 +191,10 @@ const SearchBoard = () => {
                                 objectFit="cover"
                             />
                         )}
-
-                        <Text mb={4} >노래 제목: {post.music_track}</Text>
-                        <Text mb={4} >가수: {post.music_music_artist}</Text>
+                        <Text mb={4}>노래 제목: {post.music_track}</Text>
+                        <Text mb={4}>가수: {post.music_music_artist}</Text>
                         <Image src={post.music_thumbnail} />
-                        <audio controls src={post.music_thumbnail} />
+                        <audio controls src={post.music_preview_url} />
 
                         <HStack spacing={4}>
                             <Button
@@ -220,7 +215,7 @@ const SearchBoard = () => {
                                 Share
                             </Button>
                         </HStack>
-                        <CommentList boardCode={post.board_code} />  {/* CommentList 컴포넌트 추가 */}
+                        {showComments[post.board_code] && <CommentList boardCode={post.board_code} />} {/* CommentList 컴포넌트 추가 */}
                     </Box>
                 ))}
             </VStack>
