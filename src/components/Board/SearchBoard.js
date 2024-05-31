@@ -26,8 +26,8 @@ import CommentList from '../Comment/CommentList';  // 올바른 경로로 Commen
 const SearchBoard = () => {
     const navigate = useNavigate();
     const command = "search";
-    const [posts, setPosts] = useState([]);
-    const [error, setError] = useState('');
+    const [posts, setPosts] = useState([]); // 게시물 상태
+    const [error, setError] = useState(''); // 에러 상태
     const { currentUser } = useContext(AuthContext); // 로그인 정보 확인
     let [likeCount, setLikeCount] = useState(0); // 좋아요수 카운트
     const [showComments, setShowComments] = useState({});
@@ -43,39 +43,33 @@ const SearchBoard = () => {
         const myHeaders = new Headers();
         myHeaders.append('Content-Type', 'application/json;charset=utf-8');
 
+
+        // 좋아요 상태 서버에 업데이트
+        const likeStatus = posts.find(post => post.board_code === postId).likedByUser;
         const requestOptions = {
             method: 'POST',
             headers: myHeaders,
-            body: JSON.stringify({
-                command: command,
-                id: id,
-                board_code: board_code,
-            }),
+            body: JSON.stringify({ postId, likeStatus }),
         };
 
-        console.log('요청 보낼 내용:', requestOptions);
-
         fetch(`${process.env.REACT_APP_SERVER_URL}/like`, requestOptions)
-            .then((response) => {
-                return response.json().then((data) => {
-                    const count = data.count;
-                    if (response.ok) {
-                        console.log('좋아요처리 성공:', count);
-                        setLikeCount(count);
-                    } else {
-                        console.log('왜인지 실패');
-                    }
-                });
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    console.error('Failed to update like status');
+                }
             })
-            .catch((error) => {
-                console.log('실패처리');
+            .catch(error => {
+                console.error('Error updating like status:', error);
             });
     };
 
+    // 게시물 수정 핸들러
     const handleEdit = (boardCode) => {
         navigate(`/board/update/`, { state: { boardCode } });
     };
 
+    // 게시물 삭제 핸들러
     const handleDelete = async (boardCode) => {
         try {
             const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/board/service`, {
@@ -93,13 +87,14 @@ const SearchBoard = () => {
                 throw new Error('Failed to delete post');
             }
 
-            // Remove the deleted post from the list
+            // 삭제된 게시물 리스트에서 제거
             setPosts(posts.filter(post => post.board_code !== boardCode));
         } catch (error) {
             setError(error.message);
         }
     };
 
+    // 댓글 표시 토글 핸들러
     const toggleComments = (boardCode) => {
         setShowComments(prevState => ({
             ...prevState,
@@ -107,6 +102,7 @@ const SearchBoard = () => {
         }));
     };
 
+    // 닉네임 클릭 핸들러
     const handleNicknameClick = (id) => {
         navigate('/userFollow', { state: { postId: id } });
     };
@@ -127,7 +123,8 @@ const SearchBoard = () => {
                     throw new Error('Failed to fetch posts');
                 }
                 const data = JSON.parse(responseText);
-                setPosts(data.boardList);
+                // 게시물 데이터에 좋아요 상태 초기화
+                setPosts(data.boardList.map(post => ({ ...post, likedByUser: false })));
             } catch (error) {
                 setError(error.message);
             }
@@ -197,15 +194,15 @@ const SearchBoard = () => {
                         <audio controls src={post.music_preview_url} />
 
 
+
                         <HStack spacing={4}>
                             <Button
                                 flex="1"
                                 variant="ghost"
                                 leftIcon={<BiLike />}
-                                onClick={handleSubmit}
-                                value={post.board_code}
+                                onClick={() => handleLike(post.board_code)} // 좋아요 토글 핸들러 호출
                             >
-                                <Text>{likeCount}</Text>
+                                <Text id={post.board_code}>{post.likeCount}</Text>
                                 <Box as="span" mx="2"></Box>
                                 Like
                             </Button>
@@ -217,6 +214,7 @@ const SearchBoard = () => {
                             </Button>
                         </HStack>
                         {showComments[post.board_code] && <CommentList boardCode={post.board_code} />} {/* CommentList 컴포넌트 추가 */}
+
                     </Box>
                 ))}
             </VStack>
@@ -225,3 +223,4 @@ const SearchBoard = () => {
 };
 
 export default SearchBoard;
+
