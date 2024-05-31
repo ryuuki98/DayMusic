@@ -80,9 +80,39 @@ const Follow = () => {
         setFollowerCount(data.result[1].length);
     };
 
+    // 사용자 게시글 수 가져오기
+    const fetchPostCount = async () => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/board/service`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify({
+                    id: currentUser.id,
+                    command: 'myBoard'
+                }),
+                credentials: 'include',
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                console.log("게시글 불러오기 성공")
+                setPostCount(data.boardList.length); // 게시글 수 업데이트
+            } else {
+                console.log("게시글 불러오기 실패");
+                throw new Error('Failed to fetch posts');
+            }
+        } catch (error) {
+            console.log("실패");
+            console.error('Error fetching posts:', error);
+        }
+    };
+
     useEffect(() => {
         fetchFollowData();
         fetchFollowList();
+        fetchPostCount();
     }, []);
 
      // 팔로우 추가,취소 처리
@@ -160,7 +190,7 @@ const Follow = () => {
             <Divider my="4" />
             
             {/* MyBoardPosts 컴포넌트를 조건부로 렌더링 */}
-            {showMyBoardPosts && <MyBoardList onPostCountChange={setPostCount} />}
+            {showMyBoardPosts && <MyBoardList onPostCountChange={setPostCount} fetchPostCount={fetchPostCount} />}
 
             <Flex justify="space-between" mt="4" px="4" py="2" borderTopWidth="1px">
             </Flex>
