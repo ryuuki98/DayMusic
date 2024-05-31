@@ -196,7 +196,6 @@ const SearchBoard = () => {
                                 objectFit="cover"
                             />
                         )}
-                        <Text mb={4} on {test}>Music code: {post.music_code}</Text>
                         <HStack spacing={4}>
                             <Button
                                 flex="1"

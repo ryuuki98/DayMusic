@@ -38,9 +38,9 @@ const CreateBoardPost = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const musicTrack = selectedTrack ? selectedTrack.name : null;
-        const musicArtist = selectedTrack ? selectedTrack.artists.name : null;
-        const musicAlbum = selectedTrack ? selectedTrack.album.name : null;
+        const musicTrack = selectedTrack ? selectedTrack.name : "";
+        const musicArtist = selectedTrack ? selectedTrack.artists.name : "";
+        const musicAlbum = selectedTrack ? selectedTrack.album.name : "";
         console.log(musicTrack);
         console.log(musicArtist);
         console.log(musicAlbum);
