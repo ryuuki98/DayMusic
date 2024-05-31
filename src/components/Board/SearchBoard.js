@@ -32,6 +32,12 @@ const SearchBoard = () => {
     const [showComments, setShowComments] = useState({});
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json;charset=utf-8');
+    
+    const [music, setMusic] = useState(null);
+
+    const test = (e) => {
+        setMusic(posts);
+    }
 
     const handleSubmit = (e) => {
         // 좋아요 추가/제거 이벤트
@@ -127,7 +133,6 @@ const SearchBoard = () => {
                 setError(error.message);
             }
         };
-
         fetchPosts();
     }, []);
 
@@ -186,7 +191,7 @@ const SearchBoard = () => {
                                 objectFit="cover"
                             />
                         )}
-                        <Text mb={4}>Music code: {post.music_code}</Text>
+                        <Text mb={4} on {test}>Music code: {post.music_code}</Text>
                         <HStack spacing={4}>
                             <Button
                                 flex="1"
