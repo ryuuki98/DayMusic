@@ -8,8 +8,13 @@ const Sidebar = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = React.useRef();
 
-    const handleMyPageClick = () => {
+    const handleFollowClick = () => {
         navigate('/follow');
+    };
+
+    const handleMyPageClick = () => {
+
+        navigate('/user/mypage');
     };
 
     const handleSearch = () => {
@@ -35,6 +40,9 @@ const Sidebar = () => {
                 </Button>
                 <Button onClick={onOpen} width="full" variant="ghost" >
                     Search
+                </Button>
+                <Button onClick={handleFollowClick} width="full" variant="ghost" >
+                    follow
                 </Button>
                 <Button onClick={handleMyPageClick} width="full" variant="ghost" >
                     MyPage

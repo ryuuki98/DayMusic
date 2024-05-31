@@ -29,32 +29,38 @@ const CreateBoardPost = () => {
     const [responseMessage, setResponseMessage] = useState('');
     const [selectedTrack, setSelectedTrack] = useState(null);
     const [showSpotifySearch, setShowSpotifySearch] = useState(false);
-    const [music_tarck, setMusicTarck] = useState(null);
-    const [music_artist, setMusicArtist] = useState(null);
-    const [music_album, setMusicAlbum] = useState(null);
+    // const [musicTrack, setMusicTarck] = useState(null);
+    // const [musicArtist, setMusicArtist] = useState(null);
+    // const [musicAlbum, setMusicAlbum] = useState(null);
     const navigate = useNavigate();
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json;charset=utf-8');
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setMusicTarck(selectedTrack.name);
-        setMusicArtist(selectedTrack.artists.name);
-        setMusicAlbum(selectedTrack.album.name);
+        const musicTrack = selectedTrack ? selectedTrack.name : null;
+        const musicArtist = selectedTrack ? selectedTrack.artists.name : null;
+        const musicAlbum = selectedTrack ? selectedTrack.album.name : null;
+        console.log(musicTrack);
+        console.log(musicArtist);
+        console.log(musicAlbum);
         try {
             const requestOptions = {
+                
                 method: 'POST',
                 headers: myHeaders,
                 body: JSON.stringify({
+                    
                     id : currentUser.id,
                     nickname : currentUser.nickname,
                     command: command,
                     contents: contents,
                     isPublic: isPublic,
-                    music_tarck: music_tarck,
-                    music_artist: music_artist,
-                    music_album: music_album,
-                    track: selectedTrack ? selectedTrack.id : null
+
+                    musicTrack: musicTrack,
+                    musicArtist: musicArtist,
+                    musicAlbum: musicAlbum,
+                    // track: selectedTrack ? selectedTrack.id : null
                 }),
                 credentials: 'include',
             };
