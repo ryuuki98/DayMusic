@@ -1,219 +1,298 @@
-// CommentList.js
 import React, { useState, useEffect, useContext } from 'react';
 import {
     Box,
     Text,
     VStack,
     HStack,
-    Textarea,
+    Input,
     Button,
     IconButton,
-    useToast,
 } from '@chakra-ui/react';
+import { FaEdit, FaTrash, FaSave, FaTimes, FaReply, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import AuthContext from '../../context/AuthContext';
-import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 
 const CommentList = ({ boardCode }) => {
     const { currentUser } = useContext(AuthContext);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
-    const [editComment, setEditComment] = useState(null);
-    const [editContent, setEditContent] = useState('');
-    const [error, setError] = useState('');
-    const [showComments, setShowComments] = useState(false);
-    const toast = useToast();
-    const myHeaders = new Headers();
-    myHeaders.append('Content-Type', 'application/json;charset=utf-8');
+    const [editingCommentId, setEditingCommentId] = useState(null);
+    const [editingCommentContent, setEditingCommentContent] = useState('');
+    const [replyingCommentId, setReplyingCommentId] = useState(null);
+    const [newReply, setNewReply] = useState('');
+    const [showReplies, setShowReplies] = useState({});
 
     useEffect(() => {
-        if (showComments) {
-            fetchComments();
-        }
-    }, [showComments]);
-
-    const fetchComments = async () => {
-        try {
-            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/comment/service`, {
-                method: 'POST',
-                headers: myHeaders,
-                body: JSON.stringify({ board_code: boardCode }),
-            });
-            if (!response.ok) {
-                throw new Error('Failed to fetch comments');
+        const fetchComments = async () => {
+            try {
+                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/comment/service`, 
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        command: "list",
+                        boardCode: boardCode,
+                    }),
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch comments');
+                }
+                const data = await response.json();
+                setComments(data);
+            } catch (error) {
+                console.error(error);
             }
-            const data = await response.json();
-            setComments(data);
-        } catch (error) {
-            setError(error.message);
-        }
-    };
+        };
+
+        fetchComments();
+    }, [boardCode]);
 
     const handleAddComment = async () => {
         try {
             const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/comment/service`, {
                 method: 'POST',
-                headers: myHeaders,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify({
-                    board_code: boardCode,
+                    command: "add",
                     id: currentUser.id,
                     contents: newComment,
+                    boardCode: boardCode,
+                    parent: null
                 }),
             });
-            if (!response.ok) {
+
+            if (response.ok) {
+                setNewComment('');
+                const newCommentData = await response.json();
+                setComments((prevComments) => [...prevComments, newCommentData]);
+            } else {
                 throw new Error('Failed to add comment');
             }
-            const data = await response.json();
-            setComments(prevComments => [...prevComments, data]);
-            setNewComment('');
-            toast({
-                title: 'Comment added',
-                status: 'success',
-                duration: 3000,
-                isClosable: true,
-            });
         } catch (error) {
-            setError(error.message);
-            toast({
-                title: 'Error adding comment',
-                description: error.message,
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
+            console.error(error);
+        }
+    };
+
+    const handleAddReply = async (parentCode) => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/comment/service`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    command: "add",
+                    id: currentUser.id,
+                    contents: newReply,
+                    boardCode: boardCode,
+                    parent: parentCode,
+                }),
             });
+
+            if (response.ok) {
+                setNewReply('');
+                const newReplyData = await response.json();
+                setComments((prevComments) => [...prevComments, newReplyData]);
+            } else {
+                throw new Error('Failed to add reply');
+            }
+        } catch (error) {
+            console.error(error);
         }
     };
 
     const handleEditComment = async (cmtCode) => {
         try {
             const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/comment/service`, {
-                method: 'PUT',
-                headers: myHeaders,
-                body: JSON.stringify({ contents: editContent }),
-                cmtCode: cmtCode
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    command: "edit",
+                    cmtCode: cmtCode,
+                    contents: editingCommentContent,
+                }),
             });
-            if (!response.ok) {
-                throw new Error('Failed to update comment');
+
+            if (response.ok) {
+                setEditingCommentId(null);
+                setEditingCommentContent('');
+                const updatedComments = comments.map(comment =>
+                    comment.cmtCode === cmtCode ? { ...comment, contents: editingCommentContent } : comment
+                );
+                setComments(updatedComments);
+            } else {
+                throw new Error('Failed to edit comment');
             }
-            const updatedComment = await response.json();
-            setComments(prevComments =>
-                prevComments.map(comment =>
-                    comment.cmt_code === cmtCode ? updatedComment : comment
-                )
-            );
-            setEditComment(null);
-            setEditContent('');
-            toast({
-                title: 'Comment updated',
-                status: 'success',
-                duration: 3000,
-                isClosable: true,
-            });
         } catch (error) {
-            setError(error.message);
-            toast({
-                title: 'Error updating comment',
-                description: error.message,
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-            });
+            console.error(error);
         }
     };
 
     const handleDeleteComment = async (cmtCode) => {
         try {
             const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/comment/service`, {
-                method: 'DELETE',
-                headers: myHeaders,
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify({
-                    board_code: boardCode,
-                    id: currentUser.id,
-                    cmtCode: cmtCode
-                })
+                    command: "delete",
+                    cmtCode: cmtCode,
+                }),
             });
-            if (!response.ok) {
+
+            if (response.ok) {
+                setComments(comments.filter(comment => comment.cmtCode !== cmtCode));
+            } else {
                 throw new Error('Failed to delete comment');
             }
-            setComments(prevComments => prevComments.filter(comment => comment.cmt_code !== cmtCode));
-            toast({
-                title: 'Comment deleted',
-                status: 'success',
-                duration: 3000,
-                isClosable: true,
-            });
         } catch (error) {
-            setError(error.message);
-            toast({
-                title: 'Error deleting comment',
-                description: error.message,
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-            });
+            console.error(error);
         }
     };
 
-    return (
-        <Box mt={4}>
-            <Button onClick={() => setShowComments(!showComments)}>
-                {showComments ? 'Hide Comments' : 'Show Comments'}
-            </Button>
-            {showComments && (
-                <>
-                    {error && (
-                        <Box color="red.500" mb={4}>
-                            {error}
-                        </Box>
-                    )}
-                    <VStack align="start" mt={4} spacing={4}>
-                        {comments.map(comment => (
-                            <Box key={comment.cmt_code} p={2} bg="gray.100" borderRadius="md" w="full">
-                                <HStack justifyContent="space-between" w="full">
-                                    <Box>
-                                        <Text fontWeight="bold">{comment.id}</Text>
-                                        {editComment === comment.cmt_code ? (
-                                            <Textarea
-                                                value={editContent}
-                                                onChange={(e) => setEditContent(e.target.value)}
-                                            />
-                                        ) : (
-                                            <Text>{comment.contents}</Text>
-                                        )}
-                                    </Box>
-                                    {currentUser.id === comment.id && (
-                                        <HStack>
-                                            {editComment === comment.cmt_code ? (
-                                                <Button onClick={() => handleEditComment(comment.cmt_code)}>Save</Button>
-                                            ) : (
-                                                <IconButton
-                                                    icon={<EditIcon />}
-                                                    onClick={() => {
-                                                        setEditComment(comment.cmt_code);
-                                                        setEditContent(comment.contents);
-                                                    }}
-                                                />
-                                            )}
+    const toggleReplies = (commentId) => {
+        setShowReplies((prevShowReplies) => ({
+            ...prevShowReplies,
+            [commentId]: !prevShowReplies[commentId],
+        }));
+    };
+
+    const renderReplies = (parentCode) => {
+        return comments
+            .filter(comment => comment.parent === parentCode)
+            .map(reply => (
+                <Box key={reply.cmtCode} p={2} pl={8} borderWidth={1} borderRadius="md" mt={2}>
+                    <HStack justifyContent="space-between">
+                        {editingCommentId === reply.cmtCode ? (
+                            <>
+                                <Input
+                                    value={editingCommentContent}
+                                    onChange={(e) => setEditingCommentContent(e.target.value)}
+                                />
+                                <IconButton
+                                    icon={<FaSave />}
+                                    onClick={() => handleEditComment(reply.cmtCode)}
+                                />
+                                <IconButton
+                                    icon={<FaTimes />}
+                                    onClick={() => {
+                                        setEditingCommentId(null);
+                                        setEditingCommentContent('');
+                                    }}
+                                />
+                            </>
+                        ) : (
+                            <>
+                                <Text>{reply.contents}</Text>
+                                <HStack>
+                                    {currentUser.id === reply.id && (
+                                        <>
                                             <IconButton
-                                                icon={<DeleteIcon />}
-                                                onClick={() => handleDeleteComment(comment.cmt_code)}
+                                                icon={<FaEdit />}
+                                                onClick={() => {
+                                                    setEditingCommentId(reply.cmtCode);
+                                                    setEditingCommentContent(reply.contents);
+                                                }}
                                             />
-                                        </HStack>
+                                            <IconButton
+                                                icon={<FaTrash />}
+                                                onClick={() => handleDeleteComment(reply.cmtCode)}
+                                            />
+                                        </>
                                     )}
                                 </HStack>
-                            </Box>
-                        ))}
-                        <HStack w="full" mt={2}>
-                            <Textarea
-                                placeholder="Add a comment..."
-                                value={newComment}
-                                onChange={(e) => setNewComment(e.target.value)}
+                            </>
+                        )}
+                    </HStack>
+                </Box>
+            ));
+    };
+
+    return (
+        <VStack align="stretch" spacing={4} mt={4}>
+            {comments.filter(comment => comment.parent === 0).map(comment => (
+                <Box key={comment.cmtCode} p={2} borderWidth={1} borderRadius="md">
+                    <HStack justifyContent="space-between">
+                        {editingCommentId === comment.cmtCode ? (
+                            <>
+                                <Input
+                                    value={editingCommentContent}
+                                    onChange={(e) => setEditingCommentContent(e.target.value)}
+                                />
+                                <IconButton
+                                    icon={<FaSave />}
+                                    onClick={() => handleEditComment(comment.cmtCode)}
+                                />
+                                <IconButton
+                                    icon={<FaTimes />}
+                                    onClick={() => {
+                                        setEditingCommentId(null);
+                                        setEditingCommentContent('');
+                                    }}
+                                />
+                            </>
+                        ) : (
+                            <>
+                                <Text>{comment.contents}</Text>
+                                <HStack>
+                                    {currentUser.id === comment.id && (
+                                        <>
+                                            <IconButton
+                                                icon={<FaEdit />}
+                                                onClick={() => {
+                                                    setEditingCommentId(comment.cmtCode);
+                                                    setEditingCommentContent(comment.contents);
+                                                }}
+                                            />
+                                            <IconButton
+                                                icon={<FaTrash />}
+                                                onClick={() => handleDeleteComment(comment.cmtCode)}
+                                            />
+                                        </>
+                                    )}
+                                    <IconButton
+                                        icon={<FaReply />}
+                                        onClick={() => setReplyingCommentId(comment.cmtCode)}
+                                    />
+                                    <IconButton
+                                        icon={showReplies[comment.cmtCode] ? <FaChevronUp /> : <FaChevronDown />}
+                                        onClick={() => toggleReplies(comment.cmtCode)}
+                                    />
+                                    <Text>[댓글 {comments.filter(reply => reply.parent === comment.cmtCode).length}개]</Text>
+                                </HStack>
+                            </>
+                        )}
+                    </HStack>
+                    {replyingCommentId === comment.cmtCode && (
+                        <Box mt={2}>
+                            <Input
+                                placeholder="대댓글을 입력하세요"
+                                value={newReply}
+                                onChange={(e) => setNewReply(e.target.value)}
                             />
-                            <Button onClick={handleAddComment}>Comment</Button>
-                        </HStack>
-                    </VStack>
-                </>
-            )}
-        </Box>
+                            <Button onClick={() => handleAddReply(comment.cmtCode)} mt={2}>
+                                Add Reply
+                            </Button>
+                        </Box>
+                    )}
+                    {showReplies[comment.cmtCode] && renderReplies(comment.cmtCode)}
+                </Box>
+            ))}
+            <HStack>
+                <Input
+                    placeholder="댓글을 입력하세요"
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                />
+                <Button onClick={handleAddComment}>Add Comment</Button>
+            </HStack>
+        </VStack>
     );
 };
 
