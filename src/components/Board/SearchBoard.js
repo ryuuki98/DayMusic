@@ -166,7 +166,7 @@ const SearchBoard = () => {
                     >
                         <Flex alignItems="center" mb={4}>
                             <Avatar size="md" name={post.nickname} src="https://bit.ly/sage-adebayo" />
-                            <Box ml={3} cursor="pointer" onClick={() => handleNicknameClick(post.nickname)}>
+                            <Box ml={3} cursor="pointer" onClick={() => handleNicknameClick(post.id)}>
                                 <Text fontWeight="bold">{post.nickname}</Text>
                                 <Text fontSize="sm" color="gray.500">{new Date(post.createdAt).toLocaleString()}</Text>
                             </Box>
@@ -198,7 +198,7 @@ const SearchBoard = () => {
                         <Text mb={4} >노래 제목: {post.music_track}</Text>
                         <Text mb={4} >가수: {post.music_music_artist}</Text>
                         <Image src={post.music_thumbnail} />
-                        <audio controls src={post.music_thumbnail} />
+                        <audio controls src={post.musicPreviewUrl} />
                         <HStack spacing={4}>
                             <Button
                                 flex="1"
