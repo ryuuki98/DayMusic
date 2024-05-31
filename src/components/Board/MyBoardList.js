@@ -17,7 +17,7 @@ import {
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import AuthContext from '../../context/AuthContext';
 
-const MyBoardPosts = ({onPostCountChange }) => { // onPostCountChange prop 추가
+const MyBoardPosts = () => {
     const { currentUser } = useContext(AuthContext);
     const navigate = useNavigate();
     const command = "myBoard";
@@ -44,7 +44,6 @@ const MyBoardPosts = ({onPostCountChange }) => { // onPostCountChange prop 추�
                 }
                 const data = JSON.parse(responseText);
                 setPosts(data.boardList);
-                onPostCountChange(data.boardList.length); // 게시글 수 설정
             } catch (error) {
                 setError(error.message);
             }
@@ -81,7 +80,6 @@ const MyBoardPosts = ({onPostCountChange }) => { // onPostCountChange prop 추�
             // Remove the deleted post from the list
             const updatedPosts = posts.filter(post => post.board_code !== boardCode);
             setPosts(updatedPosts);
-            onPostCountChange(updatedPosts.length); // 게시글 수 업데이트
         } catch (error) {
             setError(error.message);
         }
@@ -99,7 +97,7 @@ const MyBoardPosts = ({onPostCountChange }) => { // onPostCountChange prop 추�
             overflowY="auto"
             height="80vh"
         >
-            <Heading mb={4} textColor="black">My Posts</Heading>
+            <Heading mb={4} textColor="black">My Posts{posts.length}</Heading>
             {error && (
                 <Alert status="error" mb={4}>
                     <AlertIcon />
