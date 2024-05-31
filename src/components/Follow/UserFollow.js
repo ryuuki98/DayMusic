@@ -27,7 +27,7 @@ import { MdPerson } from 'react-icons/md';
 import AuthContext from '../../context/AuthContext';
 import { IoMdMusicalNotes } from "react-icons/io";
 import { BiBorderAll } from 'react-icons/bi';
-import MyBoardList from '../Board/MyBoardList';
+import UserBoardList from '../Board/UserBoardList';
 import { useLocation } from 'react-router-dom';
 
 const UserFollow = () => {
@@ -64,11 +64,11 @@ const UserFollow = () => {
         const data = await response.json();
         console.log(data);
 
-        setFollowList(data.result[0]);
-        setFollowerList(data.result[1]);
-        setFollowedCount(data.result[0].length);
-        setFollowerCount(data.result[1].length);
-        setIsFollowing(data.result[0].some(follow => follow.id === postId)); // 여기에서 초기 팔로우 상태를 설정
+        setFollowList(data.result[1]);
+        setFollowerList(data.result[0]);
+        setFollowedCount(data.result[1].length);
+        setFollowerCount(data.result[0].length);
+        setIsFollowing(data.result[1].some(follow => follow.id === postId)); // 여기에서 초기 팔로우 상태를 설정
     };
 
     const fetchFollowList = async () => {
@@ -78,10 +78,10 @@ const UserFollow = () => {
         const data = await response.json();
         console.log(data);
 
-        setFollowList(data.result[0]);
-        setFollowerList(data.result[1]);
-        setFollowedCount(data.result[0].length);
-        setFollowerCount(data.result[1].length);
+        setFollowList(data.result[1]);
+        setFollowerList(data.result[0]);
+        setFollowedCount(data.result[1].length);
+        setFollowerCount(data.result[0].length);
     };
 
     // 사용자 게시글 수 가져오기
@@ -133,8 +133,8 @@ const UserFollow = () => {
             headers: myHeaders,
             body: JSON.stringify({
                 command: command,
-                followedId: id,
-                followerId: youId,
+                followedId: youId,
+                followerId: id,
             }),
         };
         console.log("보낸내용:", requestOptions);
@@ -179,9 +179,9 @@ const UserFollow = () => {
             </Flex>
             <Flex align="center" justify="space-between" mb="4">
                 <Heading size="md" ml="25px">{postId}</Heading>
-                {currentUser.id !== 'your_current_user_id' && (
+                {currentUser.id !== postId && (
                     <Button colorScheme='gray' onClick={handleFollowCheck}>
-                        {isFollowing ? '팔로우 취소' : '팔로우'}
+                        {isFollowing ? '팔로우취소' : '팔로우'}
                     </Button>
                 )}
             </Flex>
@@ -194,7 +194,7 @@ const UserFollow = () => {
             <Divider my="4" />
             
             {/* MyBoardPosts 컴포넌트를 조건부로 렌더링 */}
-            {showMyBoardPosts && <MyBoardList onPostCountChange={setPostCount} />}
+            {showMyBoardPosts && <UserBoardList onPostCountChange={setPostCount} />}
 
             <Flex justify="space-between" mt="4" px="4" py="2" borderTopWidth="1px">
             </Flex>
