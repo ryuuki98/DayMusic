@@ -52,6 +52,8 @@ const MyPage = () => {
                 .then((data) => {
                     if (data.profileImageUrl) {
                         setProfileImg(data.profileImageUrl);
+
+                        console.log(profileImg);
                     }
                 })
                 .catch((error) => {
