@@ -9,7 +9,7 @@ const Sidebar = () => {
     const cancelRef = React.useRef();
 
     const handleMyPageClick = () => {
-        navigate('/user/myPage');
+        navigate('/follow');
     };
 
     const handleSearch = () => {
