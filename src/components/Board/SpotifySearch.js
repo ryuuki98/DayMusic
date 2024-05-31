@@ -1,6 +1,6 @@
 // src/components/Board/SpotifySearch.js
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input, Button, VStack, List, ListItem, Text } from '@chakra-ui/react';
 import { getSpotifyToken } from '../../utils/spotifyAuth';
 
@@ -10,14 +10,15 @@ const SpotifySearch = ({ onSelectTrack }) => {
     const [token, setToken] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-    
+    useEffect(() => {
+        if (!token) {
+            const newToken = getSpotifyToken();
+            setToken(newToken);
+            console.log("test");
+        }
+    }, []);
 
     const searchTracks = async () => {
-        if (!token) {
-            const newToken = await getSpotifyToken();
-            setToken(newToken);
-        }
-
         try {
             const response = await fetch(`https://api.spotify.com/v1/search?q=${searchTerm}&type=track`, {
                 headers: {
@@ -42,7 +43,8 @@ const SpotifySearch = ({ onSelectTrack }) => {
 
     return (
         <VStack spacing={4} width="full">
-            <Input textColor="black"
+            <Input
+                textColor="black"
                 placeholder="Search for a track"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -60,7 +62,9 @@ const SpotifySearch = ({ onSelectTrack }) => {
                         _hover={{ bg: 'gray.100' }}
                         p={2}
                     >
-                        <Text>{track.name} by {track.artists[0].name}</Text>
+                        <Text>
+                            {track.name} by {track.artists[0].name}
+                        </Text>
                     </ListItem>
                 ))}
             </List>
