@@ -106,6 +106,10 @@ const SearchBoard = () => {
         }));
     };
 
+    const handleNicknameClick = (id, postNickname) => {
+        navigate('/userFollow', { state: { postId: id , postNickname: postNickname} });
+    };
+
     useEffect(() => {
         const fetchPosts = async () => {
             try {
@@ -157,7 +161,7 @@ const SearchBoard = () => {
                     >
                         <Flex alignItems="center" mb={4}>
                             <Avatar size="md" name={post.nickname} src="https://bit.ly/sage-adebayo" />
-                            <Box ml={3}>
+                            <Box ml={3} cursor="pointer" onClick={() => handleNicknameClick(post.id, post.nickname)}>
                                 <Text fontWeight="bold">{post.nickname}</Text>
                                 <Text fontSize="sm" color="gray.500">{new Date(post.createdAt).toLocaleString()}</Text>
                             </Box>
