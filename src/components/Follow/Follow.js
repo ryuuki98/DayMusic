@@ -99,8 +99,8 @@ const Follow = () => {
             headers: myHeaders,
             body: JSON.stringify({
                 command: command,
-                followedId: id,
-                followerId: youId,
+                followedId: youId,
+                followerId: id,
             }),
         };
         console.log("보낸내용:", requestOptions);
@@ -126,10 +126,6 @@ const Follow = () => {
         setShowMyBoardPosts(!showMyBoardPosts);
     };
 
-    const handlePostCountChange = (count) => {
-        setPostCount(count);
-    };
-
     return (
         <Box maxW="700px" mx="auto" mt="5">
             <Flex align="center" mb="4">
@@ -149,7 +145,7 @@ const Follow = () => {
             </Flex>
             <Flex align="center" justify="space-between" mb="4">
                 <Heading size="md" ml="25px">{currentUser.nickname}</Heading>
-                {currentUser.id !== 'your_current_user_id' && (
+                {currentUser.id === 'your_current_user_id' && (
                     <Button colorScheme='gray' onClick={handleFollowCheck}>
                         {isFollowing ? '팔로우 취소' : '팔로우'}
                     </Button>
@@ -164,7 +160,7 @@ const Follow = () => {
             <Divider my="4" />
             
             {/* MyBoardPosts 컴포넌트를 조건부로 렌더링 */}
-            {showMyBoardPosts && <MyBoardList onPostCountChange={handlePostCountChange} />}
+            {showMyBoardPosts && <MyBoardList onPostCountChange={setPostCount} />}
 
             <Flex justify="space-between" mt="4" px="4" py="2" borderTopWidth="1px">
             </Flex>
