@@ -38,6 +38,7 @@ const MyBoardPosts = () => {
                     body: JSON.stringify({
                         id: currentUser.id,
                         command: command,
+                        nickname: currentUser.nickname
                     }),
                     credentials: 'include',
                 });
