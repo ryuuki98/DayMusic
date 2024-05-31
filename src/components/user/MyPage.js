@@ -34,7 +34,7 @@ const MyPage = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = useRef();
     const [isDeleting, setIsDeleting] = useState(false);
-    const [profileImg, setProfileImg] = useState('https://via.placeholder.com/150');
+    const [profileImg, setProfileImg] = useState('');
     const [file, setFile] = useState(null);
     const inputFileRef = useRef(null);
     const toast = useToast();
@@ -43,6 +43,20 @@ const MyPage = () => {
         if (currentUser === null) {
             alert('로그인을 해야합니다.');
             navigate('/');
+        } else {
+            fetch(`${process.env.REACT_APP_SERVER_URL}/image/service?userId=${currentUser.id}`, {
+                method: 'GET',
+                credentials: 'include',
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.profileImageUrl) {
+                        setProfileImg(data.profileImageUrl);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error fetching profile image:', error);
+                });
         }
     }, [currentUser, navigate]);
 
@@ -83,7 +97,7 @@ const MyPage = () => {
         setTimeout(() => {
             setIsDeleting(false);
             onClose();
-            alert('탈퇴가 완료 되었습니다');
+            alert('탈퇴가 완료 되었습니다'); 
             navigate('/');
         }, 2000);
     };
@@ -117,7 +131,6 @@ const MyPage = () => {
                     const data = await response.text();
                     toast({
                         title: 'Profile image uploaded successfully',
-                        description: data,
                         status: 'success',
                         duration: 3000,
                         isClosable: true,
