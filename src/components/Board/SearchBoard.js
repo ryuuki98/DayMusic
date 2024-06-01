@@ -124,6 +124,10 @@ const SearchBoard = () => {
         navigate('/userFollow', { state: { postId: id } });
     };
 
+    const handlePostClick = (boardCode) => {
+        navigate('/board/detail', { state: { boardCode } });
+    };
+
     useEffect(() => {
         const fetchPosts = async () => {
             try {
@@ -165,13 +169,17 @@ const SearchBoard = () => {
                     {error}
                 </Alert>
             )}
-            <VStack spacing={4}>
+            <VStack spacing={4} >
                 {posts.map((post) => (
                     <Box
                         key={post.board_code}
                         w="full"
                         p={4}
                         bg="white"
+                        borderWidth="1px"
+                        borderRadius="lg"
+                        borderColor="gray.200"
+                        boxShadow="md"
                     >
                         <Flex alignItems="center" mb={4}>
                             <Avatar size="md" name={post.nickname} src="https://bit.ly/sage-adebayo" />
@@ -193,7 +201,9 @@ const SearchBoard = () => {
                                 </MenuList>
                             </Menu>
                         </Flex>
-                        <Text mb={4}>{post.contents}</Text>
+                        <Text mb={4} cursor="pointer" onClick={() => handlePostClick(post.board_code)}>
+                            {post.contents}
+                        </Text>
                         {post.image_url && (
                             <Image
                                 borderRadius="md"
@@ -237,8 +247,6 @@ const SearchBoard = () => {
                             </Button>
                         </HStack>
                         {showComments[post.board_code] && <CommentList boardCode={post.board_code} />} {/* CommentList 컴포넌트 추가 */}
-
-
                     </Box>
                 ))}
             </VStack>
@@ -247,5 +255,3 @@ const SearchBoard = () => {
 };
 
 export default SearchBoard;
-
-
