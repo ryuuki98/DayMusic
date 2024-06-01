@@ -17,8 +17,8 @@ const Header = () => {
                     Day Music
                 </Text>
                 <Flex align="center">
-                    <Button variant="link" mr={4} color="black">
-                        Page
+                    <Button variant="link" mr={4} color="black" onClick={() => {navigate('/')}}>
+                        logout
                     </Button>
                     <Button variant="link" mr={4} color="black">
                         Page
