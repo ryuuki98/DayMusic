@@ -182,7 +182,7 @@ const SearchBoard = () => {
                         boxShadow="md"
                     >
                         <Flex alignItems="center" mb={4}>
-                            <Avatar size="md" name={post.nickname} src="https://bit.ly/sage-adebayo" />
+                            <Avatar size="md" name={post.nickname} src={post.profileImg} />
                             <Box ml={3} cursor="pointer" onClick={() => handleNicknameClick(post.id)}>
                                 <Text fontWeight="bold">{post.nickname}</Text>
                                 <Text fontSize="sm" color="gray.500">{new Date(post.createdAt).toLocaleString()}</Text>
@@ -207,13 +207,15 @@ const SearchBoard = () => {
                         {post.image_url && (
                             <Image
                                 borderRadius="md"
-                                src={post.image_url}
+                                src={'https://daymusic-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%80%E1%85%B5%E1%84%87%E1%85%A9%E1%86%AB%E1%84%8B%E1%85%B5%E1%84%86%E1%85%B5%E1%84%8C%E1%85%B5.png'}
                                 alt="Post image"
                                 mb={4}
                                 boxSize="300px" // 정사각형으로 만들기 위해 크기 고정
                                 objectFit="cover"
                             />
                         )}
+                        <Text mb={4}>{post.contents}</Text>
+                        
 
                         {post.music_track && (
                             <>
