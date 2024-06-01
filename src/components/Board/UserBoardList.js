@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import AuthContext from '../../context/AuthContext';
 
-const UserBoardPosts = () => {
+const UserBoardPosts = ({ userId }) => {
     const { currentUser } = useContext(AuthContext);
     const navigate = useNavigate();
     const command = "myBoard";
@@ -27,7 +27,7 @@ const UserBoardPosts = () => {
                     method: 'POST',
                     headers: myHeaders,
                     body: JSON.stringify({
-                        id: currentUser.id,
+                        id: userId,
                         command: command,
                     }),
                     credentials: 'include',
@@ -44,39 +44,10 @@ const UserBoardPosts = () => {
         };
 
         fetchPosts();
-    }, [currentUser.id, command]);
+    }, [userId, command]);
 
     const handleBoxClick = (boardCode) => {
         navigate('/board/detail', { state: { boardCode } });
-    };
-
-    const handleEdit = (boardCode) => {
-        navigate('/board/update', { state: { boardCode } });
-    };
-
-    const handleDelete = async (boardCode) => {
-        try {
-            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/board/service`, {
-                method: 'POST',
-                headers: myHeaders,
-                body: JSON.stringify({
-                    command: "delete",
-                    id: currentUser.id,
-                    board_code: boardCode,
-                }),
-                credentials: 'include',
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to delete post');
-            }
-
-            // Remove the deleted post from the list
-            const updatedPosts = posts.filter(post => post.board_code !== boardCode);
-            setPosts(updatedPosts);
-        } catch (error) {
-            setError(error.message);
-        }
     };
 
     return (
@@ -91,7 +62,7 @@ const UserBoardPosts = () => {
             overflowY="auto"
             height="80vh"
         >
-            <Heading mb={4} textColor="black">My Posts{posts.length}</Heading>
+            <Heading mb={4} textColor="black">My Posts {posts.length}</Heading>
             {error && (
                 <Alert status="error" mb={4}>
                     <AlertIcon />

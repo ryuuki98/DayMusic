@@ -27,7 +27,7 @@ import { MdPerson } from 'react-icons/md';
 import AuthContext from '../../context/AuthContext';
 import { IoMdMusicalNotes } from "react-icons/io";
 import { BiBorderAll } from 'react-icons/bi';
-import UserBoardList from '../Board/UserBoardList';
+import UserBoardPosts from '../Board/UserBoardList';
 import { useLocation } from 'react-router-dom';
 
 const UserFollow = () => {
@@ -181,7 +181,7 @@ const UserFollow = () => {
                 <Heading size="md" ml="25px">{postId}</Heading>
                 {currentUser.id !== postId && (
                     <Button colorScheme='gray' onClick={handleFollowCheck}>
-                        {isFollowing ? '팔로우취소' : '팔로우'}
+                        {isFollowing ? '팔로우 취소' : '팔로우'}
                     </Button>
                 )}
             </Flex>
@@ -194,7 +194,7 @@ const UserFollow = () => {
             <Divider my="4" />
             
             {/* MyBoardPosts 컴포넌트를 조건부로 렌더링 */}
-            {showMyBoardPosts && <UserBoardList onPostCountChange={setPostCount} />}
+            {showMyBoardPosts && <UserBoardPosts userId={postId} />}  {/* 여기에 userId로 postId를 전달합니다 */}
 
             <Flex justify="space-between" mt="4" px="4" py="2" borderTopWidth="1px">
             </Flex>
