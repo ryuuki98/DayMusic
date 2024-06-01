@@ -48,6 +48,9 @@ const UserFollow = () => {
     const [followedCount, setFollowedCount] = useState(0);
     const [followerCount, setFollowerCount] = useState(0);
     
+    // 본인 프로필 이미지 관리
+    const [profileImg, setProfileImg] = useState('');
+
     // 팔로우 및 팔로워 리스트 관리
     const [followList, setFollowList] = useState();
     const [followerList, setFollowerList] = useState();
@@ -117,6 +120,21 @@ const UserFollow = () => {
         fetchFollowData();
         fetchFollowList();
         fetchPostCount();
+
+        fetch(`${process.env.REACT_APP_SERVER_URL}/image/service?userId=${postId}`, {
+            method: 'GET',
+            credentials: 'include',
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.profileImageUrl) {
+                    setProfileImg(data.profileImageUrl);
+                    console.log("Fetched profile image URL:", data.profileImageUrl);
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching profile image:', error);
+            });
     }, []);
 
      // 팔로우 추가,취소 처리
@@ -163,7 +181,7 @@ const UserFollow = () => {
     return (
         <Box maxW="700px" mx="auto" mt="5">
             <Flex align="center" mb="4">
-                <Avatar size="2xl" name={postId} src={currentUser.avatarUrl} />
+                <Avatar size="2xl" name={postId} src={profileImg} />
                 <VStack ml="200px">
                     <Text fontSize="20px">{postCount}</Text> 
                     <Button colorScheme='gray' variant='ghost' width="50%">게시물</Button>  
