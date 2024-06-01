@@ -102,9 +102,7 @@ const CreateBoardPost = () => {
             const data = await response.json();
             const boardCode = data.boardCode;
 
-            if (files.length > 0) {
-                await uploadImages(boardCode);
-            }
+            await uploadImages(boardCode);
 
             setResponseMessage('Post created successfully!');
             navigate('/board/search');
