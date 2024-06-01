@@ -13,28 +13,26 @@ import {
     HStack,
     IconButton,
     Image,
+    useToast,
 } from '@chakra-ui/react';
 import { EditIcon } from '@chakra-ui/icons';
 import SpotifySearch from './SpotifySearch';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
 
-
 const CreateBoardPost = () => {
-    const {currentUser} = useContext(AuthContext);
+    const { currentUser } = useContext(AuthContext);
     const command = "write";
     const [contents, setContents] = useState('');
     const [isPublic, setIsPublic] = useState(true);
     const [file, setFile] = useState(null);
-    const [responseMessage, setResponseMessage] = useState('');
+    const [responseMessage, setResponseMessage] = useState(''); // 상태 정의
     const [selectedTrack, setSelectedTrack] = useState(null);
     const [showSpotifySearch, setShowSpotifySearch] = useState(false);
-    // const [musicTrack, setMusicTarck] = useState(null);
-    // const [musicArtist, setMusicArtist] = useState(null);
-    // const [musicAlbum, setMusicAlbum] = useState(null);
     const navigate = useNavigate();
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json;charset=utf-8');
+    const toast = useToast();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -48,17 +46,14 @@ const CreateBoardPost = () => {
         console.log(musicPreviewUrl);
         try {
             const requestOptions = {
-                
                 method: 'POST',
                 headers: myHeaders,
                 body: JSON.stringify({
-                    
-                    id : currentUser.id,
-                    nickname : currentUser.nickname,
+                    id: currentUser.id,
+                    nickname: currentUser.nickname,
                     command: command,
                     contents: contents,
                     isPublic: isPublic,
-
                     musicTrack: musicTrack,
                     musicArtist: musicArtist,
                     musicPreviewUrl: musicPreviewUrl,
@@ -71,6 +66,12 @@ const CreateBoardPost = () => {
                 .then((response) => {
                     if (response.ok) {
                         setResponseMessage('Post created successfully!');
+                        toast({
+                            title: "게시글이 성공적으로 작성되었습니다.",
+                            status: "success",
+                            duration: 3000,
+                            isClosable: true,
+                        });
                         navigate('/board/search');
                     } else {
                         throw new Error('Failed to create post');
@@ -79,10 +80,24 @@ const CreateBoardPost = () => {
                 .catch((error) => {
                     setResponseMessage('Failed to create post.');
                     console.error('There was an error!', error);
+                    toast({
+                        title: "게시글 작성 실패.",
+                        description: "게시글 작성에 실패했습니다. 다시 시도해주세요.",
+                        status: "error",
+                        duration: 3000,
+                        isClosable: true,
+                    });
                 });
         } catch (error) {
             setResponseMessage('Failed to create post.');
             console.error('There was an error!', error);
+            toast({
+                title: "게시글 작성 실패.",
+                description: "게시글 작성에 실패했습니다. 다시 시도해주세요.",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
         }
     };
 
@@ -97,7 +112,7 @@ const CreateBoardPost = () => {
             bg="white"
         >
             <VStack spacing={4} as="form" onSubmit={handleSubmit}>
-            <Text fontSize="lg" fontWeight="bold" textColor="black">
+                <Text fontSize="lg" fontWeight="bold" textColor="black">
                     작성자: {currentUser.nickname}
                 </Text>
                 <FormControl id="file">
@@ -128,15 +143,13 @@ const CreateBoardPost = () => {
                         aria-label="Edit"
                     />
                 </HStack>
-                {showSpotifySearch && <SpotifySearch onSelectTrack={setSelectedTrack}
-                />}
+                {showSpotifySearch && <SpotifySearch onSelectTrack={setSelectedTrack} />}
                 {selectedTrack && (
                     <>
-                    <Text textColor="black">
-                        선택 노래: {selectedTrack.name} by {selectedTrack.artists[0].name}
-                        <Image src={selectedTrack.album.images[2]?.url}></Image>
-                        
-                    </Text>
+                        <Text textColor="black">
+                            선택 노래: {selectedTrack.name} by {selectedTrack.artists[0].name}
+                            <Image src={selectedTrack.album.images[2]?.url}></Image>
+                        </Text>
                         <audio controls src={selectedTrack.preview_url}></audio>
                     </>
                 )}
@@ -153,7 +166,7 @@ const CreateBoardPost = () => {
                 <Button type="submit" colorScheme="blue" width="full">
                     Create Post
                 </Button>
-                {responseMessage && <Text textColor="red" >{responseMessage}</Text>}
+                {responseMessage && <Text textColor="red">{responseMessage}</Text>}
             </VStack>
         </Box>
     );

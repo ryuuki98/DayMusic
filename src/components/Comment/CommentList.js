@@ -7,11 +7,12 @@ import {
     Input,
     Button,
     IconButton,
+    useToast,
 } from '@chakra-ui/react';
 import { FaEdit, FaTrash, FaSave, FaTimes, FaReply, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import AuthContext from '../../context/AuthContext';
 
-const CommentList = ({ boardCode }) => {
+const CommentList = ({ boardCode, onAddComment }) => {
     const { currentUser } = useContext(AuthContext);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
@@ -20,12 +21,12 @@ const CommentList = ({ boardCode }) => {
     const [replyingCommentId, setReplyingCommentId] = useState(null);
     const [newReply, setNewReply] = useState('');
     const [showReplies, setShowReplies] = useState({});
+    const toast = useToast();
 
     useEffect(() => {
         const fetchComments = async () => {
             try {
-                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/comment/service`, 
-                {
+                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/comment/service`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -59,20 +60,35 @@ const CommentList = ({ boardCode }) => {
                     command: "add",
                     id: currentUser.id,
                     contents: newComment,
-                    boardCode: boardCode,
-                    parent: null
+                    boardCode: boardCode
                 }),
             });
 
             if (response.ok) {
                 setNewComment('');
                 const newCommentData = await response.json();
+                console.log('New Comment Data:', newCommentData); // 디버깅을 위해 추가
                 setComments((prevComments) => [...prevComments, newCommentData]);
+                if (onAddComment) {
+                    onAddComment(newCommentData); // 새로운 댓글을 상위 컴포넌트로 전달
+                }
+                toast({
+                    title: "댓글이 작성되었습니다.",
+                    status: "success",
+                    duration: 3000,
+                    isClosable: true,
+                });
             } else {
                 throw new Error('Failed to add comment');
             }
         } catch (error) {
             console.error(error);
+            toast({
+                title: "댓글 작성 실패",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
         }
     };
 
@@ -96,11 +112,23 @@ const CommentList = ({ boardCode }) => {
                 setNewReply('');
                 const newReplyData = await response.json();
                 setComments((prevComments) => [...prevComments, newReplyData]);
+                toast({
+                    title: "답글이 작성되었습니다.",
+                    status: "success",
+                    duration: 3000,
+                    isClosable: true,
+                });
             } else {
                 throw new Error('Failed to add reply');
             }
         } catch (error) {
             console.error(error);
+            toast({
+                title: "답글 작성 실패",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
         }
     };
 
@@ -125,11 +153,23 @@ const CommentList = ({ boardCode }) => {
                     comment.cmtCode === cmtCode ? { ...comment, contents: editingCommentContent } : comment
                 );
                 setComments(updatedComments);
+                toast({
+                    title: "댓글이 수정되었습니다.",
+                    status: "success",
+                    duration: 3000,
+                    isClosable: true,
+                });
             } else {
                 throw new Error('Failed to edit comment');
             }
         } catch (error) {
             console.error(error);
+            toast({
+                title: "댓글 수정 실패",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
         }
     };
 
@@ -148,18 +188,30 @@ const CommentList = ({ boardCode }) => {
 
             if (response.ok) {
                 setComments(comments.filter(comment => comment.cmtCode !== cmtCode));
+                toast({
+                    title: "댓글이 삭제되었습니다.",
+                    status: "success",
+                    duration: 3000,
+                    isClosable: true,
+                });
             } else {
                 throw new Error('Failed to delete comment');
             }
         } catch (error) {
             console.error(error);
+            toast({
+                title: "댓글 삭제 실패",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
         }
     };
 
     const toggleReplies = (commentId) => {
-        setShowReplies((prevShowReplies) => ({
-            ...prevShowReplies,
-            [commentId]: !prevShowReplies[commentId],
+        setShowReplies((prev) => ({
+            ...prev,
+            [commentId]: !prev[commentId],
         }));
     };
 
@@ -260,11 +312,14 @@ const CommentList = ({ boardCode }) => {
                                         icon={<FaReply />}
                                         onClick={() => setReplyingCommentId(comment.cmtCode)}
                                     />
-                                    <IconButton
-                                        icon={showReplies[comment.cmtCode] ? <FaChevronUp /> : <FaChevronDown />}
+                                    <Button
+                                        size="sm"
+                                        variant="link"
                                         onClick={() => toggleReplies(comment.cmtCode)}
-                                    />
-                                    <Text>[댓글 {comments.filter(reply => reply.parent === comment.cmtCode).length}개]</Text>
+                                        rightIcon={showReplies[comment.cmtCode] ? <FaChevronUp /> : <FaChevronDown />}
+                                    >
+                                        댓글 {comments.filter(c => c.parent === comment.cmtCode).length}개
+                                    </Button>
                                 </HStack>
                             </>
                         )}

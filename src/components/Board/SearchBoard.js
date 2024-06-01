@@ -1,3 +1,4 @@
+// SearchBoard.js
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -17,6 +18,7 @@ import {
     MenuButton,
     MenuList,
     MenuItem,
+    useToast,
 } from '@chakra-ui/react';
 import { BiChat, BiLike, BiShare } from 'react-icons/bi';
 import AuthContext from '../../context/AuthContext';
@@ -29,24 +31,26 @@ const SearchBoard = () => {
     const [posts, setPosts] = useState([]);
     const [error, setError] = useState('');
     const { currentUser } = useContext(AuthContext); // 로그인 정보 확인
-    const [showComments, setShowComments] = useState( {});
+    const [showComments, setShowComments] = useState({});
     const myHeaders = new Headers();
+    const toast = useToast();
+
     myHeaders.append('Content-Type', 'application/json;charset=utf-8');
-    
+
     const likeUpdate = (board_code, count) => {
-        posts.map(post =>{
-            console.log(board_code,"매개변수값");
-            console.log(post.board_code,"post값");
-            if(post.board_code === board_code){
+        posts.map(post => {
+            console.log(board_code, "매개변수값");
+            console.log(post.board_code, "post값");
+            if (post.board_code === board_code) {
                 post.likeCount = count;
                 console.log("돈다");
-                setPosts(post);
+                setPosts([...posts]);
                 return;
             }
         })
         console.log("돈다2");
     }
-    
+
     const handleSubmit = (e) => {
         // 좋아요 추가/제거 이벤트
         e.preventDefault();
@@ -74,14 +78,32 @@ const SearchBoard = () => {
                     const count = data.count;
                     if (response.ok) {
                         console.log('좋아요처리 성공:', count);
-                        likeUpdate(board_code,count);
+                        likeUpdate(board_code, count);
+                        toast({
+                            title: "좋아요가 반영되었습니다.",
+                            status: "success",
+                            duration: 3000,
+                            isClosable: true,
+                        });
                     } else {
                         console.log('왜인지 실패');
+                        toast({
+                            title: "좋아요 처리 실패",
+                            status: "error",
+                            duration: 3000,
+                            isClosable: true,
+                        });
                     }
                 });
             })
             .catch((error) => {
                 console.log('실패처리');
+                toast({
+                    title: "서버 요청 실패",
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                });
             });
     };
 
@@ -108,8 +130,20 @@ const SearchBoard = () => {
 
             // Remove the deleted post from the list
             setPosts(posts.filter(post => post.board_code !== boardCode));
+            toast({
+                title: "게시글이 삭제되었습니다.",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+            });
         } catch (error) {
             setError(error.message);
+            toast({
+                title: "게시글 삭제 실패",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
         }
     };
 
@@ -126,6 +160,15 @@ const SearchBoard = () => {
 
     const handlePostClick = (boardCode) => {
         navigate('/board/detail', { state: { boardCode } });
+    };
+
+    const handleAddComment = (newComment, boardCode) => {
+        setPosts(posts.map(post => {
+            if (post.board_code === boardCode) {
+                post.comments = [...(post.comments || []), newComment];
+            }
+            return post;
+        }));
     };
 
     useEffect(() => {
@@ -147,6 +190,12 @@ const SearchBoard = () => {
                 setPosts(data.boardList);
             } catch (error) {
                 setError(error.message);
+                toast({
+                    title: "게시글 조회 실패",
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                });
             }
         };
 
@@ -215,14 +264,13 @@ const SearchBoard = () => {
                             />
                         )}
                         <Text mb={4}>{post.contents}</Text>
-                        
 
                         {post.music_track && (
                             <>
-                        <Text mb={4} >노래 제목: {post.music_track}</Text>
-                        <Text mb={4} >가수: {post.music_artist}</Text>
-                        <Image src={post.music_thumbnail} />
-                        <audio controls src={post.music_preview_url} />
+                                <Text mb={4}>노래 제목: {post.music_track}</Text>
+                                <Text mb={4}>가수: {post.music_artist}</Text>
+                                <Image src={post.music_thumbnail} />
+                                <audio controls src={post.music_preview_url} />
                             </>
                         )}
                         <HStack spacing={4}>
@@ -234,13 +282,13 @@ const SearchBoard = () => {
                                 value={post.board_code}
                             >
                                 <Text
-                                key={post.board_code}
-                                id={post.board_code}
+                                    key={post.board_code}
+                                    id={post.board_code}
                                 >{post.likeCount}</Text>
 
                                 <Box as="span" mx="2"></Box>
                                 Like
-                            </Button>   
+                            </Button>
                             <Button flex="1" variant="ghost" leftIcon={<BiChat />} onClick={() => toggleComments(post.board_code)}>
                                 Comment
                             </Button>
@@ -248,7 +296,12 @@ const SearchBoard = () => {
                                 Share
                             </Button>
                         </HStack>
-                        {showComments[post.board_code] && <CommentList boardCode={post.board_code} />} {/* CommentList 컴포넌트 추가 */}
+                        {showComments[post.board_code] && (
+                            <CommentList
+                                boardCode={post.board_code}
+                                onAddComment={(newComment) => handleAddComment(newComment, post.board_code)}
+                            />
+                        )}
                     </Box>
                 ))}
             </VStack>
