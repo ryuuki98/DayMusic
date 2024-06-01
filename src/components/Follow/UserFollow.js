@@ -199,7 +199,7 @@ const UserFollow = () => {
                 <Heading size="md" ml="25px">{postId}</Heading>
                 {currentUser.id !== postId && (
                     <Button colorScheme='gray' onClick={handleFollowCheck}>
-                        {!isFollowing ? '팔로우 취소' : '팔로우'}
+                        {isFollowing ? '팔로우 취소' : '팔로우'}
                     </Button>
                 )}
             </Flex>
