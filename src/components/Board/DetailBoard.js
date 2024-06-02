@@ -4,7 +4,6 @@ import {
     Box,
     Text,
     VStack,
-    Heading,
     Spinner,
     Alert,
     AlertIcon,
@@ -14,34 +13,34 @@ import {
     Image,
     Button,
     HStack,
+    useToast,
 } from '@chakra-ui/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { BiChat, BiLike, BiShare } from 'react-icons/bi';
 import AuthContext from '../../context/AuthContext';
-import CommentList from '../Comment/CommentList'; // Import CommentList component
+import CommentList from '../Comment/CommentList';
 
 const BoardDetail = () => {
     const location = useLocation();
     const command = 'detail';
-    const { currentUser } = useContext(AuthContext); //로그인 정보 확인
+    const { currentUser } = useContext(AuthContext);
     const { boardCode } = location.state || {};
     const [post, setPost] = useState(null);
     const [error, setError] = useState('');
-    const [likeCount, setLikeCount] = useState(0); //좋아요수 카운트
-    const [likeList, setLikeList] = useState([]); //좋아요 리스트
+    const [profileImg, setProfileImg] = useState('');
+    const [likeCount, setLikeCount] = useState(0);
+    const [likeList, setLikeList] = useState([]);
     const [isHeaderVisible, setIsHeaderVisible] = useState(false);
     const [showComments, setShowComments] = useState(false);
     const myHeaders = new Headers();
+    const toast = useToast();
     myHeaders.append('Content-Type', 'application/json;charset=utf-8');
 
     const handleSubmit = (e) => {
-        // 좋아요 추가/제거 이벤트
         e.preventDefault();
         const board_code = post.board_code;
         const command = 'likeAdd';
         const id = currentUser.id;
-        const myHeaders = new Headers();
-        myHeaders.append('Content-Type', 'application/json;charset=utf-8');
 
         const requestOptions = {
             method: 'POST',
@@ -53,40 +52,47 @@ const BoardDetail = () => {
             }),
         };
 
-        console.log('요청 보낼 내용:', requestOptions);
-
         fetch(`${process.env.REACT_APP_SERVER_URL}/like`, requestOptions)
-            .then((response) => {
-                return response.json().then((data) => {
-                    const count = data.count;
-                    if (response.ok) {
-                        console.log('좋아요처리  성공:', count);
-                        setLikeCount(count);
-                    } else {
-                        console.log('왜인지 실패');
-                    }
-                });
+            .then((response) => response.json())
+            .then((data) => {
+                const count = data.count;
+                if (data.success) {
+                    setLikeCount(count);
+                    toast({
+                        title: "좋아요가 반영되었습니다.",
+                        status: "success",
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                } else {
+                    toast({
+                        title: "좋아요 처리 실패",
+                        status: "error",
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                }
             })
             .catch((error) => {
-                console.log('실패처리');
+                toast({
+                    title: "서버 요청 실패",
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                });
             });
     };
 
     const listSubmit = (e) => {
-        // 좋아요 리스트
         e.preventDefault();
         setIsHeaderVisible((prevState) => !prevState);
         const board_code = post.board_code;
-        const command = 'like';
 
-        fetch(`${process.env.REACT_APP_SERVER_URL}/like?command=${command}&board_code=${board_code}`, {
+        fetch(`${process.env.REACT_APP_SERVER_URL}/like?command=like&board_code=${board_code}`, {
             method: 'GET',
         })
-            .then((response) => {
-                return response.json();
-            })
+            .then((response) => response.json())
             .then((data) => {
-                console.log(data);
                 setLikeList(data);
             })
             .catch((error) => {
@@ -116,7 +122,22 @@ const BoardDetail = () => {
                 }
 
                 const data = await response.json();
+                console.log('Fetched post data:', data);
                 setPost(data);
+
+                fetch(`${process.env.REACT_APP_SERVER_URL}/image/service?userId=${data.id}`, {
+                    method: 'GET',
+                    credentials: 'include',
+                })
+                    .then((response) => response.json())
+                    .then((imageData) => {
+                        if (imageData.profileImageUrl) {
+                            setProfileImg(imageData.profileImageUrl);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error fetching profile image:', error);
+                    });
             } catch (error) {
                 setError(error.message);
             } 
@@ -136,10 +157,10 @@ const BoardDetail = () => {
             {post ? (
                 <VStack spacing={4}>
                     <Flex alignItems="center" mb={4}>
-                        <Avatar size="md" name={post.nickname} src="https://bit.ly/sage-adebayo" />
+                        <Avatar size="md" name={post.nickname} src={profileImg || "https://bit.ly/sage-adebayo"} />
                         <Box ml={3}>
                             <Text fontWeight="bold">{post.nickname}</Text>
-                            <Text fontSize="sm" color="gray.500">{new Date(post.createdAt).toLocaleString()}</Text>
+                            <Text fontSize="sm" color="gray.500">{new Date(post.reg_date).toLocaleString()}</Text>
                         </Box>
                         <IconButton
                             variant="ghost"
@@ -164,8 +185,8 @@ const BoardDetail = () => {
                         <>
                             <Text>노래 제목: {post.music_track}</Text>
                             <Text>가수: {post.music_artist}</Text>
-                            <Image src={post.music_thumbnail} />
-                            <audio controls src={post.music_preview_url} />
+                            <Image src={post.music_Thumbnail} />
+                            <audio controls src={post.music_PreviewUrl} />
                         </>
                     )}
                     <HStack spacing={4}>
@@ -206,7 +227,7 @@ const BoardDetail = () => {
                             ))}
                         </Box>
                     )}
-                    {showComments && <CommentList boardCode={post.board_code} />} {/* 댓글 리스트 */}
+                    {showComments && <CommentList boardCode={post.board_code} />}
                 </VStack>
             ) : (
                 <Spinner size="xl" />
