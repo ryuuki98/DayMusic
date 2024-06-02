@@ -31,9 +31,10 @@ import UserBoardPosts from '../Board/UserBoardList';
 import { useLocation } from 'react-router-dom';
 
 const UserFollow = () => {
+    // 게시글 유저의 아이디
     const location = useLocation();
     const postId = location.state.postId;
-    console.log("postId가 도대체 뭐야?", postId);
+    
     // 로그인 한 유저의 아이디,닉네임 사용가능
     const { currentUser } = useContext(AuthContext);
     
