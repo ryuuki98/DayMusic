@@ -12,7 +12,7 @@ import {
 import { FaEdit, FaTrash, FaSave, FaTimes, FaReply, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import AuthContext from '../../context/AuthContext';
 
-const CommentList = ({ boardCode, onAddComment }) => {
+const CommentList = ({ boardCode }) => {
     const { currentUser } = useContext(AuthContext);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
@@ -64,14 +64,37 @@ const CommentList = ({ boardCode, onAddComment }) => {
                 }),
             });
 
+            console.log('Response status:', response.status);
+            const responseText = await response.text();
+            console.log('Response text:', responseText);
+
+            let result;
+            try {
+                result = JSON.parse(responseText);
+            } catch (e) {
+                // JSON 파싱에 실패한 경우
+                if (response.ok) {
+                    toast({
+                        title: "댓글이 작성되었습니다.",
+                        status: "success",
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                } else {
+                    toast({
+                        title: "댓글 작성 실패",
+                        description: responseText,
+                        status: "error",
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                }
+                return; // 파싱 실패 시 여기서 함수 종료
+            }
+
             if (response.ok) {
                 setNewComment('');
-                const newCommentData = await response.json();
-                console.log('New Comment Data:', newCommentData); // 디버깅을 위해 추가
-                setComments((prevComments) => [...prevComments, newCommentData]);
-                if (onAddComment) {
-                    onAddComment(newCommentData); // 새로운 댓글을 상위 컴포넌트로 전달
-                }
+                setComments((prevComments) => [...prevComments, result]);
                 toast({
                     title: "댓글이 작성되었습니다.",
                     status: "success",
@@ -79,12 +102,12 @@ const CommentList = ({ boardCode, onAddComment }) => {
                     isClosable: true,
                 });
             } else {
-                throw new Error('Failed to add comment');
+                throw new Error(result.message || 'Failed to add comment');
             }
         } catch (error) {
             console.error(error);
             toast({
-                title: "댓글 작성 실패",
+                title: error.message || "댓글 작성 실패",
                 status: "error",
                 duration: 3000,
                 isClosable: true,
@@ -108,10 +131,35 @@ const CommentList = ({ boardCode, onAddComment }) => {
                 }),
             });
 
+            const responseText = await response.text();
+            console.log('Response text:', responseText);
+
+            let result;
+            try {
+                result = JSON.parse(responseText);
+            } catch (e) {
+                if (response.ok) {
+                    toast({
+                        title: "답글이 작성되었습니다.",
+                        status: "success",
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                } else {
+                    toast({
+                        title: "답글 작성 실패",
+                        description: responseText,
+                        status: "error",
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                }
+                return;
+            }
+
             if (response.ok) {
                 setNewReply('');
-                const newReplyData = await response.json();
-                setComments((prevComments) => [...prevComments, newReplyData]);
+                setComments((prevComments) => [...prevComments, result]);
                 toast({
                     title: "답글이 작성되었습니다.",
                     status: "success",
@@ -119,12 +167,12 @@ const CommentList = ({ boardCode, onAddComment }) => {
                     isClosable: true,
                 });
             } else {
-                throw new Error('Failed to add reply');
+                throw new Error(result.message || 'Failed to add reply');
             }
         } catch (error) {
             console.error(error);
             toast({
-                title: "답글 작성 실패",
+                title: error.message || "답글 작성 실패",
                 status: "error",
                 duration: 3000,
                 isClosable: true,
@@ -146,6 +194,32 @@ const CommentList = ({ boardCode, onAddComment }) => {
                 }),
             });
 
+            const responseText = await response.text();
+            console.log('Response text:', responseText);
+
+            let result;
+            try {
+                result = JSON.parse(responseText);
+            } catch (e) {
+                if (response.ok) {
+                    toast({
+                        title: "댓글이 수정되었습니다.",
+                        status: "success",
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                } else {
+                    toast({
+                        title: "댓글 수정 실패",
+                        description: responseText,
+                        status: "error",
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                }
+                return;
+            }
+
             if (response.ok) {
                 setEditingCommentId(null);
                 setEditingCommentContent('');
@@ -160,12 +234,12 @@ const CommentList = ({ boardCode, onAddComment }) => {
                     isClosable: true,
                 });
             } else {
-                throw new Error('Failed to edit comment');
+                throw new Error(result.message || 'Failed to edit comment');
             }
         } catch (error) {
             console.error(error);
             toast({
-                title: "댓글 수정 실패",
+                title: error.message || "댓글 수정 실패",
                 status: "error",
                 duration: 3000,
                 isClosable: true,
@@ -186,6 +260,32 @@ const CommentList = ({ boardCode, onAddComment }) => {
                 }),
             });
 
+            const responseText = await response.text();
+            console.log('Response text:', responseText);
+
+            let result;
+            try {
+                result = JSON.parse(responseText);
+            } catch (e) {
+                if (response.ok) {
+                    toast({
+                        title: "댓글이 삭제되었습니다.",
+                        status: "success",
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                } else {
+                    toast({
+                        title: "댓글 삭제 실패",
+                        description: responseText,
+                        status: "error",
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                }
+                return;
+            }
+
             if (response.ok) {
                 setComments(comments.filter(comment => comment.cmtCode !== cmtCode));
                 toast({
@@ -195,12 +295,12 @@ const CommentList = ({ boardCode, onAddComment }) => {
                     isClosable: true,
                 });
             } else {
-                throw new Error('Failed to delete comment');
+                throw new Error(result.message || 'Failed to delete comment');
             }
         } catch (error) {
             console.error(error);
             toast({
-                title: "댓글 삭제 실패",
+                title: error.message || "댓글 삭제 실패",
                 status: "error",
                 duration: 3000,
                 isClosable: true,
