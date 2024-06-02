@@ -123,29 +123,40 @@ const SearchBoard = () => {
                 }),
                 credentials: 'include',
             });
-
-            if (!response.ok) {
-                throw new Error('Failed to delete post');
+    
+            const responseText = await response.text();
+            let result;
+    
+            try {
+                result = JSON.parse(responseText);
+            } catch (e) {
+                throw new Error('Invalid JSON response');
             }
-
-            // Remove the deleted post from the list
-            setPosts(posts.filter(post => post.board_code !== boardCode));
-            toast({
-                title: "게시글이 삭제되었습니다.",
-                status: "success",
-                duration: 3000,
-                isClosable: true,
-            });
+    
+            if (response.ok && result.status === 200) {
+                // Remove the deleted post from the list
+                setPosts(posts.filter(post => post.board_code !== boardCode));
+                toast({
+                    title: "게시글이 삭제되었습니다.",
+                    status: "success",
+                    duration: 3000,
+                    isClosable: true,
+                });
+            } else {
+                throw new Error(result.message || 'Failed to delete post');
+            }
         } catch (error) {
             setError(error.message);
             toast({
                 title: "게시글 삭제 실패",
+                description: error.message,
                 status: "error",
                 duration: 3000,
                 isClosable: true,
             });
         }
     };
+    
 
     const toggleComments = (boardCode) => {
         setShowComments(prevState => ({
