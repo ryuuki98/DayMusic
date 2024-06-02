@@ -8,14 +8,20 @@ import {
     Switch,
     Textarea,
     VStack,
-    Heading,
     Text,
     HStack,
     IconButton,
     Image,
     useToast,
+    AlertDialog,
+    AlertDialogOverlay,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogBody,
+    AlertDialogFooter,
+    Heading,
 } from '@chakra-ui/react';
-import { CloseIcon } from '@chakra-ui/icons';
+import { CloseIcon, AddIcon } from '@chakra-ui/icons';
 import SpotifySearch from './SpotifySearch';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
@@ -26,13 +32,13 @@ const CreateBoardPost = () => {
     const [contents, setContents] = useState('');
     const [isPublic, setIsPublic] = useState(true);
     const [file, setFile] = useState(null);
-
     const [filePreview, setFilePreview] = useState('');
     const [responseMessage, setResponseMessage] = useState('');
     const [selectedTrack, setSelectedTrack] = useState(null);
     const [showSpotifySearch, setShowSpotifySearch] = useState(false);
     const navigate = useNavigate();
     const toast = useToast();
+    const cancelRef = React.useRef();
 
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
@@ -53,13 +59,13 @@ const CreateBoardPost = () => {
 
     const uploadImage = async (boardCode) => {
         const formData = new FormData();
-        formData.append('image', file); // 게시글 이미지로 설정
+        formData.append('image', file);
         formData.append('boardCode', boardCode);
         formData.append('command', 'boardImage');
 
         try {
             const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/image/service`, {
-                method: 'POST', // PUT 메서드 사용
+                method: 'POST',
                 body: formData,
             });
 
@@ -136,68 +142,115 @@ const CreateBoardPost = () => {
     };
 
     return (
-        <Box maxW="600px" mx="auto" p={4} borderWidth={1} borderRadius="lg" boxShadow="lg" bg="white">
+        <Box maxW="600px" mx="auto" p={4} borderRadius="lg" boxShadow="lg" bg="transparent" borderWidth={1} borderColor="gray.300">
             <VStack spacing={4} as="form" onSubmit={handleSubmit}>
-                <Text fontSize="lg" fontWeight="bold" textColor="black">
+                <Text fontSize="lg" fontWeight="bold" color="gray.800">
                     작성자: {currentUser.nickname}
                 </Text>
-                <FormControl id="file">
-                    <FormLabel>Upload Photo</FormLabel>
-                    <Input type="file" accept="image/*" onChange={handleFileChange} />
-                </FormControl>
-                {filePreview && (
-                    <Box position="relative">
-                        <Image src={filePreview} alt="preview" boxSize="100px" objectFit="cover" />
+                <FormControl id="file" align="center">
+                    <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        display="none"
+                        id="file-input"
+                    />
+                    <FormLabel htmlFor="file-input" cursor="pointer">
+                        <Box
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            borderWidth={2}
+                            borderRadius="md"
+                            borderColor="gray.400"
+                            borderStyle="dashed"
+                            width={filePreview ? "500px" : "100px"}
+                            height={filePreview ? "500px" : "100px"}
+                            mx="auto"
+                        >
+                            {filePreview ? (
+                                <Image src={filePreview} alt="preview" boxSize="500px" objectFit="cover" />
+                            ) : (
+                                <AddIcon boxSize={8} color="gray.400" />
+                            )}
+                        </Box>
+                    </FormLabel>
+                    {filePreview && (
                         <IconButton
                             icon={<CloseIcon />}
-                            size="xs"
+                            size="sm"
                             position="absolute"
                             top="2px"
                             right="2px"
                             onClick={handleRemoveImage}
                         />
-                    </Box>
-                )}
-                <Heading textColor="black">내용</Heading>
+                    )}
+                </FormControl>
+                <Heading size="md" color="gray.800" alignSelf="start">내용</Heading>
                 <FormControl id="contents" isRequired>
                     <Textarea
-                        textColor="black"
                         placeholder="내용을 입력하세요"
                         value={contents}
                         onChange={(e) => setContents(e.target.value)}
+                        height="200px"
+                        bg="transparent"
+                        borderColor="gray.300"
+                        _placeholder={{ color: 'gray.500' }}
+                        color="gray.800"
                     />
                 </FormControl>
                 <HStack width="full" justifyContent="space-between">
                     <Button
+                        variant="link"
                         colorScheme="purple"
-                        textColor="black"
-                        variant="solid"
-                        onClick={() => setShowSpotifySearch(!showSpotifySearch)}
+                        size="sm"
+                        onClick={() => setShowSpotifySearch(true)}
                     >
                         + Music
                     </Button>
+                    <FormControl display="flex" alignItems="center">
+                        <FormLabel htmlFor="isPublic" mb="0" color="gray.800">
+                            공개 여부
+                        </FormLabel>
+                        <Switch id="isPublic" isChecked={isPublic} onChange={() => setIsPublic(!isPublic)} />
+                    </FormControl>
                 </HStack>
-                {showSpotifySearch && <SpotifySearch onSelectTrack={setSelectedTrack} />}
+                <AlertDialog
+                    isOpen={showSpotifySearch}
+                    leastDestructiveRef={cancelRef}
+                    onClose={() => setShowSpotifySearch(false)}
+                >
+                    <AlertDialogOverlay>
+                        <AlertDialogContent>
+                            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                                Music Search
+                            </AlertDialogHeader>
+
+                            <AlertDialogBody>
+                                <SpotifySearch onSelectTrack={setSelectedTrack} />
+                            </AlertDialogBody>
+
+                            <AlertDialogFooter>
+                                <Button ref={cancelRef} onClick={() => setShowSpotifySearch(false)}>
+                                    취소
+                                </Button>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialogOverlay>
+                </AlertDialog>
                 {selectedTrack && (
                     <>
-                        <Text textColor="black">
+                        <Text color="gray.800">
                             선택 노래: {selectedTrack.name} by {selectedTrack.artists[0].name}
-                            <Image src={selectedTrack.album.images[2]?.url}></Image>
                         </Text>
-
+                        <Image src={selectedTrack.album.images[2]?.url} boxSize="100px" objectFit="cover" />
                         <audio controls src={selectedTrack.preview_url}></audio>
                     </>
                 )}
-                <FormControl display="flex" alignItems="center">
-                    <FormLabel htmlFor="isPublic" mb="0" textColor="purple">
-                        공개 여부
-                    </FormLabel>
-                    <Switch id="isPublic" isChecked={isPublic} onChange={() => setIsPublic(!isPublic)} />
-                </FormControl>
-                <Button type="submit" colorScheme="blue" width="full">
+                <Button type="submit" colorScheme="blue" width="full" size="sm">
                     Create Post
                 </Button>
-                {responseMessage && <Text textColor="red">{responseMessage}</Text>}
+                {responseMessage && <Text color="red.500">{responseMessage}</Text>}
             </VStack>
         </Box>
     );

@@ -256,11 +256,13 @@ const SearchBoard = () => {
                         {post.image_url && (
                             <Image
                                 borderRadius="md"
-                                src={'https://daymusic-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%80%E1%85%B5%E1%84%87%E1%85%A9%E1%86%AB%E1%84%8B%E1%85%B5%E1%84%86%E1%85%B5%E1%84%8C%E1%85%B5.png'}
+                                src={post.image_url}
                                 alt="Post image"
                                 mb={4}
-                                boxSize="300px" // 정사각형으로 만들기 위해 크기 고정
+                                boxSize="500px" // 정사각형으로 만들기 위해 크기 고정
                                 objectFit="cover"
+                                style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }} // 이미지를 가운데 정렬하는 CSS 스타일 적용
+
                             />
                         )}
 

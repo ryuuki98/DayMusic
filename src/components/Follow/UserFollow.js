@@ -61,7 +61,7 @@ const UserFollow = () => {
     
     // 로그인 한 유저의 팔로잉, 팔로우 리스트 출력
     const fetchFollowData = async () => {
-        const url = `${process.env.REACT_APP_SERVER_URL}/follow/follow_list?id=${postId}`;
+        const url = `${process.env.REACT_APP_SERVER_URL}/follow/follow_list?id=${postId}&currentId=${currentUser.id}`;
         const response = await fetch(url, { method: "GET" });
 
         const data = await response.json();
@@ -72,6 +72,7 @@ const UserFollow = () => {
         setFollowedCount(data.result[1].length);
         setFollowerCount(data.result[0].length);
         setIsFollowing(data.result[1].some(follow => follow.id === postId)); // 여기에서 초기 팔로우 상태를 설정
+        console.log(isFollowing); // 이미 팔로우 상태임에도 불구하고 false가 반환 
     };
 
     const fetchFollowList = async () => {
@@ -163,6 +164,7 @@ const UserFollow = () => {
                     if (response.ok) {
                         console.log('팔로우처리 성공:', result);
                         setIsFollowing(!isFollowing);
+                        console.log("팔로우 성공 : " ,isFollowing);
                         fetchFollowList();
                     } else {
                         console.log('실패');
