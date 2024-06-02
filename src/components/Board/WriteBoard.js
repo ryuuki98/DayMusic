@@ -150,6 +150,7 @@ const CreateBoardPost = () => {
                             선택 노래: {selectedTrack.name} by {selectedTrack.artists[0].name}
                             <Image src={selectedTrack.album.images[2]?.url}></Image>
                         </Text>
+
                         <audio controls src={selectedTrack.preview_url}></audio>
                     </>
                 )}
