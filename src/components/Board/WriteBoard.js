@@ -160,10 +160,6 @@ const CreateBoardPost = () => {
                             display="flex"
                             alignItems="center"
                             justifyContent="center"
-                            borderWidth={2}
-                            borderRadius="md"
-                            borderColor="gray.400"
-                            borderStyle="dashed"
                             width={filePreview ? "500px" : "100px"}
                             height={filePreview ? "500px" : "100px"}
                             mx="auto"

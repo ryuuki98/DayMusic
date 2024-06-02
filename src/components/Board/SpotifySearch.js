@@ -53,7 +53,7 @@ const SpotifySearch = ({ onSelectTrack }) => {
                 onChange={(e) => setSearchTerm(e.target.value)}
             />
             <Button onClick={searchTracks} colorScheme="green">
-                Searchv
+                검색
             </Button>
             {errorMessage && <Text color="red">{errorMessage}</Text>}
             <List spacing={2} width="full">
