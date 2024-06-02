@@ -194,6 +194,11 @@ const router = createBrowserRouter(
             path: '/image',
             element:<Image />,
             children: [],
+        },
+        {
+            path: '/rank',
+            element:<Rank />,
+            children: [],
         }
     ],
     {
