@@ -120,6 +120,7 @@ const MyPage = () => {
             const formData = new FormData();
             formData.append('profileImage', file);
             formData.append('userId', currentUser.id);
+            formData.append('command','profileImage');
 
             try {
                 const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/image/service`, {

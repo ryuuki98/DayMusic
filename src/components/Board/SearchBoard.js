@@ -263,7 +263,6 @@ const SearchBoard = () => {
                                 objectFit="cover"
                             />
                         )}
-                        <Text mb={4}>{post.contents}</Text>
 
                         {post.music_track && (
                             <>
