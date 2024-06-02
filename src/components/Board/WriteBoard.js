@@ -13,10 +13,9 @@ import {
     HStack,
     IconButton,
     Image,
-    Grid,
-    GridItem,
+    useToast,
 } from '@chakra-ui/react';
-import { CloseIcon, EditIcon } from '@chakra-ui/icons';
+import { CloseIcon } from '@chakra-ui/icons';
 import SpotifySearch from './SpotifySearch';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
@@ -26,46 +25,53 @@ const CreateBoardPost = () => {
     const command = "write";
     const [contents, setContents] = useState('');
     const [isPublic, setIsPublic] = useState(true);
-    const [files, setFiles] = useState([]);
-    const [filePreviews, setFilePreviews] = useState([]);
+    const [file, setFile] = useState(null);
+    const [filePreview, setFilePreview] = useState('');
     const [responseMessage, setResponseMessage] = useState('');
     const [selectedTrack, setSelectedTrack] = useState(null);
     const [showSpotifySearch, setShowSpotifySearch] = useState(false);
     const navigate = useNavigate();
+    const toast = useToast();
 
     const handleFileChange = (e) => {
-        const selectedFiles = Array.from(e.target.files).slice(0, 4 - files.length); // 최대 4개 이미지 선택
-        setFiles(prevFiles => [...prevFiles, ...selectedFiles]);
-
-        const filePreviewUrls = selectedFiles.map(file => URL.createObjectURL(file));
-        setFilePreviews(prevPreviews => [...prevPreviews, ...filePreviewUrls]);
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                setFile(selectedFile);
+                setFilePreview(event.target.result);
+            };
+            reader.readAsDataURL(selectedFile);
+        }
     };
 
-    const handleRemoveImage = (index) => {
-        const newFiles = files.filter((_, i) => i !== index);
-        const newFilePreviews = filePreviews.filter((_, i) => i !== index);
-
-        setFiles(newFiles);
-        setFilePreviews(newFilePreviews);
+    const handleRemoveImage = () => {
+        setFile(null);
+        setFilePreview('');
     };
 
-    const uploadImages = async (boardCode) => {
-        const uploadedImageUrls = [];
-        for (const file of files) {
-            const formData = new FormData();
-            formData.append('image', file);
-            formData.append('boardCode', boardCode);
+    const uploadImage = async (boardCode) => {
+        const formData = new FormData();
+        formData.append('image', file); // 게시글 이미지로 설정
+        formData.append('boardCode', boardCode);
+        formData.append('command','boardImage');
 
+        try {
             const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/image/service`, {
-                method: 'PUT',
+                method: 'POST', // PUT 메서드 사용
                 body: formData,
-                credentials: 'include',
             });
 
-            const data = await response.json();
-            uploadedImageUrls.push(data.imageUrl);
+            if (!response.ok) {
+                throw new Error(`Error uploading image: ${response.statusText}`);
+            }
+
+            const data = await response.text();
+            return data.imageUrl;
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            throw error;
         }
-        return uploadedImageUrls;
     };
 
     const handleSubmit = async (e) => {
@@ -95,22 +101,36 @@ const CreateBoardPost = () => {
                 credentials: 'include',
             });
 
-            if (!response.ok) {
-                throw new Error('Failed to create post');
+            if (response.ok) {
+                const responseData = await response.json();
+                const boardCode = responseData.boardCode;
+
+                if (file) {
+                    await uploadImage(boardCode);
+                }
+
+                setResponseMessage('Post created successfully!');
+                toast({
+                    title: "게시글이 성공적으로 작성되었습니다.",
+                    status: "success",
+                    duration: 3000,
+                    isClosable: true,
+                });
+                navigate('/board/search');
+            } else {
+                const errorText = await response.text();
+                throw new Error(`Failed to create post: ${errorText}`);
             }
-
-            const data = await response.json();
-            const boardCode = data.boardCode;
-
-            if (files.length > 0) {
-                await uploadImages(boardCode);
-            }
-
-            setResponseMessage('Post created successfully!');
-            navigate('/board/search');
         } catch (error) {
             setResponseMessage('Failed to create post.');
             console.error('There was an error!', error);
+            toast({
+                title: "게시글 작성 실패.",
+                description: "게시글 작성에 실패했습니다. 다시 시도해주세요.",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
         }
     };
 
@@ -129,34 +149,31 @@ const CreateBoardPost = () => {
                     작성자: {currentUser.nickname}
                 </Text>
                 <FormControl id="file">
-                    <FormLabel>Upload Photos (up to 4)</FormLabel>
+                    <FormLabel>Upload Photo</FormLabel>
                     <Input
                         type="file"
                         accept="image/*"
-                        multiple
                         onChange={handleFileChange}
                     />
                 </FormControl>
-                <Grid templateColumns="repeat(4, 1fr)" gap={2}>
-                    {filePreviews.map((src, index) => (
-                        <GridItem key={index} position="relative">
-                            <Image src={src} alt={`preview ${index}`} boxSize="100px" objectFit="cover" />
-                            <IconButton
-                                icon={<CloseIcon />}
-                                size="xs"
-                                position="absolute"
-                                top="2px"
-                                right="2px"
-                                onClick={() => handleRemoveImage(index)}
-                            />
-                        </GridItem>
-                    ))}
-                </Grid>
+                {filePreview && (
+                    <Box position="relative">
+                        <Image src={filePreview} alt="preview" boxSize="100px" objectFit="cover" />
+                        <IconButton
+                            icon={<CloseIcon />}
+                            size="xs"
+                            position="absolute"
+                            top="2px"
+                            right="2px"
+                            onClick={handleRemoveImage}
+                        />
+                    </Box>
+                )}
                 <Heading textColor="black">내용</Heading>
                 <FormControl id="contents" isRequired>
                     <Textarea
                         textColor="black"
-                        placeholder="Placeholder"
+                        placeholder="내용을 입력하세요"
                         value={contents}
                         onChange={(e) => setContents(e.target.value)}
                     />
@@ -165,12 +182,6 @@ const CreateBoardPost = () => {
                     <Button colorScheme="purple" textColor="black" variant="solid" onClick={() => setShowSpotifySearch(!showSpotifySearch)}>
                         + Music
                     </Button>
-                    <IconButton
-                        icon={<EditIcon />}
-                        colorScheme="purple"
-                        variant="outline"
-                        aria-label="Edit"
-                    />
                 </HStack>
                 {showSpotifySearch && <SpotifySearch onSelectTrack={setSelectedTrack} />}
                 {selectedTrack && (
