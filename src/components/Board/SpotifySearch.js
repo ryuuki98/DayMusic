@@ -1,5 +1,4 @@
 // src/components/Board/SpotifySearch.js
-
 import React, { useEffect, useState } from 'react';
 import { Input, Button, VStack, List, ListItem, Text } from '@chakra-ui/react';
 import { getSpotifyToken } from '../../utils/spotifyAuth';
@@ -9,7 +8,6 @@ const SpotifySearch = ({ onSelectTrack }) => {
     const [tracks, setTracks] = useState([]);
     const [token, setToken] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-
     useEffect(() => {
         if (!token) {
             const newToken = getSpotifyToken();
@@ -17,15 +15,19 @@ const SpotifySearch = ({ onSelectTrack }) => {
             console.log("test");
         }
     }, []);
-
     const searchTracks = async () => {
+        console.log(searchTerm);
+        if (!token) {
+            const newToken = getSpotifyToken();
+            setToken(newToken);
+            console.log("test");
+        }
         try {
-            const response = await fetch(`https://api.spotify.com/v1/search?q=${searchTerm}&type=track`, {
+            const response = await fetch(`https://api.spotify.com/v1/search?q=김치&type=track`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-
             const data = await response.json();
             console.log(data);
             if (data.tracks) {
@@ -40,7 +42,6 @@ const SpotifySearch = ({ onSelectTrack }) => {
             console.error('Error fetching tracks:', error);
         }
     };
-
     return (
         <VStack spacing={4} width="full">
             <Input
