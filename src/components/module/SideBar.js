@@ -22,6 +22,11 @@ const Sidebar = () => {
         onClose();
     };
 
+    const rank = (e) =>{
+        navigate('/rank');
+    };
+
+
     return (
         <Box
             as="aside"
@@ -47,6 +52,9 @@ const Sidebar = () => {
                 <Button onClick={handleMyPageClick} width="full" variant="ghost" >
                     MyPage
                 </Button>
+                <Button  width="full" variant="ghost" onClick={rank} >
+                                rank
+                </Button>
             </VStack>
 
             <AlertDialog
@@ -69,6 +77,7 @@ const Sidebar = () => {
                             <Button colorScheme="blue" onClick={handleSearch} ml={3}>
                                 검색
                             </Button>
+                            
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialogOverlay>

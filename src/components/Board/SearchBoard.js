@@ -189,7 +189,6 @@ const SearchBoard = () => {
                 const data = JSON.parse(responseText);
                 setPosts(data.boardList);
             } catch (error) {
-                setError(error.message);
                 toast({
                     title: "게시글 조회 실패",
                     status: "error",
