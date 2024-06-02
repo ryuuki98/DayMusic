@@ -27,7 +27,7 @@ const Rank = () => {
                 if (!response.ok) {
                     throw new Error("데이터를 가져오는데 실패했습니다!");
                 }
-
+                console.log(responseJSON);
                 setRank(responseJSON);
             } catch (error) {
                 setError("데이터를 가져오는데 실패했습니다!");
@@ -63,8 +63,8 @@ const Rank = () => {
                                 <Text fontSize="md" color="gray.500">{list.musicArtist}</Text>
                             </VStack>
                             <HStack spacing={4}>
-                                <Image src={list.musicPreviewUrl} alt={`${list.musicTrack} thumbnail`} boxSize="50px" borderRadius="md" />
-                                <audio controls src={list.musicThumbnail} style={{ width: '200px' }}></audio>
+                                <Image src={list.musicThumbnail} alt={`${list.musicTrack} thumbnail`} boxSize="50px" borderRadius="md" />
+                                <audio controls src={list.musicPreviewUrl} style={{ width: '200px' }}></audio>
                             </HStack>
                         </Flex>
                     ))}
