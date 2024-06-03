@@ -56,7 +56,7 @@ const BoardDetail = () => {
             .then((response) => response.json())
             .then((data) => {
                 const count = data.count;
-                if (data.success) {
+                if (data !== null) {
                     setLikeCount(count);
                     toast({
                         title: "좋아요가 반영되었습니다.",
