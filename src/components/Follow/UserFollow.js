@@ -28,6 +28,7 @@ import AuthContext from '../../context/AuthContext';
 import { IoMdMusicalNotes } from "react-icons/io";
 import { BiBorderAll } from 'react-icons/bi';
 import UserBoardPosts from '../Board/UserBoardList';
+import UserMusicBoardPosts from '../Board/UserMusicBoardList';
 import { useLocation } from 'react-router-dom';
 
 const UserFollow = () => {
@@ -40,10 +41,16 @@ const UserFollow = () => {
     
     // 내 게시글 불러오기
     const [showMyBoardPosts, setShowMyBoardPosts] = useState(false);
+
+    // 내 뮤직 게시글 불러오기
+    const [showMyMusicBoardPosts, setShowMyMusicBoardPosts] = useState(false);
     
     // 게시글 수 상태 추가
     const [postCount, setPostCount] = useState(0); 
-    
+
+    // 뮤직 게시글 수 상태 추가
+    const [MusicpostCount, setMusicPostCount] = useState(0);
+
     // 팔로우 상태와 팔로워 수를 관리
     const [isFollowing, setIsFollowing] = useState(false);
     const [followedCount, setFollowedCount] = useState(0);
@@ -118,10 +125,40 @@ const UserFollow = () => {
         }
     };
 
+    // 사용자 뮤직 게시글 수 가져오기
+    const fetchMusicPostCount = async () => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/board/service`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8',
+                },
+                body: JSON.stringify({
+                    id: currentUser.id,
+                    command: 'myMusicBoard',
+                }),
+                credentials: 'include',
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                console.log('게시글 불러오기 성공');
+                setMusicPostCount(data.boardList.length); // 게시글 수 업데이트
+            } else {
+                console.log('게시글 불러오기 실패');
+                throw new Error('Failed to fetch posts');
+            }
+        } catch (error) {
+            console.log('실패');
+            console.error('Error fetching posts:', error);
+        }
+    };
+
     useEffect(() => {
         fetchFollowData();
         fetchFollowList();
         fetchPostCount();
+        fetchMusicPostCount();
 
         fetch(`${process.env.REACT_APP_SERVER_URL}/image/service?userId=${postId}`, {
             method: 'GET',
@@ -181,6 +218,10 @@ const UserFollow = () => {
         setShowMyBoardPosts(!showMyBoardPosts);
     };
 
+    const toggleMyMusicBoardPosts = () => {
+        setShowMyMusicBoardPosts(!showMyMusicBoardPosts);
+    };
+
     return (
         <Box maxW="700px" mx="auto" mt="5">
             <Flex align="center" mb="4">
@@ -210,12 +251,13 @@ const UserFollow = () => {
             <HStack justify="space-between" mb="4" px="20%">
                 <IconButton icon={<BiBorderAll />} boxSize="2rem" size="lg" variant="ghost" onClick={toggleMyBoardPosts}/>
                 <Spacer />
-                <IconButton icon={<IoMdMusicalNotes />} boxSize="2rem" size="lg" variant="ghost" />
+                <IconButton icon={<IoMdMusicalNotes />} boxSize="2rem" size="lg" variant="ghost" onClick={toggleMyMusicBoardPosts}/>
             </HStack>
             <Divider my="4" />
             
             {/* MyBoardPosts 컴포넌트를 조건부로 렌더링 */}
             {showMyBoardPosts && <UserBoardPosts userId={postId} />}  {/* 여기에 userId로 postId를 전달합니다 */}
+            {showMyMusicBoardPosts && <UserMusicBoardPosts userId={postId} />}
 
             <Flex justify="space-between" mt="4" px="4" py="2" borderTopWidth="1px">
             </Flex>
