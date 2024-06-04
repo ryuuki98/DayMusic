@@ -134,7 +134,7 @@ const MyMusicBoardPosts = ({ onPostCountChange }) => { // onPostCountChange prop
                                         src={post.music_thumbnail}
                                         alt="Post image"
                                         mb={4}
-                                        boxSize="200px" // 정사각형으로 만들기 위해 크기 고정
+                                        boxSize="100px" // 정사각형으로 만들기 위해 크기 고정
                                         objectFit="cover"
                                         style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }} // 이미지를 가운데 정렬하는 CSS 스타일 적용
                                     />
