@@ -53,8 +53,9 @@ const SideRankBar = () => {
     }
 
     return (
-        <Box position="fixed" top="50%" right="50px" transform="translateY(-50%)" p={4} borderWidth={1} borderRadius="lg" boxShadow="lg" bg="white" w="200px">
-            <VStack align="start" spacing={4}>
+        <Box position="fixed" top="50%" right="50px" transform="translateY(-50%)" p={5} borderWidth={1} borderRadius="lg" boxShadow="lg" bg="white" w="200px">
+            <VStack align="start" spacing={10}>
+            <Text fontWeight="bold">오늘의 뮤직 랭킹</Text>
                 {rank.map((list, index) => (
                     <HStack key={index} w="full" align="center">
                         <Image boxSize="50px" src={list.musicThumbnail} alt={list.musicTrack} borderRadius="md" />
