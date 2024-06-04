@@ -3,6 +3,7 @@ import Header from '../module/Header';
 import AuthContext from '../../context/AuthContext';
 import { Box, VStack, HStack, Image, Text, Alert, AlertIcon, Center, Flex } from '@chakra-ui/react';
 import Sidebar from '../module/SideBar';
+import SideRankBar from './SideRankBar';
 
 const Rank = () => {
     const [rank, setRank] = useState([]);

@@ -24,6 +24,7 @@ import { BiChat, BiLike, BiShare } from 'react-icons/bi';
 import AuthContext from '../../context/AuthContext';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import CommentList from '../Comment/CommentList'; // 올바른 경로로 CommentList 임포트
+import SideRankBar from '../Rank/SideRankBar';
 
 const SearchBoard = () => {
     const navigate = useNavigate();
@@ -220,6 +221,8 @@ const SearchBoard = () => {
     }, []);
 
     return (
+        <>
+        <SideRankBar />
         <Box maxW="800px" mx="auto" p={4} bg="white" overflowY="auto" height="100vh">
             <Heading mb={4} textColor="black">
                 Home
@@ -314,6 +317,7 @@ const SearchBoard = () => {
                 ))}
             </VStack>
         </Box>
+        </>
     );
 };
 
