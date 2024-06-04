@@ -99,7 +99,7 @@ const MyBoardPosts = ({ onPostCountChange }) => { // onPostCountChange prop ì¶”ê
             overflowY="auto"
             height="80vh"
         >
-            <Heading mb={4} textColor="black">My Posts</Heading>
+            <Heading mb={4} textColor="black">Posts</Heading>
             {error && (
                 <Alert status="error" mb={4}>
                     <AlertIcon />

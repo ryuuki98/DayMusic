@@ -62,7 +62,7 @@ const UserMusicBoardPosts = ({ userId }) => {
             overflowY="auto"
             height="80vh"
         >
-            <Heading mb={4} textColor="black">My Posts</Heading>
+            <Heading mb={4} textColor="black">Music Posts</Heading>
             {error && (
                 <Alert status="error" mb={4}>
                     <AlertIcon />
