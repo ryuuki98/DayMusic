@@ -20,7 +20,9 @@ import UpdateBoard from './components/Board/UpdateBoard';
 import WriteBoard from './components/Board/WriteBoard';
 import DetailBoard from './components/Board/DetailBoard';
 import MyBoardList from './components/Board/MyBoardList';
+import MyMusicBoardList from './components/Board/MyMusicBoardList';
 import UserBoardList from './components/Board/UserBoardList';
+import UserMusicBoardList from './components/Board/UserMusicBoardList';
 import UpdatePassword from './components/user/UpdatePassword';
 import UpdateNickname from './components/user/UpdateNickname';
 import UpdateUserInfo from './components/user/UpdateUserInfo';
@@ -126,10 +128,28 @@ const router = createBrowserRouter(
                 ),
                 },
                 {
+                    path: 'myMusicBoard',
+                    element: (
+                        <>
+                        <MyMusicBoardList />
+                        </>
+                    
+                ),
+                },
+                {
                     path: 'userBoard',
                     element: (
                         <>
                         <UserBoardList />
+                        </>
+                    
+                ),
+                },
+                {
+                    path: 'userMusicBoard',
+                    element: (
+                        <>
+                        <UserMusicBoardList />
                         </>
                     
                 ),
