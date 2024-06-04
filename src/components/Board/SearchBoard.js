@@ -42,14 +42,12 @@ const SearchBoard = () => {
         posts.map((post) => {
             console.log(board_code, '매개변수값');
             console.log(post.board_code, 'post값');
-            if (post.board_code === board_code) {
+            if (post.board_code == board_code) {
                 post.likeCount = count;
-                console.log('돈다');
                 setPosts([...posts]);
                 return;
             }
         });
-        console.log('돈다2');
     };
 
     const handleSubmit = (e) => {
