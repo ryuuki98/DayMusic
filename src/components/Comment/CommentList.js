@@ -72,7 +72,6 @@ const CommentList = ({ boardCode }) => {
             try {
                 result = JSON.parse(responseText);
             } catch (e) {
-                // JSON 파싱에 실패한 경우
                 if (response.ok) {
                     toast({
                         title: "댓글이 작성되었습니다.",
@@ -89,7 +88,7 @@ const CommentList = ({ boardCode }) => {
                         isClosable: true,
                     });
                 }
-                return; // 파싱 실패 시 여기서 함수 종료
+                return;
             }
 
             if (response.ok) {
@@ -342,6 +341,7 @@ const CommentList = ({ boardCode }) => {
                         ) : (
                             <>
                                 <Text>{reply.contents}</Text>
+                                <Text fontSize="sm" color="gray.500">{reply.nickname}</Text>
                                 <HStack>
                                     {currentUser.id === reply.id && (
                                         <>
@@ -392,6 +392,7 @@ const CommentList = ({ boardCode }) => {
                         ) : (
                             <>
                                 <Text>{comment.contents}</Text>
+                                <Text fontSize="sm" color="gray.500">{comment.nickname}</Text>
                                 <HStack>
                                     {currentUser.id === comment.id && (
                                         <>

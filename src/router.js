@@ -30,6 +30,7 @@ import SearchBoard from './components/Board/SearchBoard';
 import Image from './components/Image/UploadImage';
 import Rank  from './components/Rank/Rank';
 import UserFollow from './components/Follow/UserFollow';
+import FollowBoardList from './components/Board/FollowBoard';
 const router = createBrowserRouter(
     [
         {
@@ -114,6 +115,15 @@ const router = createBrowserRouter(
                     element: (
                         <>
                         <SearchBoard />
+                        </>
+                    
+                ),
+                },
+                {
+                    path: 'follow',
+                    element: (
+                        <>
+                        <FollowBoardList />
                         </>
                     
                 ),

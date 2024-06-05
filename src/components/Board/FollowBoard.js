@@ -1,4 +1,4 @@
-// SearchBoard.js
+// FollowBoardList.js
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -23,15 +23,14 @@ import {
 import { BiChat, BiLike, BiShare } from 'react-icons/bi';
 import AuthContext from '../../context/AuthContext';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import CommentList from '../Comment/CommentList'; // 올바른 경로로 CommentList 임포트
-import SideRankBar from '../Rank/SideRankBar';
+import CommentList from '../Comment/CommentList';
 
-const SearchBoard = () => {
+const FollowBoardList = () => {
     const navigate = useNavigate();
-    const command = 'search';
+    const command = 'followBoardList';
     const [posts, setPosts] = useState([]);
     const [error, setError] = useState('');
-    const { currentUser } = useContext(AuthContext); // 로그인 정보 확인
+    const { currentUser } = useContext(AuthContext);
     const [showComments, setShowComments] = useState({});
     const myHeaders = new Headers();
     const toast = useToast();
@@ -40,8 +39,6 @@ const SearchBoard = () => {
 
     const likeUpdate = (board_code, count) => {
         posts.map((post) => {
-            console.log(board_code, '매개변수값');
-            console.log(post.board_code, 'post값');
             if (post.board_code == board_code) {
                 post.likeCount = count;
                 setPosts([...posts]);
@@ -51,7 +48,6 @@ const SearchBoard = () => {
     };
 
     const handleSubmit = (e) => {
-        // 좋아요 추가/제거 이벤트
         e.preventDefault();
         const board_code = e.target.value;
         const command = 'likeAdd';
@@ -69,34 +65,28 @@ const SearchBoard = () => {
             }),
         };
 
-        console.log('요청 보낼 내용:', requestOptions);
-
         fetch(`${process.env.REACT_APP_SERVER_URL}/like`, requestOptions)
-            .then((response) => {
-                return response.json().then((data) => {
-                    const count = data.count;
-                    if (response.ok) {
-                        console.log('좋아요처리 성공:', count);
-                        likeUpdate(board_code, count);
-                        toast({
-                            title: '좋아요가 반영되었습니다.',
-                            status: 'success',
-                            duration: 3000,
-                            isClosable: true,
-                        });
-                    } else {
-                        console.log('왜인지 실패');
-                        toast({
-                            title: '좋아요 처리 실패',
-                            status: 'error',
-                            duration: 3000,
-                            isClosable: true,
-                        });
-                    }
-                });
+            .then((response) => response.json())
+            .then((data) => {
+                const count = data.count;
+                if (response.ok) {
+                    likeUpdate(board_code, count);
+                    toast({
+                        title: '좋아요가 반영되었습니다.',
+                        status: 'success',
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                } else {
+                    toast({
+                        title: '좋아요 처리 실패',
+                        status: 'error',
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                }
             })
-            .catch((error) => {
-                console.log('실패처리');
+            .catch(() => {
                 toast({
                     title: '서버 요청 실패',
                     status: 'error',
@@ -133,7 +123,6 @@ const SearchBoard = () => {
             }
 
             if (response.ok && result.status === 200) {
-                // Remove the deleted post from the list
                 setPosts(posts.filter((post) => post.board_code !== boardCode));
                 toast({
                     title: '게시글이 삭제되었습니다.',
@@ -194,6 +183,7 @@ const SearchBoard = () => {
                         headers: myHeaders,
                         body: JSON.stringify({
                             command: command,
+                            id: currentUser.id,
                         }),
                         credentials: 'include',
                     });
@@ -219,10 +209,10 @@ const SearchBoard = () => {
     }, []);
 
     return (
-        <>
-        <SideRankBar />
         <Box maxW="800px" mx="auto" p={4} bg="white" overflowY="auto" height="100vh">
-
+            <Heading mb={4} textColor="black">
+                Followed Users' Posts
+            </Heading>
             {error && (
                 <Alert status="error" mb={4}>
                     <AlertIcon />
@@ -263,9 +253,9 @@ const SearchBoard = () => {
                                 src={post.image_url}
                                 alt="Post image"
                                 mb={4}
-                                boxSize="500px" // 정사각형으로 만들기 위해 크기 고정
+                                boxSize="500px"
                                 objectFit="cover"
-                                style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }} // 이미지를 가운데 정렬하는 CSS 스타일 적용
+                                style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
                             />
                         )}
 
@@ -313,8 +303,7 @@ const SearchBoard = () => {
                 ))}
             </VStack>
         </Box>
-        </>
     );
 };
 
-export default SearchBoard;
+export default FollowBoardList;
