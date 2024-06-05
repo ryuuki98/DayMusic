@@ -87,6 +87,7 @@ const CreateBoardPost = () => {
         const musicArtist = selectedTrack ? selectedTrack.artists[0].name : '';
         const musicPreviewUrl = selectedTrack ? selectedTrack.preview_url : '';
         const musicThumbnail = selectedTrack ? selectedTrack.album.images[2]?.url : '';
+        const musicUrl = selectedTrack ? selectedTrack.external_urls.spotify : '';//뭐였지: '';
 
         try {
             const postData = {
@@ -99,6 +100,7 @@ const CreateBoardPost = () => {
                 musicArtist: musicArtist,
                 musicPreviewUrl: musicPreviewUrl,
                 musicThumbnail: musicThumbnail,
+                musicUrl: musicUrl,
             };
 
             const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/board/service`, {
