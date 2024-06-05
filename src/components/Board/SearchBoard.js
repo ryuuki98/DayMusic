@@ -72,8 +72,7 @@ const SearchBoard = () => {
         console.log('요청 보낼 내용:', requestOptions);
 
         fetch(`${process.env.REACT_APP_SERVER_URL}/like`, requestOptions)
-            .then((response) => {
-                return response.json().then((data) => {
+            .then((response) => { response.json().then((data) => {
                     const count = data.count;
                     if (response.ok) {
                         console.log('좋아요처리 성공:', count);

@@ -23,7 +23,7 @@ const Header = () => {
                 <Button variant="link" mr={4} color="black" onClick={() => {navigate('/')}}>
                         logout
                     </Button>
-                    <Button variant="link" mr={4} color="black">
+                    <Button variant="link" mr={4} color="black" onClick={() => {navigate('/board/follow')}}>
                         Page
                     </Button>
                     <Button variant="link" mr={4} color="black">

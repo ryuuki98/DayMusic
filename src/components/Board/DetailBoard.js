@@ -160,7 +160,7 @@ const BoardDetail = () => {
                         <Avatar size="md" name={post.nickname} src={profileImg || "https://bit.ly/sage-adebayo"} />
                         <Box ml={3}>
                             <Text fontWeight="bold">{post.nickname}</Text>
-                            <Text fontSize="sm" color="gray.500">{new Date(post.reg_date).toLocaleString()}</Text>
+                            <Text fontSize="sm" color="gray.500">{new Date(post.createdAt).toLocaleString()}</Text>
                         </Box>
                         <IconButton
                             variant="ghost"
