@@ -80,7 +80,8 @@ const UserFollow = () => {
         setFollowedCount(data.result[1].length);
         setFollowerCount(data.result[0].length);
         setIsFollowing(data.result[0].some(follow => follow.id === currentUser.id)); // 여기에서 초기 팔로우 상태를 설정
-        console.log("이거 도대체 무야?", isFollowing);
+        //배열 안에 현재 로그인한 사용자가 포함되어 있는지를 확인하고, 포함되어 있으면 isFollowing 상태를 true로 설정하는 코드
+        console.log("첫번쨰 들어가는거?", isFollowing);
     };
 
     const fetchFollowList = async () => {
@@ -178,7 +179,6 @@ const UserFollow = () => {
      // 팔로우 추가,취소 처리
     const handleFollowCheck = (e) => {
         e.preventDefault();
-        console.log("!!!!!!!!팔로우 성공 : " ,isFollowing);
         const command = isFollowing ? "delete" : "add";
         const id = postId;
         const youId = currentUser.id; // 여기는 임의 아이디이니께 나중에 바꿔야대!
@@ -201,9 +201,8 @@ const UserFollow = () => {
                 return response.json().then((result) => {
                     if (response.ok) {
                         console.log('팔로우처리 성공:', result);
-                        console.log("팔로우 성공!!!! : " ,isFollowing);
                         setIsFollowing(!isFollowing);
-                        console.log("팔로우 성공 : " ,isFollowing);
+                        console.log("두번쨰", isFollowing);
                         fetchFollowList();
                     } else {
                         console.log('실패');
@@ -213,7 +212,6 @@ const UserFollow = () => {
                 console.log('실패처리');
             });
         console.log(command, id);
-        console.log("팔로우 성공!!!!! : " ,isFollowing);
     };
 
     const toggleMyBoardPosts  = () => {
