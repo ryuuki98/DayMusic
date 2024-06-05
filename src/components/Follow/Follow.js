@@ -70,28 +70,13 @@ const Follow = () => {
     const fetchFollowData = async () => {
         const url = `${process.env.REACT_APP_SERVER_URL}/follow/follow_list?id=${currentUser.id}`;
         const response = await fetch(url, { method: 'GET' });
-
         const data = await response.json();
-        console.log(data);
 
         setFollowList(data.result[1]);
         setFollowerList(data.result[0]);
         setFollowedCount(data.result[1].length);
         setFollowerCount(data.result[0].length);
-        setIsFollowing(data.result[0].some((follow) => follow.id === currentUser.id));
-    };
-
-    const fetchFollowList = async () => {
-        const url = `${process.env.REACT_APP_SERVER_URL}/follow/follow_list?id=${currentUser.id}`;
-        const response = await fetch(url, { method: 'GET' });
-
-        const data = await response.json();
-        console.log(data);
-
-        setFollowList(data.result[1]);
-        setFollowerList(data.result[0]);
-        setFollowedCount(data.result[1].length);
-        setFollowerCount(data.result[0].length);
+        setIsFollowing(data.result[0].some((follow) => follow.nickname === currentUser.nickname));
     };
 
     // 사용자 게시글 수 가져오기
@@ -152,7 +137,6 @@ const Follow = () => {
             navigate('/');
         } else {
             fetchFollowData();
-            fetchFollowList();
             fetchPostCount();
             fetchMusicPostCount();
 
@@ -202,7 +186,7 @@ const Follow = () => {
                     if (response.ok) {
                         console.log('팔로우처리 성공:', result);
                         setIsFollowing(!isFollowing);
-                        fetchFollowList();
+                        fetchFollowData();
                     } else {
                         console.log('실패');
                     }
