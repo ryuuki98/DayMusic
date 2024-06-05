@@ -23,7 +23,6 @@ import { BiChat, BiLike, BiShare } from 'react-icons/bi';
 import AuthContext from '../../context/AuthContext';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import CommentList from '../Comment/CommentList'; // 올바른 경로로 CommentList 임포트
-import SideRankBar from '../Rank/SideRankBar';
 
 const SearchBoard = () => {
     const navigate = useNavigate();
@@ -39,7 +38,7 @@ const SearchBoard = () => {
 
     const likeUpdate = (board_code, count) => {
         posts.map((post) => {
-            if (post.board_code == board_code) {
+            if (post.board_code === board_code) {
                 post.likeCount = count;
                 setPosts([...posts]);
                 return;
@@ -48,7 +47,6 @@ const SearchBoard = () => {
     };
 
     const handleSubmit = (e) => {
-        // 좋아요 추가/제거 이벤트
         e.preventDefault();
         const board_code = e.target.value;
         const command = 'likeAdd';
@@ -125,7 +123,6 @@ const SearchBoard = () => {
             }
 
             if (response.ok && result.status === 200) {
-                // Remove the deleted post from the list
                 setPosts(posts.filter((post) => post.board_code !== boardCode));
                 toast({
                     title: '게시글이 삭제되었습니다.',
@@ -168,6 +165,7 @@ const SearchBoard = () => {
             posts.map((post) => {
                 if (post.board_code === boardCode) {
                     post.comments = [...(post.comments || []), newComment];
+                    post.commentCount += 1;  // 댓글 카운트 증가
                 }
                 return post;
             })
@@ -211,9 +209,10 @@ const SearchBoard = () => {
     }, []);
 
     return (
-        <>
-        <SideRankBar />
-        <Box maxW="800px" mx="10%" p={4} bg="white" overflowY="auto" height="100vh" mr="250px">
+        <Box maxW="800px" mx="auto" p={4} bg="white" overflowY="auto" height="100vh">
+            <Heading mb={4} textColor="black">
+                Home
+            </Heading>
             {error && (
                 <Alert status="error" mb={4}>
                     <AlertIcon />
@@ -254,9 +253,9 @@ const SearchBoard = () => {
                                 src={post.image_url}
                                 alt="Post image"
                                 mb={4}
-                                boxSize="500px" // 정사각형으로 만들기 위해 크기 고정
+                                boxSize="500px"
                                 objectFit="cover"
-                                style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }} // 이미지를 가운데 정렬하는 CSS 스타일 적용
+                                style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
                             />
                         )}
 
@@ -298,13 +297,19 @@ const SearchBoard = () => {
                             <CommentList
                                 boardCode={post.board_code}
                                 onAddComment={(newComment) => handleAddComment(newComment, post.board_code)}
+                                updateCommentCount={(count) => {
+                                    setPosts(
+                                        posts.map((p) =>
+                                            p.board_code === post.board_code ? { ...p, commentCount: count } : p
+                                        )
+                                    );
+                                }}
                             />
                         )}
                     </Box>
                 ))}
             </VStack>
         </Box>
-        </>
     );
 };
 
