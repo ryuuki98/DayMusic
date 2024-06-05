@@ -1,5 +1,4 @@
-// Sidebar.js
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
     Box,
     Button,
@@ -13,6 +12,8 @@ import {
     AlertDialogBody,
     AlertDialogFooter,
     Text,
+    Alert,
+    AlertIcon,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
@@ -21,6 +22,9 @@ const Sidebar = () => {
     const navigate = useNavigate();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { currentUser } = useContext(AuthContext); // 로그인 정보 확인
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [error, setError] = useState('');
 
     const cancelRef = React.useRef();
 
@@ -42,10 +46,42 @@ const Sidebar = () => {
         }
     };
 
-    const handleSearch = () => {
-        // 검색 로직 추가
-        onClose();
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
     };
+
+    useEffect(() => {
+        const fetchSearchResults = async () => {
+            if (searchQuery.trim() === '') {
+                setSearchResults([]);
+                return;
+            }
+            try {
+                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/user/service`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        //
+                    },
+                    body: JSON.stringify({
+                        command: 'searchUserList',
+                        nickname: searchQuery,
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('검색에 실패했습니다.');
+                }
+
+                const data = await response.json();
+                setSearchResults(data.results);
+            } catch (error) {
+                setError(error.message);
+            }
+        };
+
+        fetchSearchResults();
+    }, [searchQuery]);
 
     return (
         <Box
@@ -81,14 +117,28 @@ const Sidebar = () => {
                             검색
                         </AlertDialogHeader>
                         <AlertDialogBody>
-                            <Input placeholder="검색어를 입력하세요" />
+                            <Input
+                                placeholder="검색어를 입력하세요"
+                                value={searchQuery}
+                                onChange={handleSearchChange}
+                            />
+                            {error && (
+                                <Alert status="error" mt={4}>
+                                    <AlertIcon />
+                                    {error}
+                                </Alert>
+                            )}
+                            {searchResults.length > 0 && (
+                                <VStack mt={4} spacing={2} align="start">
+                                    {searchResults.map((user) => (
+                                        <Text key={user.id}>{user.nickname}</Text>
+                                    ))}
+                                </VStack>
+                            )}
                         </AlertDialogBody>
                         <AlertDialogFooter>
                             <Button ref={cancelRef} onClick={onClose}>
-                                취소
-                            </Button>
-                            <Button colorScheme="blue" onClick={handleSearch} ml={3}>
-                                검색
+                                닫기
                             </Button>
                         </AlertDialogFooter>
                     </AlertDialogContent>

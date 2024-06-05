@@ -213,7 +213,7 @@ const SearchBoard = () => {
     return (
         <>
             <SideRankBar />
-            <Box maxW="800px" mx="10%" p={4} bg="white" overflowY="auto" height="100vh" mr="250px">
+            <Box maxW="800px" mx="10%" p={4} bg="white" height="100vh" mr="250px">
                 {error && (
                     <Alert status="error" mb={4}>
                         <AlertIcon />
@@ -271,10 +271,10 @@ const SearchBoard = () => {
                                         />
                                         <VStack align="start" spacing={1}>
                                             <Text fontWeight="bold" fontSize="md">
-                                                노래 제목: {post.music_track}
+                                                {post.music_track}
                                             </Text>
                                             <Text fontSize="sm" color="gray.500">
-                                                가수: {post.music_artist}
+                                                {post.music_artist}
                                             </Text>
                                             <audio
                                                 controls

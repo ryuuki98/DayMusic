@@ -24,6 +24,7 @@ import { BiChat, BiLike, BiShare } from 'react-icons/bi';
 import AuthContext from '../../context/AuthContext';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import CommentList from '../Comment/CommentList'; // 올바른 경로로 CommentList 임포트
+import SideRankBar from '../Rank/SideRankBar';
 
 const FollowBoard = () => {
     const navigate = useNavigate();
@@ -212,7 +213,9 @@ const FollowBoard = () => {
     }, []);
 
     return (
-        <Box maxW="800px" mx="auto" p={4} bg="white" overflowY="auto" height="100vh">
+        <>
+        <SideRankBar />
+        <Box maxW="800px" mx="10%" p={4} bg="white"  height="100vh">
             <Heading mb={4} textColor="black">
                 Followed Posts
             </Heading>
@@ -275,8 +278,8 @@ const FollowBoard = () => {
                                 <HStack spacing={3}>
                                     <Image src={post.music_thumbnail} alt={`${post.music_track} thumbnail`} boxSize="75px" borderRadius="md" />
                                     <VStack align="start" spacing={1}>
-                                        <Text fontWeight="bold" fontSize="md">노래 제목: {post.music_track}</Text>
-                                        <Text fontSize="sm" color="gray.500">가수: {post.music_artist}</Text>
+                                        <Text fontWeight="bold" fontSize="md"> {post.music_track}</Text>
+                                        <Text fontSize="sm" color="gray.500"> {post.music_artist}</Text>
                                         <audio controls src={post.music_preview_url} style={{ width: '150px' }}></audio>
                                     </VStack>
                                 </HStack>
@@ -318,6 +321,7 @@ const FollowBoard = () => {
                 ))}
             </VStack>
         </Box>
+        </>
     );
 };
 export default FollowBoard;
