@@ -30,7 +30,6 @@ const SpotifySearch = ({ onSelectTrack }) => {
                 },
             });
             const data = await response.json();
-            console.log(data);
             if (data.tracks) {
                 setTracks(data.tracks.items);
                 setErrorMessage('');
@@ -67,7 +66,7 @@ const SpotifySearch = ({ onSelectTrack }) => {
                     borderWidth="1px"
                     borderRadius="lg"
                     bg="white"
-                >
+                >   
                     <HStack spacing={4}>
                         <Image src={track.album.images[1].url} alt={track.name} boxSize="100px" borderRadius="md" />
                         <VStack align="start" spacing={1} flex="1">

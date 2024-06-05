@@ -26,21 +26,19 @@ const Like = () => {
             }),
         };
         
-        console.log("요청 보낼 내용:", requestOptions);
         
         fetch(`${process.env.REACT_APP_SERVER_URL}/like`, requestOptions)
         .then((response) => {
             return response.json().then((data) =>{
                 const count = data.count;
                 if(response.ok){
-                    console.log('좋아요처리  성공:',count);
                     setLikeCount(count);
                 }else{
-                    console.log('왜인지 실패');
+                    console.log('실패리턴');
                 }
             });
         }).catch((error) =>{
-            console.log('실패처리');
+            console.log('패치문실패');
         });
         
     }
@@ -56,7 +54,6 @@ const Like = () => {
             return response.json();
         })
         .then(data => {
-            console.log(data);
             setLikeList(data);
         })
         .catch(error => {
