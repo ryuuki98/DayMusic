@@ -39,7 +39,7 @@ const SearchBoard = () => {
 
     const likeUpdate = (board_code, count) => {
         posts.map((post) => {
-            if (post.board_code === board_code) {
+            if (post.board_code == board_code) {
                 post.likeCount = count;
                 setPosts([...posts]);
                 return;
@@ -211,8 +211,8 @@ const SearchBoard = () => {
 
     return (
         <>
-        <SideRankBar/>
-        <Box maxW="800px" mx="auto" p={4} bg="white" overflowY="auto" height="100vh" mr="250px">
+        <SideRankBar />
+        <Box maxW="800px" mx="10%" p={4} bg="white" overflowY="auto" height="100vh" mr="250px">
             {error && (
                 <Alert status="error" mb={4}>
                     <AlertIcon />
@@ -297,7 +297,7 @@ const SearchBoard = () => {
                                 leftIcon={<BiChat />}
                                 onClick={() => toggleComments(post.board_code)}
                             >
-                                Comment
+                                Comment {post.commentCount}
                             </Button>
                             <Button flex="1" variant="ghost" leftIcon={<BiShare />}>
                                 Share
