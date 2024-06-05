@@ -35,6 +35,7 @@ const UserFollow = () => {
     // 게시글 유저의 아이디
     const location = useLocation();
     const postId = location.state.postId;
+    const postnickname = location.state.postnickname;
     
     // 로그인 한 유저의 아이디,닉네임 사용가능
     const { currentUser } = useContext(AuthContext);
@@ -60,8 +61,8 @@ const UserFollow = () => {
     const [profileImg, setProfileImg] = useState('');
 
     // 팔로우 및 팔로워 리스트 관리
-    const [followList, setFollowList] = useState();
-    const [followerList, setFollowerList] = useState();
+    const [followList, setFollowList] = useState([]);
+    const [followerList, setFollowerList] = useState([]);
     
     // 팔로우 및 팔로워 모달 관리
     const { isOpen: isFollowListOpen, onOpen: onFollowListOpen, onClose: onFollowListClose } = useDisclosure();
@@ -79,21 +80,7 @@ const UserFollow = () => {
         setFollowerList(data.result[0]);
         setFollowedCount(data.result[1].length);
         setFollowerCount(data.result[0].length);
-        // setIsFollowing(data.result[0].some(follow => follow.id === currentUser.id)); // 여기에서 초기 팔로우 상태를 설정
-        //배열 안에 현재 로그인한 사용자가 포함되어 있는지를 확인하고, 포함되어 있으면 isFollowing 상태를 true로 설정하는 코드
-        console.log("첫번쨰 들어가는거?", isFollowing);
-    };
-
-    const fetchFollowList = async () => {
-        const url = `${process.env.REACT_APP_SERVER_URL}/follow/follow_list?id=${postId}`;
-        const response = await fetch(url, { method: "GET" });
-
-        const data = await response.json();
-
-        setFollowList(data.result[1]);
-        setFollowerList(data.result[0]);
-        setFollowedCount(data.result[1].length);
-        setFollowerCount(data.result[0].length);
+        setIsFollowing(data.result[0].some(follow => follow.nickname === currentUser.nickname));
     };
 
     // 사용자 게시글 수 가져오기
@@ -156,6 +143,9 @@ const UserFollow = () => {
 
     useEffect(() => {
         fetchFollowData();
+    }, []);
+
+    useEffect(() => {
         fetchPostCount();
         fetchMusicPostCount();
 
@@ -176,11 +166,11 @@ const UserFollow = () => {
     }, []);
 
      // 팔로우 추가,취소 처리
-    const handleFollowCheck = (e) => {
+    const handleFollowCheck = async (e) => {
         e.preventDefault();
         const command = isFollowing ? "delete" : "add";
         const id = postId;
-        const youId = currentUser.id; // 여기는 임의 아이디이니께 나중에 바꿔야대!
+        const youId = currentUser.id;
         const myHeaders = new Headers();
         myHeaders.append('Content-Type', 'application/json;charset=utf-8');
 
@@ -195,27 +185,19 @@ const UserFollow = () => {
         };
         console.log("보낸내용:", requestOptions);
 
-        fetch(`${process.env.REACT_APP_SERVER_URL}/follow`, requestOptions)
-            .then((response) => {
-                return response.json().then((result) => {
-                    if (response.ok) {
-                        if(!result.isFollow) {
-                            console.log('팔로우처리 성공:', result);
-                            setIsFollowing(!isFollowing);
-                            console.log("팔로잉 지금 몬대?", isFollowing);
-                            fetchFollowList();
-                        }
-                        else {
-                            console.log("실패패");
-                        }
-                    } else {
-                        console.log('실패');
-                    }
-                });
-            }).catch((error) => {
-                console.log('실패처리');
-            });
-        console.log(command, id);
+        try {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/follow`, requestOptions);
+            const result = await response.json();
+            if (response.ok) {
+                console.log('팔로우처리 성공:', result);
+                setIsFollowing(!isFollowing);
+                fetchFollowData();
+            } else {
+                console.log('실패');
+            }
+        } catch (error) {
+            console.log('실패처리');
+        }
     };
 
     const toggleMyBoardPosts  = () => {
@@ -260,7 +242,7 @@ const UserFollow = () => {
             <Divider my="4" />
             
             {/* MyBoardPosts 컴포넌트를 조건부로 렌더링 */}
-            {showMyBoardPosts && <UserBoardPosts userId={postId} />}  {/* 여기에 userId로 postId를 전달합니다 */}
+            {showMyBoardPosts && <UserBoardPosts userId={postId} />}
             {showMyMusicBoardPosts && <UserMusicBoardPosts userId={postId} />}
 
             <Flex justify="space-between" mt="4" px="4" py="2" borderTopWidth="1px">
