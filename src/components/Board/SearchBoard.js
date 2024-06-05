@@ -304,7 +304,6 @@ const SearchBoard = () => {
                             >
                                 Comment {post.commentCount}
                             </Button>
-                           
                         </HStack>
                         {showComments[post.board_code] && (
                             <CommentList
