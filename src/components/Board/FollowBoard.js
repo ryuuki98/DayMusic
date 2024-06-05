@@ -309,6 +309,6 @@ const FollowBoard = () => {
         </Box>
     );
 };
-
 export default FollowBoard;
+
 

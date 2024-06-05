@@ -28,7 +28,7 @@ import UpdateNickname from './components/user/UpdateNickname';
 import UpdateUserInfo from './components/user/UpdateUserInfo';
 import SearchBoard from './components/Board/SearchBoard';
 import Image from './components/Image/UploadImage';
-import Rank  from './components/Rank/Rank';
+import Rank from './components/Rank/Rank';
 import UserFollow from './components/Follow/UserFollow';
 import FollowBoardList from './components/Board/FollowBoard';
 const router = createBrowserRouter(
@@ -105,82 +105,73 @@ const router = createBrowserRouter(
                     path: 'update',
                     element: (
                         <>
-                        <UpdateBoard />
+                            <UpdateBoard />
                         </>
-                    
-                ),
+                    ),
                 },
                 {
                     path: 'search',
                     element: (
                         <>
-                        <SearchBoard />
+                            <SearchBoard />
                         </>
-                    
-                ),
+                    ),
                 },
                 {
                     path: 'follow',
                     element: (
                         <>
-                        <FollowBoardList />
+                            <FollowBoardList />
                         </>
-                    
-                ),
+                    ),
                 },
                 {
                     path: 'myBoard',
                     element: (
                         <>
-                        <MyBoardList />
+                            <MyBoardList />
                         </>
-                    
-                ),
+                    ),
                 },
                 {
                     path: 'myMusicBoard',
                     element: (
                         <>
-                        <MyMusicBoardList />
+                            <MyMusicBoardList />
                         </>
-                    
-                ),
+                    ),
                 },
                 {
                     path: 'userBoard',
                     element: (
                         <>
-                        <UserBoardList />
+                            <UserBoardList />
                         </>
-                    
-                ),
+                    ),
                 },
                 {
                     path: 'userMusicBoard',
                     element: (
                         <>
-                        <UserMusicBoardList />
+                            <UserMusicBoardList />
                         </>
-                    
-                ),
+                    ),
                 },
                 {
                     path: 'detail',
                     element: (
                         <>
-                        <DetailBoard />
+                            <DetailBoard />
                         </>
-                    
-                ),
+                    ),
                 },
                 {
                     path: 'write',
                     element: (
                         <>
-                        <WriteBoard />
+                            <WriteBoard />
                         </>
-                    
-                ),
+                    ),
                 },
             ],
         },
@@ -197,39 +188,46 @@ const router = createBrowserRouter(
         {
             path: '/follow',
             element: <Root />,
-            children: [{
-                path: '/follow',
-                element: (
-                    <>
-                        <Follow />
-                    </>
-                ),
-            },
+            children: [
+                {
+                    path: '/follow',
+                    element: (
+                        <>
+                            <Follow />
+                        </>
+                    ),
+                },
             ],
         },
         {
             path: '/userFollow',
             element: <Root />,
-            children: [{
-                path: '/userFollow',
-                element: (
-                    <>
-                        <UserFollow />
-                    </>
-                ),
-            },
+            children: [
+                {
+                    path: '/userFollow',
+                    element: (
+                        <>
+                            <UserFollow />
+                        </>
+                    ),
+                },
             ],
         },
         {
             path: '/image',
-            element:<Image />,
+            element: <Image />,
             children: [],
         },
         {
             path: '/rank',
-            element:<Rank />,
-            children: [],
-        }
+            element: <Root />,
+            children: [
+                {
+                    path: 'rankAll',
+                    element: <Rank />,
+                },
+            ],
+        },
     ],
     {
         basename: '/DayMusic',

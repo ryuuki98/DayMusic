@@ -179,7 +179,11 @@ const Follow = () => {
                     console.error('Error fetching profile image:', error);
                 });
         }
-    }, []);
+    }, [currentUser,navigate]);
+
+    if (currentUser === null) {
+        return null; 
+    }
 
     // 팔로우 추가,취소 처리
     const handleFollowCheck = (e) => {

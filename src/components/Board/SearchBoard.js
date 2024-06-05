@@ -1,4 +1,3 @@
-// SearchBoard.js
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -40,9 +39,7 @@ const SearchBoard = () => {
 
     const likeUpdate = (board_code, count) => {
         posts.map((post) => {
-            console.log(board_code, '매개변수값');
-            console.log(post.board_code, 'post값');
-            if (post.board_code == board_code) {
+            if (post.board_code === board_code) {
                 post.likeCount = count;
                 setPosts([...posts]);
                 return;
@@ -69,13 +66,10 @@ const SearchBoard = () => {
             }),
         };
 
-        console.log('요청 보낼 내용:', requestOptions);
-
         fetch(`${process.env.REACT_APP_SERVER_URL}/like`, requestOptions)
             .then((response) => { response.json().then((data) => {
                     const count = data.count;
                     if (response.ok) {
-                        console.log('좋아요처리 성공:', count);
                         likeUpdate(board_code, count);
                         toast({
                             title: '좋아요가 반영되었습니다.',
@@ -84,7 +78,6 @@ const SearchBoard = () => {
                             isClosable: true,
                         });
                     } else {
-                        console.log('왜인지 실패');
                         toast({
                             title: '좋아요 처리 실패',
                             status: 'error',
@@ -95,7 +88,6 @@ const SearchBoard = () => {
                 });
             })
             .catch((error) => {
-                console.log('실패처리');
                 toast({
                     title: '서버 요청 실패',
                     status: 'error',
@@ -219,9 +211,8 @@ const SearchBoard = () => {
 
     return (
         <>
-        <SideRankBar />
-        <Box maxW="800px" mx="auto" p={4} bg="white" overflowY="auto" height="100vh">
-
+        <SideRankBar/>
+        <Box maxW="800px" mx="auto" p={4} bg="white" overflowY="auto" height="100vh" mr="250px">
             {error && (
                 <Alert status="error" mb={4}>
                     <AlertIcon />
