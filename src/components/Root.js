@@ -1,14 +1,17 @@
 // Root.js
-import React from 'react';
+import React, { useContext } from 'react';
 import Header from './module/Header';
 import Footer from './module/Footer';
 import Sidebar from './module/SideBar';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Box, Flex, Button } from '@chakra-ui/react';
+import AuthContext from '../context/AuthContext';
 
 const Root = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const { currentUser } = useContext(AuthContext); // 로그인 정보 확인
+
 
     const handleNavigation = (path) => {
         navigate(path);
@@ -50,7 +53,13 @@ const Root = () => {
                             color={location.pathname === '/rank/rankAll' ? 'black' : 'gray.500'}
                             _hover={{ textDecoration: 'none' }}
                             _focus={{ boxShadow: 'none' }}
-                            onClick={() => handleNavigation('/rank/rankAll')}
+                            onClick={() => {
+                                if(currentUser === null){
+                                    alert("로그인 후 이용 가능합니다 ");
+                                    navigate('/');
+                                }else{
+                                    handleNavigation('/rank/rankAll');}}
+                                }
                         >
                             Ranking
                         </Button>

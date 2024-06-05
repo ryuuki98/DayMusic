@@ -213,7 +213,6 @@ const SearchBoard = () => {
     return (
         <>
         <SideRankBar />
-
         <Box maxW="800px" mx="10%" p={4} bg="white" overflowY="auto" height="100vh" mr="250px">
             {error && (
                 <Alert status="error" mb={4}>
