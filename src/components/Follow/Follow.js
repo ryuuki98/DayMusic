@@ -79,7 +79,8 @@ const Follow = () => {
         setFollowerList(data.result[0]);
         setFollowedCount(data.result[1].length);
         setFollowerCount(data.result[0].length);
-        setIsFollowing(data.result[1].some((follow) => follow.id === currentUser.id)); // 여기에서 초기 팔로우 상태를 설정
+        setIsFollowing(data.result[0].some((follow) => follow.id === currentUser.id)); // 여기에서 초기 팔로우 상태를 설정
+        console.log("이거 도대체 무야?", isFollowing);
     };
 
     const fetchFollowList = async () => {
