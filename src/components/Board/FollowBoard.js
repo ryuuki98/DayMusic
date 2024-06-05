@@ -66,27 +66,29 @@ const FollowBoardList = () => {
         };
 
         fetch(`${process.env.REACT_APP_SERVER_URL}/like`, requestOptions)
-            .then((response) => response.json())
-            .then((data) => {
-                const count = data.count;
-                if (response.ok) {
-                    likeUpdate(board_code, count);
-                    toast({
-                        title: '좋아요가 반영되었습니다.',
-                        status: 'success',
-                        duration: 3000,
-                        isClosable: true,
-                    });
-                } else {
-                    toast({
-                        title: '좋아요 처리 실패',
-                        status: 'error',
-                        duration: 3000,
-                        isClosable: true,
-                    });
-                }
+            .then((response) => { response.json().then((data) => {
+                    const count = data.count;
+                    if (response.ok) {
+                        console.log('좋아요처리 성공:', count);
+                        likeUpdate(board_code, count);
+                        toast({
+                            title: '좋아요가 반영되었습니다.',
+                            status: 'success',
+                            duration: 3000,
+                            isClosable: true,
+                        });
+                    } else {
+                        console.log('왜인지 실패');
+                        toast({
+                            title: '좋아요 처리 실패',
+                            status: 'error',
+                            duration: 3000,
+                            isClosable: true,
+                        });
+                    }
+                });
             })
-            .catch(() => {
+            .catch((error) => {
                 toast({
                     title: '서버 요청 실패',
                     status: 'error',

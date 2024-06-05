@@ -51,10 +51,8 @@ const Rank = () => {
 
     return (
         <>
-            <Header />
-            <Flex>
+            <Flex marginRight={"100px"}>
                 <Box as="aside" width="200px">
-                    <Sidebar />
                 </Box>
                 <Center p={5} flexDirection="column" flex="1">
                     {rank.map((list, index) => (

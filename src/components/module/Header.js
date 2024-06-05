@@ -8,20 +8,19 @@ const Header = () => {
     const navigate = useNavigate();
     const { logout } = useContext(AuthContext);
 
-
-    const test = (e) =>{
+    const test = (e) => {
         navigate('/board/write');
     };
 
     return (
-        <Box as="header" bg="white" py={4}>
+        <Box as="header" bg="white" py={4} w="100%">
             <Flex align="center" justify="space-between" maxW="1200px" mx="auto" px={4}>
-                <Text fontSize="xl" fontWeight="bold" color="black" cursor={"pointer"} onClick={() =>navigate("/board/search") }>
+                <Text fontSize="xl" fontWeight="bold" color="black" cursor="pointer" onClick={() => navigate("/board/search")}>
                     Day Music
                 </Text>
-                <Flex align="center">
-                <Button variant="link" mr={4} color="black" onClick={() => {navigate('/')}}>
-                        logout
+                <Flex align="center" ml="auto">
+                    <Button variant="link" mr={4} color="black" onClick={() => { navigate('/'); logout(); }}>
+                        Logout
                     </Button>
                     <Button variant="link" mr={4} color="black">
                         Page
@@ -30,7 +29,7 @@ const Header = () => {
                         Page
                     </Button>
                     <Button colorScheme="blackAlpha" bg="black" color="white" onClick={test}>
-                        write
+                        Write
                     </Button>
                 </Flex>
             </Flex>
