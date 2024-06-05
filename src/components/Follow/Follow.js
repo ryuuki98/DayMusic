@@ -34,11 +34,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const Follow = () => {
     // 로그인 한 유저의 아이디,닉네임 사용가능
     const { currentUser } = useContext(AuthContext);
-
     const location = useLocation();
     const navigate = useNavigate();
     const postId = location.state?.postId || currentUser.id;
-    console.log('postId가 도대체 뭐야?', postId);
+
     // 내 게시글 불러오기
     const [showMyBoardPosts, setShowMyBoardPosts] = useState(false);
 
@@ -79,8 +78,7 @@ const Follow = () => {
         setFollowerList(data.result[0]);
         setFollowedCount(data.result[1].length);
         setFollowerCount(data.result[0].length);
-        setIsFollowing(data.result[0].some((follow) => follow.id === currentUser.id)); // 여기에서 초기 팔로우 상태를 설정
-        console.log("이거 도대체 무야?", isFollowing);
+        setIsFollowing(data.result[0].some((follow) => follow.id === currentUser.id));
     };
 
     const fetchFollowList = async () => {
@@ -113,14 +111,11 @@ const Follow = () => {
 
             const data = await response.json();
             if (response.ok) {
-                console.log('게시글 불러오기 성공');
-                setPostCount(data.boardList.length); // 게시글 수 업데이트
+                setPostCount(data.boardList.length);
             } else {
-                console.log('게시글 불러오기 실패');
                 throw new Error('Failed to fetch posts');
             }
         } catch (error) {
-            console.log('실패');
             console.error('Error fetching posts:', error);
         }
     };
@@ -142,14 +137,11 @@ const Follow = () => {
 
             const data = await response.json();
             if (response.ok) {
-                console.log('게시글 불러오기 성공');
-                setMusicPostCount(data.boardList.length); // 게시글 수 업데이트
+                setMusicPostCount(data.boardList.length);
             } else {
-                console.log('게시글 불러오기 실패');
                 throw new Error('Failed to fetch posts');
             }
         } catch (error) {
-            console.log('실패');
             console.error('Error fetching posts:', error);
         }
     };
@@ -190,7 +182,7 @@ const Follow = () => {
         e.preventDefault();
         const command = isFollowing ? 'delete' : 'add';
         const id = currentUser.id;
-        const youId = postId; // 여기는 임의 아이디이니께 나중에 바꿔야대!
+        const youId = postId;
         const myHeaders = new Headers();
         myHeaders.append('Content-Type', 'application/json;charset=utf-8');
 
@@ -203,7 +195,6 @@ const Follow = () => {
                 followerId: id,
             }),
         };
-        console.log('보낸내용:', requestOptions);
 
         fetch(`${process.env.REACT_APP_SERVER_URL}/follow`, requestOptions)
             .then((response) => {
