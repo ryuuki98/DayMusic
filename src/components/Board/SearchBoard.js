@@ -67,7 +67,7 @@ const SearchBoard = () => {
 
         fetch(`${process.env.REACT_APP_SERVER_URL}/like`, requestOptions)
             .then((response) => {
-                return response.json().then((data) => {
+                response.json().then((data) => {
                     const count = data.count;
                     if (response.ok) {
                         likeUpdate(board_code, count);
@@ -166,7 +166,7 @@ const SearchBoard = () => {
             posts.map((post) => {
                 if (post.board_code === boardCode) {
                     post.comments = [...(post.comments || []), newComment];
-                    post.commentCount += 1;  // 댓글 카운트 증가
+                    post.commentCount += 1; // 댓글 카운트 증가
                 }
                 return post;
             })
@@ -211,116 +211,119 @@ const SearchBoard = () => {
 
     return (
         <>
-
-        <SideRankBar />
-        <Box maxW="800px" mx="10%" p={4} bg="white" height="100vh" mr="250px">
-            {error && (
-                <Alert status="error" mb={4}>
-                    <AlertIcon />
-                    {error}
-                </Alert>
-            )}
-            <VStack spacing={4}>
-                {posts.map((post) => (
-                    <Box key={post.board_code} w="full" p={4} bg="white" boxShadow="md">
-                        <Flex alignItems="center" mb={4}>
-                            <Avatar size="md" name={post.nickname} src={post.profileImg} />
-                            <Box ml={3} cursor="pointer" onClick={() => handleNicknameClick(post.id)}>
-                                <Text fontWeight="bold">{post.nickname}</Text>
-                                <Text fontSize="sm" color="gray.500">
-                                    {new Date(post.createdAt).toLocaleString()}
-                                </Text>
-                            </Box>
-                            <Menu>
-                                <MenuButton
-                                    as={IconButton}
-                                    aria-label="Options"
-                                    icon={<BsThreeDotsVertical />}
-                                    variant="ghost"
-                                    ml="auto"
+            <SideRankBar />
+            <Box maxW="800px" mx="10%" p={4} bg="white" height="100vh" mr="250px">
+                {error && (
+                    <Alert status="error" mb={4}>
+                        <AlertIcon />
+                        {error}
+                    </Alert>
+                )}
+                <VStack spacing={4}>
+                    {posts.map((post) => (
+                        <Box key={post.board_code} w="full" p={4} bg="white" boxShadow="md">
+                            <Flex alignItems="center" mb={4}>
+                                <Avatar size="md" name={post.nickname} src={post.profileImg} />
+                                <Box ml={3} cursor="pointer" onClick={() => handleNicknameClick(post.id)}>
+                                    <Text fontWeight="bold">{post.nickname}</Text>
+                                    <Text fontSize="sm" color="gray.500">
+                                        {new Date(post.createdAt).toLocaleString()}
+                                    </Text>
+                                </Box>
+                                <Menu>
+                                    <MenuButton
+                                        as={IconButton}
+                                        aria-label="Options"
+                                        icon={<BsThreeDotsVertical />}
+                                        variant="ghost"
+                                        ml="auto"
+                                    />
+                                    <MenuList>
+                                        <MenuItem onClick={() => handleEdit(post.board_code)}>Edit</MenuItem>
+                                        <MenuItem onClick={() => handleDelete(post.board_code)}>Delete</MenuItem>
+                                    </MenuList>
+                                </Menu>
+                            </Flex>
+                            <Text mb={4} cursor="pointer" onClick={() => handlePostClick(post.board_code)}>
+                                {post.contents}
+                            </Text>
+                            {post.image_url && (
+                                <Image
+                                    borderRadius="md"
+                                    src={post.image_url}
+                                    alt="Post image"
+                                    mb={4}
+                                    boxSize="500px"
+                                    objectFit="cover"
+                                    style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
                                 />
-                                <MenuList>
-                                    <MenuItem onClick={() => handleEdit(post.board_code)}>Edit</MenuItem>
-                                    <MenuItem onClick={() => handleDelete(post.board_code)}>Delete</MenuItem>
-                                </MenuList>
-                            </Menu>
-                        </Flex>
-                        <Text mb={4} cursor="pointer" onClick={() => handlePostClick(post.board_code)}>
-                            {post.contents}
-                        </Text>
-                        {post.image_url && (
-                            <Image
-                                borderRadius="md"
-                                src={post.image_url}
-                                alt="Post image"
-                                mb={4}
-                                boxSize="500px"
-                                objectFit="cover"
-                                style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
-                            />
-                        )}
+                            )}
 
-{post.music_track && (
-                            <Box
-                                mb={3}
-                                p={3}
-                                borderWidth="1px"
-                                borderRadius="lg"
-                                width="100%"
-                                bg="purple.50"
-                            >
-                                <HStack spacing={3}>
-                                    <Image src={post.music_thumbnail} alt={`${post.music_track} thumbnail`} boxSize="75px" borderRadius="md" />
-                                    <VStack align="start" spacing={1}>
-                                        <Text fontWeight="bold" fontSize="md">노래 제목: {post.music_track}</Text>
-                                        <Text fontSize="sm" color="gray.500">가수: {post.music_artist}</Text>
-                                        <audio controls src={post.music_preview_url} style={{ width: '150px' }}></audio>
-                                    </VStack>
-                                </HStack>
-                            </Box>
-                        )}
-                        <HStack spacing={4}>
-                            <Button
-                                flex="1"
-                                variant="ghost"
-                                leftIcon={<BiLike />}
-                                onClick={handleSubmit}
-                                value={post.board_code}
-                            >
-                                <Text key={post.board_code} id={post.board_code}>
-                                    {post.likeCount}
-                                </Text>
-                                <Box as="span" mx="2"></Box>
-                                Like
-                            </Button>
-                            <Button
-                                flex="1"
-                                variant="ghost"
-                                leftIcon={<BiChat />}
-                                onClick={() => toggleComments(post.board_code)}
-                            >
-                                Comment {post.commentCount}
-                            </Button>
-                           
-                        </HStack>
-                        {showComments[post.board_code] && (
-                            <CommentList
-                                boardCode={post.board_code}
-                                onAddComment={(newComment) => handleAddComment(newComment, post.board_code)}
-                                updateCommentCount={(count) => {
-                                    setPosts(
-                                        posts.map((p) =>
-                                            p.board_code === post.board_code ? { ...p, commentCount: count } : p
-                                        )
-                                    );
-                                }}
-                            />
-                        )}
-                    </Box>
-                ))}
-            </VStack>
-        </Box>
-
+                            {post.music_track && (
+                                <Box mb={3} p={3} borderWidth="1px" borderRadius="lg" width="100%" bg="purple.50">
+                                    <HStack spacing={3}>
+                                        <Image
+                                            src={post.music_thumbnail}
+                                            alt={`${post.music_track} thumbnail`}
+                                            boxSize="75px"
+                                            borderRadius="md"
+                                        />
+                                        <VStack align="start" spacing={1}>
+                                            <Text fontWeight="bold" fontSize="md">
+                                                노래 제목: {post.music_track}
+                                            </Text>
+                                            <Text fontSize="sm" color="gray.500">
+                                                가수: {post.music_artist}
+                                            </Text>
+                                            <audio
+                                                controls
+                                                src={post.music_preview_url}
+                                                style={{ width: '150px' }}
+                                            ></audio>
+                                        </VStack>
+                                    </HStack>
+                                </Box>
+                            )}
+                            <HStack spacing={4}>
+                                <Button
+                                    flex="1"
+                                    variant="ghost"
+                                    leftIcon={<BiLike />}
+                                    onClick={handleSubmit}
+                                    value={post.board_code}
+                                >
+                                    <Text key={post.board_code} id={post.board_code}>
+                                        {post.likeCount}
+                                    </Text>
+                                    <Box as="span" mx="2"></Box>
+                                    Like
+                                </Button>
+                                <Button
+                                    flex="1"
+                                    variant="ghost"
+                                    leftIcon={<BiChat />}
+                                    onClick={() => toggleComments(post.board_code)}
+                                >
+                                    Comment
+                                </Button>
+                            </HStack>
+                            {showComments[post.board_code] && (
+                                <CommentList
+                                    boardCode={post.board_code}
+                                    onAddComment={(newComment) => handleAddComment(newComment, post.board_code)}
+                                    updateCommentCount={(count) => {
+                                        setPosts(
+                                            posts.map((p) =>
+                                                p.board_code === post.board_code ? { ...p, commentCount: count } : p
+                                            )
+                                        );
+                                    }}
+                                />
+                            )}
+                        </Box>
+                    ))}
+                </VStack>
+            </Box>
         </>
     );
 };

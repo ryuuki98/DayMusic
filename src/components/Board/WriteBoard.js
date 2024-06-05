@@ -85,7 +85,7 @@ const CreateBoardPost = () => {
         e.preventDefault();
         const musicTrack = selectedTrack ? selectedTrack.name : '';
         const musicArtist = selectedTrack ? selectedTrack.artists[0].name : '';
-        const musicPreviewUrl = selectedTrack ? selectedTrack.preview_url : '';
+        const musicPreviewUrl = selectedTrack ? (selectedTrack.preview_url != null ? selectedTrack.preview_url : '' ) : '';
         const musicThumbnail = selectedTrack ? selectedTrack.album.images[2]?.url : '';
         const musicUrl = selectedTrack ? selectedTrack.external_urls.spotify : '';//뭐였지: '';
 

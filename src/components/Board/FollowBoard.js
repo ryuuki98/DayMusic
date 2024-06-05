@@ -215,6 +215,7 @@ const FollowBoard = () => {
     return (<>
         <SideRankBar />
         <Box maxW="800px" mx="10%" p={4} bg="white" height="100vh">
+
             <Heading mb={4} textColor="black">
                 Followed Posts
             </Heading>
