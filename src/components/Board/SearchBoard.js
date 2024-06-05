@@ -39,7 +39,7 @@ const SearchBoard = () => {
 
     const likeUpdate = (board_code, count) => {
         posts.map((post) => {
-            if (post.board_code === board_code) {
+            if (post.board_code == board_code) {
                 post.likeCount = count;
                 setPosts([...posts]);
                 return;
