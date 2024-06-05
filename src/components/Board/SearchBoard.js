@@ -256,6 +256,7 @@ const SearchBoard = () => {
                                     boxSize="500px"
                                     objectFit="cover"
                                     style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
+
                                 />
                             )}
 
@@ -270,10 +271,11 @@ const SearchBoard = () => {
                                         />
                                         <VStack align="start" spacing={1}>
                                             <Text fontWeight="bold" fontSize="md">
-                                                노래 제목: {post.music_track}
+
+                                                {post.music_track}
                                             </Text>
                                             <Text fontSize="sm" color="gray.500">
-                                                가수: {post.music_artist}
+                                                {post.music_artist}
                                             </Text>
                                             <audio
                                                 controls
@@ -304,7 +306,9 @@ const SearchBoard = () => {
                                     leftIcon={<BiChat />}
                                     onClick={() => toggleComments(post.board_code)}
                                 >
-                                    Comment
+
+                                    Comment {post.commentCount}
+
                                 </Button>
                             </HStack>
                             {showComments[post.board_code] && (
@@ -318,6 +322,7 @@ const SearchBoard = () => {
                                             )
                                         );
                                     }}
+
                                 />
                             )}
                         </Box>

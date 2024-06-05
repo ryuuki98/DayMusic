@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import Header from '../module/Header';
 import AuthContext from '../../context/AuthContext';
 import { Box, VStack, HStack, Image, Text, Alert, AlertIcon, Center, Flex, Badge, Icon, Button } from '@chakra-ui/react';
 import { AiFillLike } from 'react-icons/ai';
-import Sidebar from '../module/SideBar';
 import { Link } from 'react-router-dom';
 
 const Rank = () => {
@@ -11,6 +9,7 @@ const Rank = () => {
     const [error, setError] = useState('');
     const command = "rank";
     const { currentUser } = useContext(AuthContext);
+    const [todayCount, setTodayCount] = useState(0);
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json;charset=utf-8');
 
@@ -31,6 +30,7 @@ const Rank = () => {
                 }
                 console.log(responseJSON);
                 setRank(responseJSON);
+                todaySetting(responseJSON);
             } catch (error) {
                 setError("데이터를 가져오는데 실패했습니다!");
             }
@@ -38,6 +38,15 @@ const Rank = () => {
 
         fetchRank();
     }, []);
+
+    const todaySetting = (responseJSON) => {
+        const data = responseJSON;
+        let count = 0;
+        data.map((list) =>{
+            count += list.count;
+        })
+        setTodayCount(count);
+    }
 
     if (error) {
         return (
@@ -51,33 +60,45 @@ const Rank = () => {
     }
 
     return (
-        <>
-            <Flex marginRight={"100px"}>
-                <Box as="aside" width="200px">
-                </Box>
-                <Center p={5} flexDirection="column" flex="1">
-                    {rank.map((list, index) => (
-                        <Flex key={index} mb={5} p={5} borderWidth="1px" borderRadius="lg" width="80%" justifyContent="space-between" alignItems="center" bg="gray.50">
+        <Box p={5}>
+
+            <Center flexDirection="column">
+            <Text fontSize={"5xl"} margin={"50px"}>오늘은 총 {todayCount}곡이 포스팅 되었습니다.</Text>
+
+                {rank.map((list, index) => (
+                    <Box
+                        key={index}
+                        mb={4}
+                        p={4}
+                        borderRadius="lg"
+                        width="100%"
+                        maxW="800px"
+                        bg="white"
+                        boxShadow="md"
+                    >
+                        <Flex justifyContent="space-between" alignItems="center">
                             <VStack align="start">
-                                <Badge colorScheme="purple" fontSize="lg">
-                                    <Icon as={AiFillLike} mr={1} />
-                                    {list.count} Tag
-                                </Badge>
                                 <Text fontSize="2xl" fontWeight="bold">{index + 1}. {list.musicTrack}</Text>
                                 <Text fontSize="md" color="gray.500">{list.musicArtist}</Text>
+                                <HStack>
+                                    <Badge fontSize="md">
+                                        <Icon as={AiFillLike} mr={1} />
+                                        {list.count}
+                                    </Badge>
+                                    <Link to={list.musicUrl}>
+                                        <Button size="sm" variant="outline">스포티파이 이동</Button>
+                                    </Link>
+                                </HStack>
                             </VStack>
                             <HStack spacing={4}>
-                                <Image src={list.musicThumbnail} alt={`${list.musicTrack} thumbnail`} boxSize="100px" borderRadius="md" />
+                                <Image src={list.musicThumbnail} alt={`${list.musicTrack} thumbnail`} boxSize="75px" borderRadius="md" />
                                 <audio controls src={list.musicPreviewUrl} style={{ width: '200px' }}></audio>
-                                <Link to={list.musicUrl}>
-                                    <Button>스포티파이이동</Button>
-                                </Link>
                             </HStack>
                         </Flex>
-                    ))}
-                </Center>
-            </Flex>
-        </>
+                    </Box>
+                ))}
+            </Center>
+        </Box>
     );
 };
 
