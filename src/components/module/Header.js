@@ -1,10 +1,13 @@
 // Header.js
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, Flex, Text, Button } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import AuthContext from '../../context/AuthContext';
 
 const Header = () => {
     const navigate = useNavigate();
+    const { logout } = useContext(AuthContext);
+
 
     const test = (e) =>{
         navigate('/board/write');
@@ -18,7 +21,6 @@ const Header = () => {
                 </Text>
                 <Flex align="center">
                 <Button variant="link" mr={4} color="black" onClick={() => {navigate('/')}}>
-
                         logout
                     </Button>
                     <Button variant="link" mr={4} color="black">
