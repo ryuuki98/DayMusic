@@ -304,9 +304,7 @@ const SearchBoard = () => {
                             >
                                 Comment {post.commentCount}
                             </Button>
-                            <Button flex="1" variant="ghost" leftIcon={<BiShare />}>
-                                Share
-                            </Button>
+                           
                         </HStack>
                         {showComments[post.board_code] && (
                             <CommentList
