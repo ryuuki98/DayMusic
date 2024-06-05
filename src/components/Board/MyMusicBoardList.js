@@ -17,7 +17,6 @@ import {
 } from '@chakra-ui/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import AuthContext from '../../context/AuthContext';
-
 const MyMusicBoardPosts = ({ onPostCountChange }) => { // onPostCountChange prop 추가
     const { currentUser } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -26,7 +25,6 @@ const MyMusicBoardPosts = ({ onPostCountChange }) => { // onPostCountChange prop
     const [error, setError] = useState('');
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json;charset=utf-8');
-
     useEffect(() => {
         const fetchPosts = async () => {
             try {
@@ -50,18 +48,14 @@ const MyMusicBoardPosts = ({ onPostCountChange }) => { // onPostCountChange prop
                 setError(error.message);
             }
         };
-
         fetchPosts();
     }, [currentUser.id, command]);
-
     const handleBoxClick = (boardCode) => {
         navigate('/board/detail', { state: { boardCode } });
     };
-
     const handleEdit = (boardCode) => {
         navigate('/board/update', { state: { boardCode } });
     };
-
     const handleDelete = async (boardCode) => {
         try {
             const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/board/service`, {
@@ -74,11 +68,9 @@ const MyMusicBoardPosts = ({ onPostCountChange }) => { // onPostCountChange prop
                 }),
                 credentials: 'include',
             });
-
             if (!response.ok) {
                 throw new Error('Failed to delete post');
             }
-
             // Remove the deleted post from the list
             const updatedPosts = posts.filter(post => post.board_code !== boardCode);
             setPosts(updatedPosts);
@@ -87,7 +79,6 @@ const MyMusicBoardPosts = ({ onPostCountChange }) => { // onPostCountChange prop
             setError(error.message);
         }
     };
-
     return (
         <Box
             maxW="800px"
@@ -168,5 +159,4 @@ const MyMusicBoardPosts = ({ onPostCountChange }) => { // onPostCountChange prop
         </Box>
     );
 };
-
 export default MyMusicBoardPosts;
