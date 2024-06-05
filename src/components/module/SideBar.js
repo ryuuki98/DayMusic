@@ -1,31 +1,51 @@
 // Sidebar.js
-import React from 'react';
-import { Box, Button, VStack, useDisclosure, Input, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter, Text } from '@chakra-ui/react';
+import React, { useContext } from 'react';
+import {
+    Box,
+    Button,
+    VStack,
+    useDisclosure,
+    Input,
+    AlertDialog,
+    AlertDialogOverlay,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogBody,
+    AlertDialogFooter,
+    Text,
+} from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import AuthContext from '../../context/AuthContext';
 
 const Sidebar = () => {
     const navigate = useNavigate();
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const { currentUser } = useContext(AuthContext); // 로그인 정보 확인
+
     const cancelRef = React.useRef();
 
     const handleFollowClick = () => {
-        navigate('/follow');
+        if (currentUser === null) {
+            alert('로그인을 해야합니다.');
+            navigate('/');
+        } else {
+            navigate('/follow');
+        }
     };
 
     const handleMyPageClick = () => {
-
-        navigate('/user/mypage');
+        if (currentUser === null) {
+            alert('로그인을 해야합니다.');
+            navigate('/');
+        } else {
+            navigate('/user/mypage');
+        }
     };
 
     const handleSearch = () => {
         // 검색 로직 추가
         onClose();
     };
-
-    const rank = (e) =>{
-        navigate('/rank');
-    };
-
 
     return (
         <Box
@@ -40,28 +60,21 @@ const Sidebar = () => {
             borderRight="1px solid gray"
         >
             <VStack spacing={4} align="start">
-                <Button onClick={() =>navigate("/board/search")} width="full" variant="ghost" >
+                <Button onClick={() => navigate('/board/search')} width="full" variant="ghost">
                     Home
                 </Button>
-                <Button onClick={onOpen} width="full" variant="ghost" >
+                <Button onClick={onOpen} width="full" variant="ghost">
                     Search
                 </Button>
-                <Button onClick={handleFollowClick} width="full" variant="ghost" >
+                <Button onClick={handleFollowClick} width="full" variant="ghost">
                     follow
                 </Button>
-                <Button onClick={handleMyPageClick} width="full" variant="ghost" >
+                <Button onClick={handleMyPageClick} width="full" variant="ghost">
                     MyPage
-                </Button>
-                <Button  width="full" variant="ghost" onClick={rank} >
-                                rank
                 </Button>
             </VStack>
 
-            <AlertDialog
-                isOpen={isOpen}
-                leastDestructiveRef={cancelRef}
-                onClose={onClose}
-            >
+            <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
                 <AlertDialogOverlay>
                     <AlertDialogContent>
                         <AlertDialogHeader fontSize="lg" fontWeight="bold">
@@ -77,7 +90,6 @@ const Sidebar = () => {
                             <Button colorScheme="blue" onClick={handleSearch} ml={3}>
                                 검색
                             </Button>
-                            
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialogOverlay>

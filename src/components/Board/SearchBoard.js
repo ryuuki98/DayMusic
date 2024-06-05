@@ -67,7 +67,8 @@ const SearchBoard = () => {
         };
 
         fetch(`${process.env.REACT_APP_SERVER_URL}/like`, requestOptions)
-            .then((response) => { response.json().then((data) => {
+            .then((response) => {
+                return response.json().then((data) => {
                     const count = data.count;
                     if (response.ok) {
                         likeUpdate(board_code, count);
@@ -212,7 +213,7 @@ const SearchBoard = () => {
     return (
         <>
         <SideRankBar/>
-        <Box maxW="800px" mx="auto" p={4} bg="white" overflowY="auto" height="100vh" mr="250px">
+        <Box maxW="800px" mx="10%" p={4} bg="white" overflowY="auto" height="100vh" mr="250px">
             {error && (
                 <Alert status="error" mb={4}>
                     <AlertIcon />
@@ -258,24 +259,14 @@ const SearchBoard = () => {
                                 style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }} // 이미지를 가운데 정렬하는 CSS 스타일 적용
                             />
                         )}
+
                         {post.music_track && (
-                            <Box
-                                mb={3}
-                                p={3}
-                                borderWidth="1px"
-                                borderRadius="lg"
-                                width="100%"
-                                bg="purple.50"
-                            >
-                                <HStack spacing={3}>
-                                    <Image src={post.music_thumbnail} alt={`${post.music_track} thumbnail`} boxSize="75px" borderRadius="md" />
-                                    <VStack align="start" spacing={1}>
-                                        <Text fontWeight="bold" fontSize="md">노래 제목: {post.music_track}</Text>
-                                        <Text fontSize="sm" color="gray.500">가수: {post.music_artist}</Text>
-                                        <audio controls src={post.music_preview_url} style={{ width: '150px' }}></audio>
-                                    </VStack>
-                                </HStack>
-                            </Box>
+                            <>
+                                <Text mb={4}>노래 제목: {post.music_track}</Text>
+                                <Text mb={4}>가수: {post.music_artist}</Text>
+                                <Image src={post.music_thumbnail} />
+                                <audio controls src={post.music_preview_url} />
+                            </>
                         )}
                         <HStack spacing={4}>
                             <Button

@@ -15,38 +15,16 @@ const Header = () => {
     return (
         <Box as="header" bg="white" py={4} w="100%">
             <Flex align="center" justify="space-between" maxW="1200px" mx="auto" px={4}>
-                <Text
-                    fontSize="xl"
-                    fontWeight="bold"
-                    color="black"
-                    cursor="pointer"
-                    onClick={() => {
-                        logout(null);
-                        navigate('/board/search');
-                    }}
-                >
+                <Text fontSize="xl" fontWeight="bold" color="black" cursor="pointer" onClick={() => navigate("/board/search")}>
                     Day Music
                 </Text>
                 <Flex align="center" ml="auto">
-                    <Button
-                        variant="link"
-                        mr={4}
-                        color="black"
-                        onClick={() => {
-                            navigate('/');
-                            logout();
-                        }}
-                    >
+                    <Button variant="link" mr={4} color="black" onClick={() => { 
+                        navigate('/'); 
+                        logout(); }}>
                         Logout
                     </Button>
-                    <Button
-                        variant="link"
-                        mr={4}
-                        color="black"
-                        onClick={() => {
-                            navigate('/board/follow');
-                        }}
-                    >
+                    <Button variant="link" mr={4} color="black">
                         Page
                     </Button>
                     <Button variant="link" mr={4} color="black">

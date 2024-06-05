@@ -29,7 +29,7 @@ import UpdateNickname from './UpdateNickname';
 import UpdateUserInfo from './UpdateUserInfo';
 
 const MyPage = () => {
-    const { currentUser } = useContext(AuthContext); 
+    const { currentUser } = useContext(AuthContext);
     const navigate = useNavigate();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = useRef();
@@ -40,30 +40,21 @@ const MyPage = () => {
     const toast = useToast();
 
     useEffect(() => {
-        if (currentUser === null) {
-            alert('로그인을 해야합니다.');
-            navigate('/');
-        } else {
-            fetch(`${process.env.REACT_APP_SERVER_URL}/image/service?userId=${currentUser.id}`, {
-                method: 'GET',
-                credentials: 'include',
+        fetch(`${process.env.REACT_APP_SERVER_URL}/image/service?userId=${currentUser.id}`, {
+            method: 'GET',
+            credentials: 'include',
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.profileImageUrl) {
+                    setProfileImg(data.profileImageUrl);
+                    console.log('Fetched profile image URL:', data.profileImageUrl);
+                }
             })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.profileImageUrl) {
-                        setProfileImg(data.profileImageUrl);
-                        console.log("Fetched profile image URL:", data.profileImageUrl);
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error fetching profile image:', error);
-                });
-        }
+            .catch((error) => {
+                console.error('Error fetching profile image:', error);
+            });
     }, [currentUser, navigate]);
-
-    if (currentUser === null) {
-        return null; 
-    }
 
     const handleDelete = () => {
         setIsDeleting(true);
@@ -98,7 +89,7 @@ const MyPage = () => {
         setTimeout(() => {
             setIsDeleting(false);
             onClose();
-            alert('탈퇴가 완료 되었습니다'); 
+            alert('탈퇴가 완료 되었습니다');
             navigate('/');
         }, 2000);
     };
@@ -120,7 +111,7 @@ const MyPage = () => {
             const formData = new FormData();
             formData.append('profileImage', file);
             formData.append('userId', currentUser.id);
-            formData.append('command','profileImage');
+            formData.append('command', 'profileImage');
 
             try {
                 const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/image/service`, {
@@ -154,29 +145,11 @@ const MyPage = () => {
     return (
         <Box display="flex" flexDirection="column" alignItems="center" mt={8} p={4}>
             <Box position="relative" cursor="pointer" onClick={handleImageClick}>
-                <Image
-                    borderRadius="full"
-                    boxSize="150px"
-                    src={profileImg}
-                    alt="Profile Image"
-                />
-                <Box
-                    position="absolute"
-                    bottom="0"
-                    right="0"
-                    bg="white"
-                    borderRadius="full"
-                    p={2}
-                    cursor="pointer"
-                >
+                <Image borderRadius="full" boxSize="150px" src={profileImg} alt="Profile Image" />
+                <Box position="absolute" bottom="0" right="0" bg="white" borderRadius="full" p={2} cursor="pointer">
                     <Icon as={FaCamera} w={6} h={6} color="gray.500" />
                 </Box>
-                <Input
-                    type="file"
-                    ref={inputFileRef}
-                    display="none"
-                    onChange={handleImageChange}
-                />
+                <Input type="file" ref={inputFileRef} display="none" onChange={handleImageChange} />
             </Box>
             <Text fontSize="2xl" fontWeight="bold" mt={4} color="black">
                 {currentUser.nickname}
