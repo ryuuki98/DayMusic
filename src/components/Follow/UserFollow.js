@@ -35,7 +35,6 @@ const UserFollow = () => {
     // 게시글 유저의 아이디
     const location = useLocation();
     const postId = location.state.postId;
-    const postnickname = location.state.postnickname;
     
     // 로그인 한 유저의 아이디,닉네임 사용가능
     const { currentUser } = useContext(AuthContext);
@@ -72,9 +71,7 @@ const UserFollow = () => {
     const fetchFollowData = async () => {
         const url = `${process.env.REACT_APP_SERVER_URL}/follow/follow_list?id=${postId}&currentId=${currentUser.id}`;
         const response = await fetch(url, { method: "GET" });
-
         const data = await response.json();
-        console.log(data);
 
         setFollowList(data.result[1]);
         setFollowerList(data.result[0]);
@@ -100,14 +97,11 @@ const UserFollow = () => {
 
             const data = await response.json();
             if (response.ok) {
-                console.log("게시글 불러오기 성공")
-                setPostCount(data.boardList.length); // 게시글 수 업데이트
+                setPostCount(data.boardList.length);
             } else {
-                console.log("게시글 불러오기 실패");
                 throw new Error('Failed to fetch posts');
             }
         } catch (error) {
-            console.log("실패");
             console.error('Error fetching posts:', error);
         }
     };
@@ -129,14 +123,11 @@ const UserFollow = () => {
 
             const data = await response.json();
             if (response.ok) {
-                console.log('게시글 불러오기 성공');
-                setMusicPostCount(data.boardList.length); // 게시글 수 업데이트
+                setMusicPostCount(data.boardList.length);
             } else {
-                console.log('게시글 불러오기 실패');
                 throw new Error('Failed to fetch posts');
             }
         } catch (error) {
-            console.log('실패');
             console.error('Error fetching posts:', error);
         }
     };
