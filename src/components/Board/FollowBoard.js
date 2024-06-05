@@ -1,4 +1,4 @@
-// FollowBoardList.js
+// FollowBoard.js
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -23,14 +23,14 @@ import {
 import { BiChat, BiLike, BiShare } from 'react-icons/bi';
 import AuthContext from '../../context/AuthContext';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import CommentList from '../Comment/CommentList';
+import CommentList from '../Comment/CommentList'; // 올바른 경로로 CommentList 임포트
 
-const FollowBoardList = () => {
+const FollowBoard = () => {
     const navigate = useNavigate();
-    const command = 'followBoardList';
+    const command = 'follow';
     const [posts, setPosts] = useState([]);
     const [error, setError] = useState('');
-    const { currentUser } = useContext(AuthContext);
+    const { currentUser } = useContext(AuthContext); // 로그인 정보 확인
     const [showComments, setShowComments] = useState({});
     const myHeaders = new Headers();
     const toast = useToast();
@@ -48,6 +48,7 @@ const FollowBoardList = () => {
     };
 
     const handleSubmit = (e) => {
+        // 좋아요 추가/제거 이벤트
         e.preventDefault();
         const board_code = e.target.value;
         const command = 'likeAdd';
@@ -66,27 +67,27 @@ const FollowBoardList = () => {
         };
 
         fetch(`${process.env.REACT_APP_SERVER_URL}/like`, requestOptions)
-            .then((response) => response.json())
-            .then((data) => {
-                const count = data.count;
-                if (response.ok) {
-                    likeUpdate(board_code, count);
-                    toast({
-                        title: '좋아요가 반영되었습니다.',
-                        status: 'success',
-                        duration: 3000,
-                        isClosable: true,
-                    });
-                } else {
-                    toast({
-                        title: '좋아요 처리 실패',
-                        status: 'error',
-                        duration: 3000,
-                        isClosable: true,
-                    });
-                }
+            .then((response) => { response.json().then((data) => {
+                    const count = data.count;
+                    if (response.ok) {
+                        likeUpdate(board_code, count);
+                        toast({
+                            title: '좋아요가 반영되었습니다.',
+                            status: 'success',
+                            duration: 3000,
+                            isClosable: true,
+                        });
+                    } else {
+                        toast({
+                            title: '좋아요 처리 실패',
+                            status: 'error',
+                            duration: 3000,
+                            isClosable: true,
+                        });
+                    }
+                });
             })
-            .catch(() => {
+            .catch((error) => {
                 toast({
                     title: '서버 요청 실패',
                     status: 'error',
@@ -182,8 +183,8 @@ const FollowBoardList = () => {
                         method: 'POST',
                         headers: myHeaders,
                         body: JSON.stringify({
-                            command: command,
-                            id: currentUser.id,
+                            command: 'follow',
+                            userId: currentUser.id,
                         }),
                         credentials: 'include',
                     });
@@ -211,7 +212,7 @@ const FollowBoardList = () => {
     return (
         <Box maxW="800px" mx="auto" p={4} bg="white" overflowY="auto" height="100vh">
             <Heading mb={4} textColor="black">
-                Followed Users' Posts
+                Followed Posts
             </Heading>
             {error && (
                 <Alert status="error" mb={4}>
@@ -226,6 +227,7 @@ const FollowBoardList = () => {
                             <Avatar size="md" name={post.nickname} src={post.profileImg} />
                             <Box ml={3} cursor="pointer" onClick={() => handleNicknameClick(post.id)}>
                                 <Text fontWeight="bold">{post.nickname}</Text>
+                                
                                 <Text fontSize="sm" color="gray.500">
                                     {new Date(post.createdAt).toLocaleString()}
                                 </Text>
@@ -306,4 +308,4 @@ const FollowBoardList = () => {
     );
 };
 
-export default FollowBoardList;
+export default FollowBoard;
