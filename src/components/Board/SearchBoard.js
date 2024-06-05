@@ -221,9 +221,7 @@ const SearchBoard = () => {
 
     return (
         <Box maxW="800px" mx="auto" p={4} bg="white" overflowY="auto" height="100vh">
-            <Heading mb={4} textColor="black">
-                Home
-            </Heading>
+
             {error && (
                 <Alert status="error" mb={4}>
                     <AlertIcon />
