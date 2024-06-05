@@ -61,7 +61,6 @@ const Sidebar = () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        //
                     },
                     body: JSON.stringify({
                         command: 'searchUserList',
@@ -83,12 +82,17 @@ const Sidebar = () => {
         fetchSearchResults();
     }, [searchQuery]);
 
+    const handleUserClick = (userId) => {
+        navigate('/userFollow', { state: { postId: userId } });
+        onClose();  // 다이얼로그 닫기
+    };
+
     return (
         <Box
             as="aside"
             position="fixed"
             left={0}
-            top="60px" // 헤더 높이만큼 내립니다.
+            top="60px"
             height="calc(100vh - 60px)"
             width="200px"
             bg="white"
@@ -131,7 +135,22 @@ const Sidebar = () => {
                             {searchResults.length > 0 && (
                                 <VStack mt={4} spacing={2} align="start">
                                     {searchResults.map((user) => (
-                                        <Text key={user.id}>{user.nickname}</Text>
+                                        <Box
+                                            key={user.id}
+                                            width={"100%"}
+                                            padding={"10px"}
+                                            borderRadius="md"
+                                            boxShadow="md"
+                                            cursor="pointer"
+                                            transition="all 0.2s"
+                                            _hover={{
+                                                backgroundColor: "gray.100",
+                                                transform: "scale(1.05)",
+                                            }}
+                                            onClick={() => handleUserClick(user.id)}
+                                        >
+                                            <Text>{user.nickname}</Text>
+                                        </Box>
                                     ))}
                                 </VStack>
                             )}
