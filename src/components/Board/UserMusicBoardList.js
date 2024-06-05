@@ -8,6 +8,7 @@ import {
     Alert,
     AlertIcon,
     Flex,
+    Image,
 } from '@chakra-ui/react';
 import AuthContext from '../../context/AuthContext';
 
@@ -89,6 +90,21 @@ const UserMusicBoardPosts = ({ userId }) => {
                                 flex="1"
                             >
                                 {post.contents}
+                                {post.music_track && (
+                                <>
+                                    <Image
+                                        borderRadius="md"
+                                        src={post.music_thumbnail}
+                                        alt="Post image"
+                                        mb={4}
+                                        boxSize="100px" // 정사각형으로 만들기 위해 크기 고정
+                                        objectFit="cover"
+                                        style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }} // 이미지를 가운데 정렬하는 CSS 스타일 적용
+                                    />
+                                    <Text mb={2}>노래 제목: {post.music_track}</Text>
+                                    <Text mb={2}>가수: {post.music_artist}</Text>
+                                </>
+                                )}
                             </Text>
                         </Flex>
                         {post.music_code && (

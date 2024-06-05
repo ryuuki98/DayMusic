@@ -79,7 +79,7 @@ const UserFollow = () => {
         setFollowerList(data.result[0]);
         setFollowedCount(data.result[1].length);
         setFollowerCount(data.result[0].length);
-        setIsFollowing(data.result[0].some(follow => follow.id === currentUser.id)); // 여기에서 초기 팔로우 상태를 설정
+        // setIsFollowing(data.result[0].some(follow => follow.id === currentUser.id)); // 여기에서 초기 팔로우 상태를 설정
         //배열 안에 현재 로그인한 사용자가 포함되어 있는지를 확인하고, 포함되어 있으면 isFollowing 상태를 true로 설정하는 코드
         console.log("첫번쨰 들어가는거?", isFollowing);
     };
@@ -156,7 +156,6 @@ const UserFollow = () => {
 
     useEffect(() => {
         fetchFollowData();
-        fetchFollowList();
         fetchPostCount();
         fetchMusicPostCount();
 
@@ -200,10 +199,15 @@ const UserFollow = () => {
             .then((response) => {
                 return response.json().then((result) => {
                     if (response.ok) {
-                        console.log('팔로우처리 성공:', result);
-                        setIsFollowing(!isFollowing);
-                        console.log("두번쨰", isFollowing);
-                        fetchFollowList();
+                        if(!result.isFollow) {
+                            console.log('팔로우처리 성공:', result);
+                            setIsFollowing(!isFollowing);
+                            console.log("팔로잉 지금 몬대?", isFollowing);
+                            fetchFollowList();
+                        }
+                        else {
+                            console.log("실패패");
+                        }
                     } else {
                         console.log('실패');
                     }
