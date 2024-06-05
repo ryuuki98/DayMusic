@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Header from '../module/Header';
 import AuthContext from '../../context/AuthContext';
-import { Box, VStack, HStack, Image, Text, Alert, AlertIcon, Center, Flex } from '@chakra-ui/react';
+import { Box, VStack, HStack, Image, Text, Alert, AlertIcon, Center, Flex, Badge, Icon, Button } from '@chakra-ui/react';
+import { AiFillLike } from 'react-icons/ai';
 import Sidebar from '../module/SideBar';
-import SideRankBar from './SideRankBar';
+import { Link } from 'react-router-dom';
 
 const Rank = () => {
     const [rank, setRank] = useState([]);
@@ -58,14 +59,21 @@ const Rank = () => {
                 </Box>
                 <Center p={5} flexDirection="column" flex="1">
                     {rank.map((list, index) => (
-                        <Flex key={index} mb={5} p={5} borderWidth="1px" borderRadius="lg" width="80%" justifyContent="space-between" alignItems="center">
+                        <Flex key={index} mb={5} p={5} borderWidth="1px" borderRadius="lg" width="80%" justifyContent="space-between" alignItems="center" bg="gray.50">
                             <VStack align="start">
+                                <Badge colorScheme="purple" fontSize="lg">
+                                    <Icon as={AiFillLike} mr={1} />
+                                    {list.count} Tag
+                                </Badge>
                                 <Text fontSize="2xl" fontWeight="bold">{index + 1}. {list.musicTrack}</Text>
                                 <Text fontSize="md" color="gray.500">{list.musicArtist}</Text>
                             </VStack>
                             <HStack spacing={4}>
-                                <Image src={list.musicThumbnail} alt={`${list.musicTrack} thumbnail`} boxSize="50px" borderRadius="md" />
+                                <Image src={list.musicThumbnail} alt={`${list.musicTrack} thumbnail`} boxSize="100px" borderRadius="md" />
                                 <audio controls src={list.musicPreviewUrl} style={{ width: '200px' }}></audio>
+                                <Link to={list.musicUrl}>
+                                    <Button>스포티파이이동</Button>
+                                </Link>
                             </HStack>
                         </Flex>
                     ))}

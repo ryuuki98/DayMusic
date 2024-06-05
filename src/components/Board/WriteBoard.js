@@ -216,12 +216,12 @@ const CreateBoardPost = () => {
                 <AlertDialog
                     isOpen={showSpotifySearch}
                     leastDestructiveRef={cancelRef}
-                    onClose={() => setShowSpotifySearch(false)}
+                    onClose={() => setShowSpotifySearch(false)} 
                 >
                     <AlertDialogOverlay>
                         <AlertDialogContent>
                             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                                Music Search
+                                Music Search 
                             </AlertDialogHeader>
 
                             <AlertDialogBody>
@@ -238,11 +238,14 @@ const CreateBoardPost = () => {
                 </AlertDialog>
                 {selectedTrack && (
                     <>
-                        <Text color="gray.800">
-                            선택 노래: {selectedTrack.name} by {selectedTrack.artists[0].name}
-                        </Text>
-                        <Image src={selectedTrack.album.images[2]?.url} boxSize="100px" objectFit="cover" />
-                        <audio controls src={selectedTrack.preview_url}></audio>
+                    <HStack spacing={4}>
+                        <Image src={selectedTrack.album.images[0]?.url} alt={selectedTrack.name} boxSize="100px" borderRadius="md" />
+                        <VStack align="start" spacing={1} flex="1">
+                            <Text fontWeight="bold" fontSize="md">{selectedTrack.name}</Text>
+                            <Text fontSize="sm" color="gray.500">by {selectedTrack.artists[0].name}</Text>
+                            <audio controls src={selectedTrack.preview_url} style={{ width: '100%' }}></audio>
+                        </VStack>
+                    </HStack>
                     </>
                 )}
                 <Button type="submit" colorScheme="blue" width="full" size="sm">

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Input, Button, VStack, List, ListItem, Text } from '@chakra-ui/react';
+import { Input, Button, VStack, List, ListItem, Text, Image, HStack } from '@chakra-ui/react';
 import { getSpotifyToken } from '../../utils/spotifyAuth';
 
 const SpotifySearch = ({ onSelectTrack }) => {
@@ -56,20 +56,28 @@ const SpotifySearch = ({ onSelectTrack }) => {
                 검색
             </Button>
             {errorMessage && <Text color="red">{errorMessage}</Text>}
-            <List spacing={2} width="full">
-                {tracks.map((track) => (
-                    <ListItem
-                        key={track.id}
-                        onClick={() => onSelectTrack(track)}
-                        cursor="pointer"
-                        _hover={{ bg: 'gray.100' }}
-                        p={2}
-                    >
-                        <Text>
-                            {track.name} by {track.artists[0].name}
-                        </Text>
-                    </ListItem>
-                ))}
+            <List spacing={3} width="full">
+            {tracks.map((track) => (
+                <ListItem
+                    key={track.id}
+                    onClick={() => onSelectTrack(track)}
+                    cursor="pointer"
+                    _hover={{ bg: 'gray.100' }}
+                    p={3}
+                    borderWidth="1px"
+                    borderRadius="lg"
+                    bg="white"
+                >
+                    <HStack spacing={4}>
+                        <Image src={track.album.images[1].url} alt={track.name} boxSize="100px" borderRadius="md" />
+                        <VStack align="start" spacing={1} flex="1">
+                            <Text fontWeight="bold" fontSize="md">{track.name}</Text>
+                            <Text fontSize="sm" color="gray.500">by {track.artists[0].name}</Text>
+                            <audio controls src={track.preview_url} style={{ width: '100%' }}></audio>
+                        </VStack>
+                    </HStack>
+                </ListItem>
+            ))}
             </List>
         </VStack>
     );
