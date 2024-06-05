@@ -12,7 +12,7 @@ import {
 import { FaEdit, FaTrash, FaSave, FaTimes, FaReply, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import AuthContext from '../../context/AuthContext';
 
-const CommentList = ({ boardCode }) => {
+const CommentList = ({ boardCode, updateCommentCount }) => {
     const { currentUser } = useContext(AuthContext);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
@@ -40,6 +40,7 @@ const CommentList = ({ boardCode }) => {
             }
             const data = await response.json();
             setComments(data);
+            updateCommentCount(data.length);
         } catch (error) {
             console.error(error);
         }
@@ -242,7 +243,7 @@ const CommentList = ({ boardCode }) => {
         return comments
             .filter(comment => comment.parent === parentCode)
             .map(reply => (
-                <Box key={reply.cmtCode} p={2} pl={8} borderWidth={1} borderRadius="md" mt={2}>
+                <Box key={reply.cmtCode} p={2} pl={4} borderWidth={0} borderRadius="md" mt={2}>
                     <HStack justifyContent="space-between">
                         {editingCommentId === reply.cmtCode ? (
                             <>
@@ -264,8 +265,12 @@ const CommentList = ({ boardCode }) => {
                             </>
                         ) : (
                             <>
-                                <Text>{reply.contents}</Text>
-                                <Text fontSize="sm" color="gray.500">{reply.nickname}</Text>
+                                <Text>
+                                    <Text as="span" fontWeight="bold" color="gray.700">
+                                        ㄴ {reply.nickname}
+                                    </Text>{' '}
+                                    {reply.contents}
+                                </Text>
                                 <HStack>
                                     {currentUser.id === reply.id && (
                                         <>
@@ -315,8 +320,12 @@ const CommentList = ({ boardCode }) => {
                             </>
                         ) : (
                             <>
-                                <Text>{comment.contents}</Text>
-                                <Text fontSize="sm" color="gray.500">{comment.nickname}</Text>
+                                <Text>
+                                    <Text as="span" fontWeight="bold" color="gray.700">
+                                        {comment.nickname}
+                                    </Text>{' '}
+                                    {comment.contents}
+                                </Text>
                                 <HStack>
                                     {currentUser.id === comment.id && (
                                         <>
