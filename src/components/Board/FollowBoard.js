@@ -70,6 +70,7 @@ const FollowBoard = () => {
             .then((response) => { response.json().then((data) => {
                     const count = data.count;
                     if (response.ok) {
+
                         likeUpdate(board_code, count);
                         toast({
                             title: '좋아요가 반영되었습니다.',
@@ -78,6 +79,7 @@ const FollowBoard = () => {
                             isClosable: true,
                         });
                     } else {
+
                         toast({
                             title: '좋아요 처리 실패',
                             status: 'error',
@@ -309,3 +311,4 @@ const FollowBoard = () => {
 };
 
 export default FollowBoard;
+
