@@ -264,12 +264,23 @@ const FollowBoard = () => {
                         )}
 
                         {post.music_track && (
-                            <>
-                                <Text mb={4}>노래 제목: {post.music_track}</Text>
-                                <Text mb={4}>가수: {post.music_artist}</Text>
-                                <Image src={post.music_thumbnail} />
-                                <audio controls src={post.music_preview_url} />
-                            </>
+                            <Box
+                                mb={3}
+                                p={3}
+                                borderWidth="1px"
+                                borderRadius="lg"
+                                width="100%"
+                                bg="purple.50"
+                            >
+                                <HStack spacing={3}>
+                                    <Image src={post.music_thumbnail} alt={`${post.music_track} thumbnail`} boxSize="75px" borderRadius="md" />
+                                    <VStack align="start" spacing={1}>
+                                        <Text fontWeight="bold" fontSize="md">노래 제목: {post.music_track}</Text>
+                                        <Text fontSize="sm" color="gray.500">가수: {post.music_artist}</Text>
+                                        <audio controls src={post.music_preview_url} style={{ width: '150px' }}></audio>
+                                    </VStack>
+                                </HStack>
+                            </Box>
                         )}
                         <HStack spacing={4}>
                             <Button
