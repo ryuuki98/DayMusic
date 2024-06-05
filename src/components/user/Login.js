@@ -94,14 +94,6 @@ const Login = () => {
                     <Button bg="black" color="white" onClick={handleSignup} size="sm" mt={4} width="full">
                         회원가입
                     </Button>
-                    <Flex justify="space-between" mt={4}>
-                        <Button variant="link" colorScheme="black" onClick={() => navigate('/user/find-id')}>
-                            아이디찾기
-                        </Button>
-                        <Button variant="link" colorScheme="black" onClick={() => navigate('/user/find-password')}>
-                            비밀번호찾기
-                        </Button>
-                    </Flex>
                 </Box>
             </Flex>
         </Box>
