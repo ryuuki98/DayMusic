@@ -236,19 +236,6 @@ const FollowBoard = () => {
                                         {new Date(post.createdAt).toLocaleString()}
                                     </Text>
                                 </Box>
-                                <Menu>
-                                    <MenuButton
-                                        as={IconButton}
-                                        aria-label="Options"
-                                        icon={<BsThreeDotsVertical />}
-                                        variant="ghost"
-                                        ml="auto"
-                                    />
-                                    <MenuList>
-                                        <MenuItem onClick={() => handleEdit(post.board_code)}>Edit</MenuItem>
-                                        <MenuItem onClick={() => handleDelete(post.board_code)}>Delete</MenuItem>
-                                    </MenuList>
-                                </Menu>
                             </Flex>
                             <Text mb={4} cursor="pointer" onClick={() => handlePostClick(post.board_code)}>
                                 {post.contents}
@@ -313,9 +300,6 @@ const FollowBoard = () => {
                                     onClick={() => toggleComments(post.board_code)}
                                 >
                                     Comment
-                                </Button>
-                                <Button flex="1" variant="ghost" leftIcon={<BiShare />}>
-                                    Share
                                 </Button>
                             </HStack>
                             {showComments[post.board_code] && (
