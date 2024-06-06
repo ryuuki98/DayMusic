@@ -35,7 +35,7 @@ const UserFollow = () => {
     // 게시글 유저의 아이디
     const location = useLocation();
     const postId = location.state.postId;
-    
+
     // 로그인 한 유저의 아이디,닉네임 사용가능
     const { currentUser } = useContext(AuthContext);
     
@@ -62,6 +62,8 @@ const UserFollow = () => {
     // 팔로우 및 팔로워 리스트 관리
     const [followList, setFollowList] = useState([]);
     const [followerList, setFollowerList] = useState([]);
+
+    const [nickname, setNickName] = useState();
     
     // 팔로우 및 팔로워 모달 관리
     const { isOpen: isFollowListOpen, onOpen: onFollowListOpen, onClose: onFollowListClose } = useDisclosure();
@@ -73,11 +75,13 @@ const UserFollow = () => {
         const response = await fetch(url, { method: "GET" });
         const data = await response.json();
 
+        console.log("이거ㅗ뭐야?", data.result[2]);
         setFollowList(data.result[1]);
         setFollowerList(data.result[0]);
         setFollowedCount(data.result[1].length);
         setFollowerCount(data.result[0].length);
         setIsFollowing(data.result[0].some(follow => follow.nickname === currentUser.nickname));
+        setNickName(data.result[2]);
     };
 
     // 사용자 게시글 수 가져오기
@@ -217,7 +221,7 @@ const UserFollow = () => {
                 </VStack>
             </Flex>
             <Flex align="center" justify="space-between" mb="4">
-                <Heading size="md" ml="25px">{postId}</Heading>
+                <Heading size="md" ml="25px">{nickname}</Heading>
                 {currentUser.id !== postId && (
                     <Button colorScheme='gray' onClick={handleFollowCheck}>
                         {isFollowing ? '팔로우 취소' : '팔로우'}
