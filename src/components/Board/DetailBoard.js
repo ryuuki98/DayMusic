@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
     Box,
     Text,
@@ -14,6 +14,10 @@ import {
     Button,
     HStack,
     useToast,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
 } from '@chakra-ui/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { BiChat, BiLike, BiShare } from 'react-icons/bi';
@@ -22,7 +26,8 @@ import CommentList from '../Comment/CommentList';
 
 const BoardDetail = () => {
     const location = useLocation();
-    const command = 'detail';
+    const navigate = useNavigate();
+    const [posts, setPosts] = useState([]);
     const { currentUser } = useContext(AuthContext);
     const { boardCode } = location.state || {};
     const [post, setPost] = useState(null);
@@ -100,6 +105,58 @@ const BoardDetail = () => {
             });
     };
 
+    const handleEdit = (boardCode) => {
+        navigate(`/board/update/`, { state: { boardCode } });
+    };
+
+
+    const handleDelete = async (boardCode) => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/board/service`, {
+                method: 'POST',
+                headers: myHeaders,
+                body: JSON.stringify({
+                    command: 'delete',
+                    id: currentUser.id,
+                    board_code: boardCode,
+                }),
+                credentials: 'include',
+            });
+
+            const responseText = await response.text();
+            let result;
+
+            try {
+                result = JSON.parse(responseText);
+            } catch (e) {
+                throw new Error('Invalid JSON response');
+            }
+
+            if (response.ok && result.status === 200) {
+                setPosts(posts.filter((post) => post.board_code !== boardCode));
+                toast({
+                    title: '게시글이 삭제되었습니다.',
+                    status: 'success',
+                    duration: 3000,
+                    isClosable: true,
+                });
+            } else {
+                throw new Error(result.message || 'Failed to delete post');
+            }
+        } catch (error) {
+            setError(error.message);
+            toast({
+                title: '게시글 삭제 실패',
+                description: error.message,
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+            });
+        }
+    };
+
+
+
     useEffect(() => {
         if (!boardCode) {
             setError('Board code not provided');
@@ -122,7 +179,6 @@ const BoardDetail = () => {
                 }
 
                 const data = await response.json();
-                console.log('Fetched post data:', data);
                 setPost(data);
 
                 fetch(`${process.env.REACT_APP_SERVER_URL}/image/service?userId=${data.id}`, {
@@ -146,8 +202,16 @@ const BoardDetail = () => {
         fetchPost();
     }, [boardCode]);
 
+    const handleAddComment = (newComment) => {
+        setPost((prevPost) => ({
+            ...prevPost,
+            comments: [...(prevPost.comments || []), newComment],
+            commentCount: (prevPost.commentCount || 0) + 1,
+        }));
+    };
+
     return (
-        <Box maxW="800px" mx="auto" p={4} borderWidth={1} borderRadius="lg" boxShadow="lg" bg="white">
+        <Box maxW="800px" mx="auto" p={4} bg="white" boxShadow="md">
             {error && (
                 <Alert status="error" mb={4}>
                     <AlertIcon />
@@ -155,40 +219,61 @@ const BoardDetail = () => {
                 </Alert>
             )}
             {post ? (
-                <VStack spacing={4}>
+                <Box w="full" p={4} bg="white" boxShadow="md">
                     <Flex alignItems="center" mb={4}>
                         <Avatar size="md" name={post.nickname} src={profileImg || "https://bit.ly/sage-adebayo"} />
                         <Box ml={3}>
                             <Text fontWeight="bold">{post.nickname}</Text>
                             <Text fontSize="sm" color="gray.500">{new Date(post.createdAt).toLocaleString()}</Text>
                         </Box>
-                        <IconButton
-                            variant="ghost"
-                            colorScheme="gray"
-                            aria-label="See menu"
-                            icon={<BsThreeDotsVertical />}
-                            ml="auto"
-                        />
+                        <Menu>
+                            <MenuButton
+                                as={IconButton}
+                                aria-label="Options"
+                                icon={<BsThreeDotsVertical />}
+                                variant="ghost"
+                                ml="auto"
+                            />
+                            <MenuList>
+                                <MenuItem onClick={() => handleEdit(post.board_code)}>Edit</MenuItem>
+                                <MenuItem onClick={() => handleDelete(post.board_code)}>Delete</MenuItem>
+                            </MenuList>
+                        </Menu>
                     </Flex>
-                    <Text>{post.contents}</Text>
-                    {post.image_url && (
+                    <Text mb={4}>{post.contents}</Text>
+                    
                         <Image
                             borderRadius="md"
-                            src={post.image_url}
+                            src={post.imgPath}
                             alt="Post image"
                             mb={4}
-                            boxSize="300px"
+                            boxSize="500px"
                             objectFit="cover"
+                            style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
                         />
-                    )}
-                    {post.music_track && (
-                        <>
-                            <Text>노래 제목: {post.music_track}</Text>
-                            <Text>가수: {post.music_artist}</Text>
-                            <Image src={post.music_Thumbnail} />
-                            <audio controls src={post.music_PreviewUrl} />
-                        </>
-                    )}
+                        <Box mb={3} p={3} borderWidth="1px" borderRadius="lg" width="100%" bg="purple.50">
+                            <HStack spacing={3}>
+                                <Image
+                                    src={post.music_Thumbnail}
+                                    alt={`${post.music_track} thumbnail`}
+                                    boxSize="75px"
+                                    borderRadius="md"
+                                />
+                                <VStack align="start" spacing={1}>
+                                    <Text fontWeight="bold" fontSize="md">
+                                        {post.music_track}
+                                    </Text>
+                                    <Text fontSize="sm" color="gray.500">
+                                        {post.music_artist}
+                                    </Text>
+                                    <audio
+                                        controls
+                                        src={post.music_preview_url}
+                                        style={{ width: '150px' }}
+                                    ></audio>
+                                </VStack>
+                            </HStack>
+                        </Box>
                     <HStack spacing={4}>
                         <Button
                             flex="1"
@@ -205,7 +290,7 @@ const BoardDetail = () => {
                             Likelist
                         </Button>
                         <Button flex="1" variant="ghost" leftIcon={<BiChat />} onClick={() => setShowComments(!showComments)}>
-                            Comment
+                            Comment {post.commentCount}
                         </Button>
                         <Button flex="1" variant="ghost" leftIcon={<BiShare />}>
                             Share
@@ -227,8 +312,19 @@ const BoardDetail = () => {
                             ))}
                         </Box>
                     )}
-                    {showComments && <CommentList boardCode={post.board_code} />}
-                </VStack>
+                    {showComments && (
+                        <CommentList
+                            boardCode={post.board_code}
+                            onAddComment={(newComment) => handleAddComment(newComment)}
+                            updateCommentCount={(count) => {
+                                setPost((prevPost) => ({
+                                    ...prevPost,
+                                    commentCount: count,
+                                }));
+                            }}
+                        />
+                    )}
+                </Box>
             ) : (
                 <Spinner size="xl" />
             )}
