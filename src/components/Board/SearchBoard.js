@@ -230,19 +230,21 @@ const SearchBoard = () => {
                                         {new Date(post.createdAt).toLocaleString()}
                                     </Text>
                                 </Box>
-                                <Menu>
-                                    <MenuButton
-                                        as={IconButton}
-                                        aria-label="Options"
-                                        icon={<BsThreeDotsVertical />}
-                                        variant="ghost"
-                                        ml="auto"
-                                    />
-                                    <MenuList>
-                                        <MenuItem onClick={() => handleEdit(post.board_code)}>Edit</MenuItem>
-                                        <MenuItem onClick={() => handleDelete(post.board_code)}>Delete</MenuItem>
-                                    </MenuList>
-                                </Menu>
+                                {currentUser.id === post.id && (
+                                    <Menu>
+                                        <MenuButton
+                                            as={IconButton}
+                                            aria-label="Options"
+                                            icon={<BsThreeDotsVertical />}
+                                            variant="ghost"
+                                            ml="auto"
+                                        />
+                                        <MenuList>
+                                            <MenuItem onClick={() => handleEdit(post.board_code)}>Edit</MenuItem>
+                                            <MenuItem onClick={() => handleDelete(post.board_code)}>Delete</MenuItem>
+                                        </MenuList>
+                                    </Menu>
+                                )}
                             </Flex>
                             <Text mb={4} cursor="pointer" onClick={() => handlePostClick(post.board_code)}>
                                 {post.contents}
@@ -256,7 +258,6 @@ const SearchBoard = () => {
                                     boxSize="500px"
                                     objectFit="cover"
                                     style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
-
                                 />
                             )}
 
@@ -271,7 +272,6 @@ const SearchBoard = () => {
                                         />
                                         <VStack align="start" spacing={1}>
                                             <Text fontWeight="bold" fontSize="md">
-
                                                 {post.music_track}
                                             </Text>
                                             <Text fontSize="sm" color="gray.500">
@@ -306,9 +306,7 @@ const SearchBoard = () => {
                                     leftIcon={<BiChat />}
                                     onClick={() => toggleComments(post.board_code)}
                                 >
-
                                     Comment {post.commentCount}
-
                                 </Button>
                             </HStack>
                             {showComments[post.board_code] && (
@@ -322,7 +320,6 @@ const SearchBoard = () => {
                                             )
                                         );
                                     }}
-
                                 />
                             )}
                         </Box>
