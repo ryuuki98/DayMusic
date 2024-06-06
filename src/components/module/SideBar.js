@@ -84,7 +84,7 @@ const Sidebar = () => {
 
     const handleUserClick = (userId) => {
         navigate('/userFollow', { state: { postId: userId } });
-        onClose();  // 다이얼로그 닫기
+        onClose(); // 다이얼로그 닫기
     };
 
     return (
@@ -103,7 +103,18 @@ const Sidebar = () => {
                 <Button onClick={() => navigate('/board/search')} width="full" variant="ghost">
                     Home
                 </Button>
-                <Button onClick={onOpen} width="full" variant="ghost">
+                <Button
+                    onClick={() => {
+                        if (currentUser === null) {
+                            alert('로그인을 해야합니다.');
+                            navigate('/');
+                        }else{
+                            onOpen;
+                        }
+                    }}
+                    width="full"
+                    variant="ghost"
+                >
                     Search
                 </Button>
                 <Button onClick={handleFollowClick} width="full" variant="ghost">
@@ -137,15 +148,15 @@ const Sidebar = () => {
                                     {searchResults.map((user) => (
                                         <Box
                                             key={user.id}
-                                            width={"100%"}
-                                            padding={"10px"}
+                                            width={'100%'}
+                                            padding={'10px'}
                                             borderRadius="md"
                                             boxShadow="md"
                                             cursor="pointer"
                                             transition="all 0.2s"
                                             _hover={{
-                                                backgroundColor: "gray.100",
-                                                transform: "scale(1.05)",
+                                                backgroundColor: 'gray.100',
+                                                transform: 'scale(1.05)',
                                             }}
                                             onClick={() => handleUserClick(user.id)}
                                         >
