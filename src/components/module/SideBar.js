@@ -107,10 +107,10 @@ const Sidebar = () => {
                     Search
                 </Button>
                 <Button onClick={handleFollowClick} width="full" variant="ghost">
-                    follow
+                    MyPage
                 </Button>
                 <Button onClick={handleMyPageClick} width="full" variant="ghost">
-                    MyPage
+                    Settings
                 </Button>
             </VStack>
 

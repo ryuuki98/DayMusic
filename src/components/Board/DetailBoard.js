@@ -64,15 +64,15 @@ const BoardDetail = () => {
                 if (data !== null) {
                     setLikeCount(count);
                     toast({
-                        title: "좋아요가 반영되었습니다.",
-                        status: "success",
+                        title: '좋아요가 반영되었습니다.',
+                        status: 'success',
                         duration: 3000,
                         isClosable: true,
                     });
                 } else {
                     toast({
-                        title: "좋아요 처리 실패",
-                        status: "error",
+                        title: '좋아요 처리 실패',
+                        status: 'error',
                         duration: 3000,
                         isClosable: true,
                     });
@@ -80,8 +80,8 @@ const BoardDetail = () => {
             })
             .catch((error) => {
                 toast({
-                    title: "서버 요청 실패",
-                    status: "error",
+                    title: '서버 요청 실패',
+                    status: 'error',
                     duration: 3000,
                     isClosable: true,
                 });
@@ -108,7 +108,6 @@ const BoardDetail = () => {
     const handleEdit = (boardCode) => {
         navigate(`/board/update/`, { state: { boardCode } });
     };
-
 
     const handleDelete = async (boardCode) => {
         try {
@@ -155,8 +154,6 @@ const BoardDetail = () => {
         }
     };
 
-
-
     useEffect(() => {
         if (!boardCode) {
             setError('Board code not provided');
@@ -169,7 +166,7 @@ const BoardDetail = () => {
                     method: 'POST',
                     headers: myHeaders,
                     body: JSON.stringify({
-                        command: "detail",
+                        command: 'detail',
                         board_code: boardCode,
                     }),
                     credentials: 'include',
@@ -196,7 +193,7 @@ const BoardDetail = () => {
                     });
             } catch (error) {
                 setError(error.message);
-            } 
+            }
         };
 
         fetchPost();
@@ -221,10 +218,12 @@ const BoardDetail = () => {
             {post ? (
                 <Box w="full" p={4} bg="white" boxShadow="md">
                     <Flex alignItems="center" mb={4}>
-                        <Avatar size="md" name={post.nickname} src={profileImg || "https://bit.ly/sage-adebayo"} />
+                        <Avatar size="md" name={post.nickname} src={profileImg || 'https://bit.ly/sage-adebayo'} />
                         <Box ml={3}>
                             <Text fontWeight="bold">{post.nickname}</Text>
-                            <Text fontSize="sm" color="gray.500">{new Date(post.createdAt).toLocaleString()}</Text>
+                            <Text fontSize="sm" color="gray.500">
+                                {new Date(post.createdAt).toLocaleString()}
+                            </Text>
                         </Box>
                         <Menu>
                             <MenuButton
@@ -241,7 +240,8 @@ const BoardDetail = () => {
                         </Menu>
                     </Flex>
                     <Text mb={4}>{post.contents}</Text>
-                    
+
+                    {post.imgPath && (
                         <Image
                             borderRadius="md"
                             src={post.imgPath}
@@ -251,6 +251,9 @@ const BoardDetail = () => {
                             objectFit="cover"
                             style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
                         />
+                    )}
+
+                    {post.music_track && (
                         <Box mb={3} p={3} borderWidth="1px" borderRadius="lg" width="100%" bg="purple.50">
                             <HStack spacing={3}>
                                 <Image
@@ -266,14 +269,11 @@ const BoardDetail = () => {
                                     <Text fontSize="sm" color="gray.500">
                                         {post.music_artist}
                                     </Text>
-                                    <audio
-                                        controls
-                                        src={post.music_preview_url}
-                                        style={{ width: '150px' }}
-                                    ></audio>
+                                    <audio controls src={post.music_preview_url} style={{ width: '150px' }}></audio>
                                 </VStack>
                             </HStack>
                         </Box>
+                    )}
                     <HStack spacing={4}>
                         <Button
                             flex="1"
@@ -289,7 +289,12 @@ const BoardDetail = () => {
                         <Button flex="1" variant="ghost" leftIcon={<BiLike />} onClick={listSubmit}>
                             Likelist
                         </Button>
-                        <Button flex="1" variant="ghost" leftIcon={<BiChat />} onClick={() => setShowComments(!showComments)}>
+                        <Button
+                            flex="1"
+                            variant="ghost"
+                            leftIcon={<BiChat />}
+                            onClick={() => setShowComments(!showComments)}
+                        >
                             Comment {post.commentCount}
                         </Button>
                         <Button flex="1" variant="ghost" leftIcon={<BiShare />}>

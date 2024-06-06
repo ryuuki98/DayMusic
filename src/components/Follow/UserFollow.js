@@ -138,7 +138,7 @@ const UserFollow = () => {
 
     useEffect(() => {
         fetchFollowData();
-    }, []);
+    }, [postId]);
     useEffect(() => {
         fetchPostCount();
         fetchMusicPostCount();
@@ -157,7 +157,7 @@ const UserFollow = () => {
             .catch((error) => {
                 console.error('Error fetching profile image:', error);
             });
-    }, []);
+    }, [postId]);
 
      // 팔로우 추가,취소 처리
     const handleFollowCheck = async (e) => {
