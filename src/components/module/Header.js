@@ -6,7 +6,7 @@ import AuthContext from '../../context/AuthContext';
 
 const Header = () => {
     const navigate = useNavigate();
-    const { logout } = useContext(AuthContext);
+    const { currentUser, logout } = useContext(AuthContext);
 
     const test = (e) => {
         navigate('/board/write');
@@ -14,22 +14,31 @@ const Header = () => {
 
     return (
         <Box as="header" bg="white" py={4} w="100%">
-            <Flex align="center" justify="space-between" maxW="1200px" mx="auto" px={4} >
-                <Text fontSize="2xl" fontWeight="bold" color="black" cursor="pointer" onClick={() => navigate("/board/search")} >
+            <Flex align="center" justify="space-between" maxW="1200px" mx="auto" px={4}>
+                <Text
+                    fontSize="2xl"
+                    fontWeight="bold"
+                    color="black"
+                    cursor="pointer"
+                    onClick={() => navigate('/board/search')}
+                >
                     Day Music
                 </Text>
                 <Flex align="center" ml="auto">
-                    <Button variant="link" mr={4} color="black" onClick={() => { 
-                        navigate('/'); 
-                        logout(); }}>
-                        Logout
-                    </Button>
-                    <Button variant="link" mr={4} color="black">
-                        Page
-                    </Button>
-                    <Button variant="link" mr={4} color="black">
-                        Page
-                    </Button>
+                    {currentUser && (
+                        <Button
+                            variant="link"
+                            mr={4}
+                            color="black"
+                            onClick={() => {
+                                navigate('/');
+                                logout();
+                            }}
+                        >
+                            Logout
+                        </Button>
+                    )}
+
                     <Button colorScheme="blackAlpha" bg="black" color="white" onClick={test}>
                         Write
                     </Button>

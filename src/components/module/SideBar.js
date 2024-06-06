@@ -109,7 +109,7 @@ const Sidebar = () => {
                             alert('로그인을 해야합니다.');
                             navigate('/');
                         }else{
-                            onOpen;
+                            onOpen();
                         }
                     }}
                     width="full"
