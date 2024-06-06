@@ -180,7 +180,7 @@ const BoardDetail = () => {
 
                 const data = await response.json();
                 setPost(data);
-
+                setLikeCount(data.likeCount);
                 fetch(`${process.env.REACT_APP_SERVER_URL}/image/service?userId=${data.id}`, {
                     method: 'GET',
                     credentials: 'include',
@@ -242,16 +242,20 @@ const BoardDetail = () => {
                     </Flex>
                     <Text mb={4}>{post.contents}</Text>
                     
+                    {post.imgPath && (
                         <Image
-                            borderRadius="md"
-                            src={post.imgPath}
-                            alt="Post image"
-                            mb={4}
-                            boxSize="500px"
-                            objectFit="cover"
-                            style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
-                        />
-                        <Box mb={3} p={3} borderWidth="1px" borderRadius="lg" width="100%" bg="purple.50">
+                        borderRadius="md"
+                        src={post.imgPath}
+                        alt="Post image"
+                        mb={4}
+                        boxSize="500px"
+                        objectFit="cover"
+                        style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
+                    />
+                    )}
+                        
+                        {post.music_track && (
+                            <Box mb={3} p={3} borderWidth="1px" borderRadius="lg" width="100%" bg="purple.50">
                             <HStack spacing={3}>
                                 <Image
                                     src={post.music_Thumbnail}
@@ -274,6 +278,7 @@ const BoardDetail = () => {
                                 </VStack>
                             </HStack>
                         </Box>
+                        )}
                     <HStack spacing={4}>
                         <Button
                             flex="1"
