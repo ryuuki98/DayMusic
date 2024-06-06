@@ -13,7 +13,6 @@ const UpdateUserInfo = () => {
     const [phone, setPhone] = useState('');
     const [telecom, setTelecom] = useState('');
 
-
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [isValidEmail, setIsValidEmail] = useState(true);
@@ -21,11 +20,11 @@ const UpdateUserInfo = () => {
 
     useEffect(() => {
         if (!currentUser) {
-            console.log("비로그인 상태");
-            alert("로그인을 해야합니다.");
+            console.log('비로그인 상태');
+            alert('로그인을 해야합니다.');
             navigate('/');
         } else {
-            console.log("로그인 상태");
+            console.log('로그인 상태');
             fetchUserInfo(currentUser.id);
         }
     }, []);
@@ -39,7 +38,7 @@ const UpdateUserInfo = () => {
                 },
                 body: JSON.stringify({
                     command: 'getUserInfo',
-                    id: userId
+                    id: userId,
                 }),
             });
 
@@ -59,23 +58,22 @@ const UpdateUserInfo = () => {
         }
     };
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!isValidEmail || !isValidPhone) {
-            alert("유효하지 않은 정보 변경 입니다.");
+            alert('유효하지 않은 정보 변경 입니다.');
             return;
         }
 
         const updateData = {
             id: currentUser.id,
-            name : name,
-            gender : gender,
-            email : email,
-            phone : phone,
-            telecom : telecom,
-            command: 'updateInformation'
+            name: name,
+            gender: gender,
+            email: email,
+            phone: phone,
+            telecom: telecom,
+            command: 'updateInformation',
         };
 
         try {
@@ -86,13 +84,12 @@ const UpdateUserInfo = () => {
                 },
                 body: JSON.stringify(updateData),
             });
-        
 
             if (response.ok) {
                 console.log('개인정보 변경 성공:');
                 setSuccess('개인정보가 변경되었습니다.');
                 setError('');
-                alert("개인정보가 변경 되었습니다 ")
+                alert('개인정보가 변경 되었습니다 ');
                 navigate('/user/myPage');
             } else {
                 throw new Error('개인정보 변경 실패');
@@ -104,29 +101,28 @@ const UpdateUserInfo = () => {
         }
     };
 
-   
     const validateEmail = async (value) => {
         const myHeaders = new Headers();
         myHeaders.append('Content-Type', 'application/json;charset=utf-8');
-    
+
         const requestOptions = {
             method: 'POST',
             headers: myHeaders,
             body: JSON.stringify({
                 command: 'duplicateEmailForUpdate',
-                id : currentUser.id,
+                id: currentUser.id,
                 email: value,
             }),
             credentials: 'include',
         };
-    
+
         const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/user/service`, requestOptions);
         if (!response.ok) {
             return '서버 오류로 이메일 검증에 실패했습니다.';
         }
         const result = await response.json().catch(() => ({}));
-    
-        if(result.exists === 'true'){
+
+        if (result.exists === 'true') {
             setIsValidEmail(false);
             return '이메일이 이미 존재합니다.';
         } else {
@@ -134,29 +130,29 @@ const UpdateUserInfo = () => {
             return '';
         }
     };
-    
+
     const validatePhone = async (value) => {
         const myHeaders = new Headers();
         myHeaders.append('Content-Type', 'application/json;charset=utf-8');
-    
+
         const requestOptions = {
             method: 'POST',
             headers: myHeaders,
             body: JSON.stringify({
                 command: 'duplicatePhone',
-                id : currentUser.id,
+                id: currentUser.id,
                 phone: value,
             }),
             credentials: 'include',
         };
-    
+
         const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/user/service`, requestOptions);
         if (!response.ok) {
             return '서버 오류로 전화번호 검증에 실패했습니다.';
         }
         const result = await response.json().catch(() => ({}));
-    
-        if(result.exists === 'true'){
+
+        if (result.exists === 'true') {
             setIsValidPhone(false);
             return '전화번호가 이미 존재합니다.';
         } else {
@@ -164,7 +160,6 @@ const UpdateUserInfo = () => {
             return '';
         }
     };
-    
 
     return (
         <Box maxW="md" mx="auto" mt={8} p={4} borderWidth="1px" borderRadius="md">
