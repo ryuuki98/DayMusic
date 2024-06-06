@@ -177,7 +177,7 @@ const BoardDetail = () => {
 
                 const data = await response.json();
                 setPost(data);
-
+                setLikeCount(data.likeCount);
                 fetch(`${process.env.REACT_APP_SERVER_URL}/image/service?userId=${data.id}`, {
                     method: 'GET',
                     credentials: 'include',
@@ -275,6 +275,7 @@ const BoardDetail = () => {
                             </HStack>
                         </Box>
                     )}
+
 
                     <HStack spacing={4}>
                         <Button
