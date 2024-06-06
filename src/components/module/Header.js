@@ -39,9 +39,11 @@ const Header = () => {
                         </Button>
                     )}
 
-                    <Button colorScheme="blackAlpha" bg="black" color="white" onClick={test}>
-                        Write
-                    </Button>
+                    {currentUser && (
+                        <Button colorScheme="blackAlpha" bg="black" color="white" onClick={test}>
+                            Write
+                        </Button>
+                    )}
                 </Flex>
             </Flex>
         </Box>
