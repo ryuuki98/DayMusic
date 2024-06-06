@@ -241,20 +241,21 @@ const BoardDetail = () => {
                     </Flex>
                     <Text mb={4}>{post.contents}</Text>
 
+                    
                     {post.imgPath && (
                         <Image
-                            borderRadius="md"
-                            src={post.imgPath}
-                            alt="Post image"
-                            mb={4}
-                            boxSize="500px"
-                            objectFit="cover"
-                            style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
-                        />
+                        borderRadius="md"
+                        src={post.imgPath}
+                        alt="Post image"
+                        mb={4}
+                        boxSize="500px"
+                        objectFit="cover"
+                        style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
+                    />
                     )}
-
-                    {post.music_track && (
-                        <Box mb={3} p={3} borderWidth="1px" borderRadius="lg" width="100%" bg="purple.50">
+                        
+                        {post.music_track && (
+                            <Box mb={3} p={3} borderWidth="1px" borderRadius="lg" width="100%" bg="purple.50">
                             <HStack spacing={3}>
                                 <Image
                                     src={post.music_Thumbnail}
@@ -274,6 +275,7 @@ const BoardDetail = () => {
                             </HStack>
                         </Box>
                     )}
+
                     <HStack spacing={4}>
                         <Button
                             flex="1"
