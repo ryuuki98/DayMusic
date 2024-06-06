@@ -139,7 +139,6 @@ const UserFollow = () => {
     useEffect(() => {
         fetchFollowData();
     }, []);
-
     useEffect(() => {
         fetchPostCount();
         fetchMusicPostCount();
@@ -193,6 +192,7 @@ const UserFollow = () => {
         } catch (error) {
             console.log('실패처리');
         }
+
     };
 
     const toggleMyBoardPosts  = () => {
@@ -223,6 +223,7 @@ const UserFollow = () => {
             <Flex align="center" justify="space-between" mb="4">
                 <Heading size="md" ml="25px">{nickname}</Heading>
                 {currentUser.id !== postId && (
+
                     <Button colorScheme='gray' onClick={handleFollowCheck}>
                         {isFollowing ? '팔로우 취소' : '팔로우'}
                     </Button>
